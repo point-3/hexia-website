@@ -172,47 +172,20 @@ export function HeroSection() {
         </div>
 
         {/* Slide Controls */}
-        <div className="absolute bottom-20 left-4 right-4 z-10 flex items-center justify-between sm:left-6 sm:right-6 lg:left-8 lg:right-8">
-          {/* Dots Indicator */}
-          <div className="flex items-center gap-3">
+        <div className="absolute bottom-20 right-4 z-10 sm:right-6 lg:right-8">
+          <div className="flex items-center gap-2">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`transition-all duration-300 ${
                   index === currentSlide
-                    ? "h-3 w-10 rounded-full bg-[#E9B35F]"
+                    ? "h-3 w-8 rounded-full bg-[#E9B35F]"
                     : "size-3 rounded-full bg-white/30 hover:bg-white/50"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
-          </div>
-
-          {/* Arrow Controls */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                prevSlide()
-                setIsAutoPlaying(false)
-                setTimeout(() => setIsAutoPlaying(true), 5000)
-              }}
-              className="flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:size-12"
-              aria-label="Previous slide"
-            >
-              <ChevronLeft className="size-5" />
-            </button>
-            <button
-              onClick={() => {
-                nextSlide()
-                setIsAutoPlaying(false)
-                setTimeout(() => setIsAutoPlaying(true), 5000)
-              }}
-              className="flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:size-12"
-              aria-label="Next slide"
-            >
-              <ChevronRight className="size-5" />
-            </button>
           </div>
         </div>
       </div>
