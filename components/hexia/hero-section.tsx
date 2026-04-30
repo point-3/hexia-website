@@ -172,7 +172,7 @@ export function HeroSection() {
         </div>
 
         {/* Slide Controls */}
-        <div className="absolute bottom-32 left-4 right-4 z-10 flex items-center justify-between sm:left-6 sm:right-6 lg:left-8 lg:right-8">
+        <div className="absolute bottom-20 left-4 right-4 z-10 flex items-center justify-between sm:left-6 sm:right-6 lg:left-8 lg:right-8">
           {/* Dots Indicator */}
           <div className="flex items-center gap-3">
             {slides.map((_, index) => (
@@ -220,13 +220,13 @@ export function HeroSection() {
       {/* Bottom Wave */}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0">
         <svg
-          viewBox="0 0 1440 120"
+          viewBox="0 0 1440 60"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="w-full"
         >
           <path
-            d="M0 120V60C240 20 480 0 720 0C960 0 1200 20 1440 60V120H0Z"
+            d="M0 60V30C240 10 480 0 720 0C960 0 1200 10 1440 30V60H0Z"
             fill="#FDFBF7"
           />
         </svg>
