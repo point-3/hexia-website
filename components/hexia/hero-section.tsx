@@ -111,7 +111,7 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col items-start justify-center px-4 pt-20 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col items-start justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           {/* Category Badge */}
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#E9B35F]/30 bg-[#E9B35F]/10 px-4 py-1.5 backdrop-blur-sm">
@@ -172,7 +172,7 @@ export function HeroSection() {
         </div>
 
         {/* Slide Controls */}
-        <div className="absolute bottom-32 left-4 right-4 flex items-center justify-between sm:left-6 sm:right-6 lg:left-8 lg:right-8">
+        <div className="absolute bottom-32 left-4 right-4 z-10 flex items-center justify-between sm:left-6 sm:right-6 lg:left-8 lg:right-8">
           {/* Dots Indicator */}
           <div className="flex items-center gap-3">
             {slides.map((_, index) => (
@@ -215,27 +215,10 @@ export function HeroSection() {
             </button>
           </div>
         </div>
-
-        {/* Trust Badges */}
-        <div className="absolute bottom-8 left-4 right-4 flex flex-col items-center gap-4 sm:flex-row sm:left-6 sm:right-6 lg:left-8 lg:right-8">
-          <span className="text-xs font-medium uppercase tracking-widest text-white/50">
-            Certified By
-          </span>
-          <div className="flex items-center gap-4 sm:gap-6">
-            {certifications.map((cert) => (
-              <div
-                key={cert.label}
-                className="flex size-12 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white/60 transition-all duration-300 hover:border-[#E9B35F]/50 hover:bg-white/10 hover:text-white sm:size-14"
-              >
-                <span className="text-[10px] font-bold sm:text-xs">{cert.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Bottom Wave */}
-      <div className="absolute bottom-0 left-0 right-0">
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0">
         <svg
           viewBox="0 0 1440 120"
           fill="none"

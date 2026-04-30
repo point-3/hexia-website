@@ -22,7 +22,7 @@ const features = [
 
 export function WhyChooseSection() {
   return (
-    <section className="bg-[#FDFBF7] py-20 lg:py-28">
+    <section className="bg-[#FDFBF7] pt-8 pb-20 lg:pt-12 lg:pb-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center">
