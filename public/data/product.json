@@ -1,0 +1,370 @@
+[
+  {
+    "category1": "Feed Additives",
+    "二级分类": "氨基酸",
+    "productname": "蛋氨酸 (Methionine)",
+    "imagename": "row00_蛋氨酸.png",
+    "producttitle": "99% Feed Grade DL-Methionine Additive",
+    "productdescription": "DL-Methionine is a sulfur-containing essential amino acid, chemically synthesized racemic mixture (50% L-form + 50% D-form). Core functions: balance dietary amino acids, promote growth, enhance immunity, protect liver. CAS: 59-51-8. Assay: >=99%. Appearance: White powder. Used in poultry, pigs, ruminants, aquaculture. Bioavailability: 80-90% of L-Methionine."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "氨基酸",
+    "productname": "88% Methionine Hydroxyl-Analog (MHA-FA)",
+    "imagename": "row01_液体蛋氨酸.png",
+    "producttitle": "88% Methionine Hydroxyl-Analog (MHA-FA)",
+    "productdescription": "Active Ingredient: 88% 2-Hydroxy-4-(methylthio) butanoic acid (HMTBA), with 88% methionine equivalent on a molar basis. Physical Form: Clear, light amber liquid, free of suspended impurities, with good fluidity for automated dosing. Purity: ≥88.0% HMTBA, low free acid content, ensuring high bioavailability and consistent performance."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "氨基酸",
+    "productname": "L-赖氨酸盐酸盐 (L-Lysine HCL)",
+    "imagename": "row02_L-赖氨酸盐酸盐.png",
+    "producttitle": "98.5% Feed Grade L-Lysine Hydrochloride Powder",
+    "productdescription": "L-Lysine HCl is a high-quality feed-grade essential amino acid crucial for healthy growth. High-purity (>=98.5%) crystalline powder. Promotes animal growth, improves feed utilization, reduces costs, improves meat quality, optimizes nitrogen retention. CAS: 657-27-2. Appearance: White granules. Widely used in pigs, poultry, ruminants, aquaculture."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "氨基酸",
+    "productname": "赖氨酸硫酸盐 (L-Lysine Sulphate)",
+    "imagename": "row03_赖氨酸硫酸盐.png",
+    "producttitle": "70% Feed Additive Lysine Sulphate Powder",
+    "productdescription": "Lysine sulfate 70% is a high-density dustless fluidity particle with 55% pure lysine (about 70% lysine sulfate) plus >15% other amino acids. Balances amino acid profile in feed formulas. Limiting amino acid for pigs, second for poultry. Improves growth performance and feed efficiency."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "氨基酸",
+    "productname": "L-苏氨酸 (L-Threonine)",
+    "imagename": "row04_L-苏氨酸.png",
+    "producttitle": "98.5% Feed Grade Additive L-Threonine Granule",
+    "productdescription": "Threonine balances amino acids in forage, stimulates growth, improves meat quality, increases nutritive value of low-digestibility raw materials. Suitable for low-protein forage production. Reduces feed raw material costs. Decreases nitrogen in excrement, lowers ammonia in animal sheds. CAS: 72-19-5. Used for piglet, poultry, shrimp, eel."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "氨基酸",
+    "productname": "L-缬氨酸 (L-Valine)",
+    "imagename": "row05_L-缬氨酸.png",
+    "producttitle": "98% Feed Additive L-Valine Amino Acid Granule",
+    "productdescription": "L-Valine is an essential and indispensable nutrient for pigs and poultry, considered the fifth limiting amino acid in European formulas. Cannot be synthesized in the body, requires dietary supplementation. Improves feed conversion rate and amino acid efficacy. CAS: 72-18-4. Appearance: White powder."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "氨基酸",
+    "productname": "L-精氨酸 (L-Arginine)",
+    "imagename": "row06_L-精氨酸.png",
+    "producttitle": "Wholesale 98.5% Feed Grade L-Arginine Powder Supplement",
+    "productdescription": "Arginine is a composition of urea cycle with important physiological functions. Increases arginase activity in liver, helps transform blood ammonia into urea for excretion. Supports liver function. CAS: 74-79-3. Appearance: White crystals or crystalline powder. Assay: >=99.6%. Net 25kg/drum or 25kg/bag."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "氨基酸",
+    "productname": "L-异亮氨酸 (L-Isoleucine)",
+    "imagename": "row07_L-异亮氨酸.png",
+    "producttitle": "90% Feed Grade L-Isoleucine Raw Material",
+    "productdescription": "L-Isoleucine is a branched-chain amino acid (BCAA) essential for aquatic animals and poultry. Cannot be synthesized in animal body, must be obtained from feed. Primarily oxidized in extrahepatic tissues, mainly in muscles. Catabolism occurs mainly in skeletal muscle. Promotes poultry growth."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素A (Vitamin A)",
+    "imagename": "row08_维生素A.jpg",
+    "producttitle": "Vitamin A",
+    "productdescription": "Vitamin A is a fat-soluble vitamin that participates in multiple physiological activities such as animal growth and development, immune regulation and vision maintenance. It can effectively promote the growth and reproduction of livestock and poultry, enhance body immunity, protect eyesight, improve hair and skin condition."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B1",
+    "imagename": "row09_维生素B1.jpg",
+    "producttitle": "Vitamin B1",
+    "productdescription": "Vitamin B1 (Thiamine) optimizes Energy Metabolism, safeguards Nervous System Health, stimulates Appetite & improves FCR, enhances Anti-Stress & Immune Resilience."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B2",
+    "imagename": "row10_维生素B2.png",
+    "producttitle": "Vitamin B2 Complex Riboflavin Powder",
+    "productdescription": "Riboflavin (Vitamin B2) regulates red blood cell growth, maintains strong immune system by protecting from free-radical damage. Promotes healthy hair, skin, nails. Without riboflavin, other B vitamins (niacin B3, pyridoxine B6) cannot function."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B3 (烟酸)",
+    "imagename": "row11_维生素B3.png",
+    "producttitle": "Nicotinic Acid Vitamin B3 Powder Additive",
+    "productdescription": "Niacin (Vitamin B3) combines with other B vitamins to release energy, regulate circulation, hormones, glucose, and hydrochloric acid. Works with riboflavin (B2) and pyridoxine (B6) for healthy skin, nervous and digestive systems. Improves feed protein utilization, milk yield, meat quality. CAS: 59-67-6. Content: 99.0-100.5%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B4 (氯化胆碱)",
+    "imagename": "row12_维生素B4.png",
+    "producttitle": "Feed Grade Choline Chloride Corn Cob Powder",
+    "productdescription": "Choline chloride (Vitamin B4) is obtained by spraying choline chloride liquid on corn cob meal and drying. Choline is a necessary basic component: component of cell membrane, facilitates fat catabolism reducing fatty liver risk, transmits neural signals. CAS: 67-48-1. Assay: 60% min."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B5 (泛酸钙)",
+    "imagename": "row13_维生素B5.png",
+    "producttitle": "Raw Material Calcium Pantothenate Powder Vitamin B5",
+    "productdescription": "Calcium pantothenate (Vitamin B5) is a component of coenzyme A, involved in metabolism of carbohydrates, fats and proteins. Indispensable for humans and animals. >70% used as feed additives. Assay: 98.0-102.0%. Calcium content: 8.2-8.6%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B6",
+    "imagename": "row14_维生素B6.png",
+    "producttitle": "High Quality Pyridoxine Hydrochloride Vitamin B6 HCL Powder",
+    "productdescription": "Vitamin B6 HCl (Pyridoxine) is essential for metabolism of amino acids, carbohydrates, and lipids. Plays role in neurotransmitter synthesis and hormone activity regulation. Supports overall animal health and well-being when provided as feed additive."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B7 (生物素)",
+    "imagename": "row15_维生素B7.png",
+    "producttitle": "2% 98% D-Biotin Vitamin H Powder",
+    "productdescription": "Biotin (Vitamin H/B7) is necessary for cell growth, fatty acid production, fat and amino acid metabolism. Plays role in citric acid cycle for energy generation. Helps maintain steady blood sugar. Strengthens hair and nails. Supports immune response, normal growth, reproduction. CAS: 58-85-5."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B8 (肌醇)",
+    "imagename": "row16_维生素B8.png",
+    "producttitle": "Wholesale Vitamin B8 Myo-Inositol Additive",
+    "productdescription": "Inositol (Vitamin B8) exists in all biological tissues. Participates in carbohydrate and lipid metabolism. Most abundant in brain, cardiac muscle and skeletal muscle as phosphatidylinositol. Related to intracellular calcium metabolism. CAS: 87-89-8. Assay: >=97.0%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B9 (叶酸)",
+    "imagename": "row17_维生素B9.png",
+    "producttitle": "Feed Grade Vitamin B9 Folic Acid Powder",
+    "productdescription": "Folic acid (Vitamin B9) is crucial for DNA synthesis and cell growth, red blood cell formation, embryonic development during incubation, immune function, egg production and hatchability. Prevents anemia. CAS: 59-30-3. Assay: 95.0-102.0%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素B12",
+    "imagename": "row18_维生素B12.png",
+    "producttitle": "Cyanocobalamin Vitamin B12 Powder",
+    "productdescription": "Cyanocobalamin is a synthetic form of Vitamin B12 essential for healthy blood cells, nerve cells, and proteins. Supports normal metabolism of fats and carbohydrates. Deficiency causes anemia, stomach problems, nerve damage. CAS: 68-19-9."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素C",
+    "imagename": "row19_维生素C.png",
+    "producttitle": "Feed Grade 35% Ascorbic Acid Vitamin C Powder",
+    "productdescription": "Vitamin C (Ascorbic Acid) provides immune support, antioxidant effects reducing free radical damage, growth promotion through collagen synthesis, stress relief. CAS: 66170-10-3. Assay: >=35.0%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素D3",
+    "imagename": "row20_维生素D3.png",
+    "producttitle": "Feed Grade Vitamin D3 Powder (Cholecalciferol)",
+    "productdescription": "Vitamin D3 is essential for bone mineralization, preventing weak leg syndrome in broilers and cage layer fatigue. Supports hatchability, growth rate, feed utilization, egg production."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素E50",
+    "imagename": "row21_维生素E50.png",
+    "producttitle": "50% Vitamin E Tocopheryl Acetate Powder Feed Additives",
+    "productdescription": "Vitamin E acts as peroxyl radical scavenger preventing free radical propagation. Regulates protein kinase C, affects gene expression, supports neurological functions, inhibits platelet aggregation. Content: >=50%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "维生素",
+    "productname": "维生素K3",
+    "imagename": "row22_维生素K3.png",
+    "producttitle": "Feed Grade Menadione Sodium Bisulfite Vitamin K3 MSB Powder",
+    "productdescription": "Vitamin K3 (Menadione Sodium Bisulfite) prevents haemorrhagic effects from sulpha drugs and antibiotics. Raises animal health levels especially under stress. CAS: 130-37-0. Assay: >=96.0%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "矿物质",
+    "productname": "DCP (磷酸氢钙)",
+    "imagename": "row23_DCP.png",
+    "producttitle": "Feed Grade DCP Granular Powder",
+    "productdescription": "Dicalcium Phosphate (DCP, E341ii) provides phosphorus and calcium for livestock and poultry feed. Easy to digest and absorb. Accelerates growth, shortens fattening period, rapid weight gain. Improves reproduction rate, survival rate, egg production, milk production. CAS: 7789-77-7."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "矿物质",
+    "productname": "MCP (磷酸一钙)",
+    "imagename": "row24_MCP.png",
+    "producttitle": "Feed Grade Monocalcium Phosphate Granular",
+    "productdescription": "Monocalcium Phosphate (MCP) has highest phosphorus digestibility among feed phosphates. For aquatic animals, poultry and livestock. Promotes feed digestion, weight gain, laying rate, milk production. P digestibility 19-25% higher than DCP in broilers."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "矿物质",
+    "productname": "MDCP (磷酸一二钙)",
+    "imagename": "row25_MDCP.png",
+    "producttitle": "Feed Grade 21% Mono-dicalcium Phosphate Granule",
+    "productdescription": "MDCP particles stay longer in animal stomach for better calcium phosphate absorption. Produced by micro-particles form without chemical binder. Phosphorus content >21%. Suitable for hens, ducks feed, concentrate and premix feed."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "酶制剂",
+    "productname": "植酸酶",
+    "imagename": "row26_植酸酶.jpg",
+    "producttitle": "Phytase (Myo-inositol-hexakisphosphate phosphohydrolase)",
+    "productdescription": "Efficiently degrades phytate phosphorus in plant-based raw materials, significantly improving phosphorus utilization in feed. Eliminates the anti-nutritional effects of phytic acid on macro and micro mineral elements, promoting their absorption, utilization, and functional performance."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "酶制剂",
+    "productname": "胃蛋白酶",
+    "imagename": "row27_胃蛋白酶.jpg",
+    "producttitle": "Pepsin (Pepsin A)",
+    "productdescription": "Highly specific and efficient enzyme strain featuring ultra-high temperature resistance, powerful degradation capabilities, and a broad intestinal pH adaptability range. Acts on a wide spectrum of protein substrates, ensuring more thorough and complete hydrolysis."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "预混料",
+    "productname": "维生素预混料",
+    "imagename": "row29_维生素预混料.png",
+    "producttitle": "Compound Premix Feed Solutions (Vitamin/Mineral/Compound)",
+    "productdescription": "Polifar offers various premix feed solutions including vitamin premix, mineral premix and compound premix for poultry, swine and aquatic animals. Products include Compound Broiler Starter, Compound Swine Grower, Aquatic Trace Element Premix. OEM/ODM supported with customized formulations."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "预混料",
+    "productname": "矿物质预混料",
+    "imagename": "row30_矿物质预混料.png",
+    "producttitle": "Mineral Premix & Trace Element Premix Feed",
+    "productdescription": "Polifar provides mineral premix feed solutions with balanced calcium, phosphorus, and trace elements. Supports OEM/ODM with customized packaging. Suitable for poultry, swine and aquatic species at various growth stages."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "预混料",
+    "productname": "复合预混料",
+    "imagename": "row31_复合预混料.png",
+    "producttitle": "Compound Premix Feed (OEM/ODM Supported)",
+    "productdescription": "Polifar offers single premix, compound premix, and customized premix solutions. High-concentration classified premix and composite premix available. Includes Speech Po (creep feed), Baoyubao series for nursery pigs, and finisher premixes."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "预混料",
+    "productname": "支持OEM和ODM",
+    "imagename": "row32_OEM预混料.png",
+    "producttitle": "Custom Premix Feed Manufacturing (OEM/ODM Available)",
+    "productdescription": "Polifar provides OEM/ODM premix manufacturing services. Supports customized vitamin premix, mineral premix, and compound premix formulations. Packaging options: 25kg bags to bulk bags. Delivery: 1-2 weeks."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "色素",
+    "productname": "虾青素 (Astaxanthin 2%, 5%)",
+    "imagename": "row33_Astaxanthin 2%, 5%.jpg",
+    "producttitle": "Astaxanthin 2%, 5%",
+    "productdescription": "Creating and Sustaining Customer Value. Improving the performance of farmed aquatic animals. Increasing pigment deposition, effectively enhancing the coloration of aquatic animals' skin, flesh, hepatopancreas, and gonads. Promoting growth and increasing feed efficiency."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "色素",
+    "productname": "斑蝥黄 (Canthaxanthin 2.5%, 10%)",
+    "imagename": "row34_斑蝥黄.png",
+    "producttitle": "Feed Grade 10% Purity Canthaxanthin Powder",
+    "productdescription": "Canthaxanthin is a natural carotenoid pigment with strong antioxidant properties (nearly 2x Vitamin E). Used for poultry skin coloring and egg yolk coloring. FDA/WHO approved as food additive since 1984. Assay: >=10%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "色素",
+    "productname": "阿卜酯",
+    "imagename": "row35_阿卜酯.png",
+    "producttitle": "Feed Additive Apoester Pigmentation for Broiler Skin",
+    "productdescription": "Apoester (Beta-Apo-8-Carotenoic Acid Ethyl Ester) is an oxygen-containing apocarotene compound. Widely used for broiler skin, feet, fat and egg yolk coloring. High precipitation rate in target tissue, highly effective carotenoid additive. CAS: 1109-11-1. Content: >=10%."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "API、兽药",
+    "productname": "金霉素",
+    "imagename": "row36_金霉素.jpg",
+    "producttitle": "Chlortetracycline",
+    "productdescription": "Broader antibacterial spectrum, water-soluble, higher safety, lower cost, wide tissue distribution, excellent compound compatibility."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "API、兽药",
+    "productname": "盐霉素",
+    "imagename": "row37_盐霉素.png",
+    "producttitle": "12% 24% Poultry Salinomycin Premix Powder",
+    "productdescription": "Salinomycin is a polyether ionophore antibiotic used as a coccidiostat in poultry feed. Available in 12% and 24% premix formulations. Effectively controls coccidiosis in broilers and improves feed efficiency."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "API、兽药",
+    "productname": "恩拉霉素",
+    "imagename": "row38_恩拉霉素.jpg",
+    "producttitle": "Enramycin",
+    "productdescription": "Targeted Antibacterial Efficacy: Highly active against Gram-positive pathogens (especially Clostridium perfringens), effectively preventing necrotic enteritis in swine and poultry. Exceptional Stability: Resistant to heat, light and moisture."
+  },
+  {
+    "category1": "Feed Additives",
+    "二级分类": "API、兽药",
+    "productname": "呋喃唑酮",
+    "imagename": "row39_呋喃唑酮.jpg",
+    "producttitle": "Furazolidone",
+    "productdescription": "Furazolidone is a classic broad-spectrum nitrofuran veterinary antibacterial raw material. It has strong inhibitory and killing effects on various intestinal harmful bacteria, widely used to prevent and treat animal bacterial enteritis, dysentery and gastrointestinal infectious diseases."
+  },
+  {
+    "category1": "Food Additives",
+    "二级分类": "甜味剂",
+    "productname": "代糖",
+    "imagename": "row43_代糖.png",
+    "producttitle": "Food Grade Sweeteners",
+    "productdescription": "Polifar supplies 12 food-grade sweeteners: Aspartame (E951), Sucralose (E955), Acesulfame K (E950), Saccharin Sodium 8-12 Mesh, Sorbitol (E420), Maltitol (E965), D-Allulose (Natural Low-calorie), Lactitol (99%), Xylose (Monosaccharide), Maltodextrin (E1400 DE 15-20), Lactose Monohydrate (200 Mesh), Liquid Glucose (Corn Syrup). FDA/HALAL certified."
+  },
+  {
+    "category1": "Nutraceuticals",
+    "二级分类": "营养品添加剂",
+    "productname": "NMN",
+    "imagename": "row46_NMN.jpg",
+    "producttitle": "99.9% NMN: Precision Science for Anti-Aging",
+    "productdescription": "NMN (β-Nicotinamide Mononucleotide) is a naturally occurring bioactive nucleotide, a derivative of the B-vitamin family. It can directly enter the mitochondria, quickly convert into Nicotinamide Adenine Dinucleotide (NAD+), replenish NAD+ that the human body loses with age, repair cellular damage, delay cellular senescence."
+  },
+  {
+    "category1": "Nutraceuticals",
+    "二级分类": "营养品添加剂",
+    "productname": "L-EGT",
+    "imagename": "row46_EGT.png",
+    "producttitle": "Antioxidant Pioneer — Ergothioneine (EGT)",
+    "productdescription": "EGT (Ergothioneine) is a natural antioxidant capable of entering mitochondria, the energy factories of human cells. It scavenges cellular free radicals, prevents cellular senescence and apoptosis, and restores youthful cellular state."
+  },
+  {
+    "category1": "Nutri. Ingredients",
+    "二级分类": "营养品添加剂",
+    "productname": "NMN (烟酰胺单核苷酸)",
+    "imagename": "row44_β-Nicotinamide Mononucleotide.png",
+    "producttitle": "β-Nicotinamide Mononucleotide",
+    "productdescription": "Usage: Nutritional health raw material. Main Efficacy: Elevate internal NAD+ level, boost body metabolism and facilitate cell repair. Purity: ≥99.9%."
+  },
+  {
+    "category1": "Nutri. Ingredients",
+    "二级分类": "营养品添加剂",
+    "productname": "L-EGT (麦角硫因)",
+    "imagename": "row44_Ergothioneine.png",
+    "producttitle": "Ergothioneine",
+    "productdescription": "Usage: Nutritional health raw material. Main Efficacy: Antioxidation and anti-aging. Purity: ≥99%."
+  },
+  {
+    "category1": "Nutri. Ingredients",
+    "二级分类": "营养品添加剂",
+    "productname": "PQQ",
+    "imagename": "row45_PQQ.png",
+    "producttitle": "PQQ, Disodium Salt",
+    "productdescription": "Usage: Nutritional health raw material. Main Efficacy: Protect brain nerves, improve exercise recovery ability, repair liver damage and enhance immunity. Purity: ≥98%."
+  },
+  {
+    "category1": "Nutri. Ingredients",
+    "二级分类": "营养品添加剂",
+    "productname": "司美格鲁肽等",
+    "imagename": "row49_司美格鲁肽.png",
+    "producttitle": "Raw GLP-1 Semaglutide Peptide Powder",
+    "productdescription": "Semaglutide, Tirzepatide and Liraglutide are GLP-1 receptor agonist peptide APIs supplied by Polifar. Used in pharmaceutical, research and weight management applications. OEM/ODM supported."
+  }
+]

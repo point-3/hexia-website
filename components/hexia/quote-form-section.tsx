@@ -8,13 +8,17 @@ export function QuoteFormSection() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    country: "",
     productInterest: "",
+    quantity: "",
     message: "",
   })
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert("Form submitted – backend integration needed")
+    setShowSuccess(true)
+    setTimeout(() => setShowSuccess(false), 3000)
   }
 
   const handleChange = (
@@ -41,14 +45,14 @@ export function QuoteFormSection() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             {/* Name */}
             <div>
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Name
+                Your Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -58,7 +62,7 @@ export function QuoteFormSection() {
                 onChange={handleChange}
                 required
                 className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                placeholder="Your name"
+                placeholder="Enter your name"
               />
             </div>
 
@@ -68,7 +72,7 @@ export function QuoteFormSection() {
                 htmlFor="email"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Email
+                Email Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -82,13 +86,32 @@ export function QuoteFormSection() {
               />
             </div>
 
-            {/* Product Interest */}
+            {/* Country */}
+            <div>
+              <label
+                htmlFor="country"
+                className="block text-sm font-medium text-[#2D3436]"
+              >
+                Country
+              </label>
+              <input
+                type="text"
+                id="country"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                placeholder="Enter your country"
+              />
+            </div>
+
+            {/* Interested Product */}
             <div>
               <label
                 htmlFor="productInterest"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Product Interest
+                Interested Product
               </label>
               <input
                 type="text"
@@ -101,22 +124,42 @@ export function QuoteFormSection() {
               />
             </div>
 
-            {/* Message */}
+            {/* Quantity */}
+            <div>
+              <label
+                htmlFor="quantity"
+                className="block text-sm font-medium text-[#2D3436]"
+              >
+                Quantity
+              </label>
+              <input
+                type="text"
+                id="quantity"
+                name="quantity"
+                value={formData.quantity}
+                onChange={handleChange}
+                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                placeholder="Enter quantity"
+              />
+            </div>
+
+            {/* Message / Requirement */}
             <div>
               <label
                 htmlFor="message"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Message
+                Message / Requirement <span className="text-red-500">*</span>
               </label>
               <textarea
                 id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                rows={4}
+                rows={5}
+                required
                 className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                placeholder="Tell us more about your requirements..."
+                placeholder="Please describe your requirements in detail..."
               />
             </div>
 
@@ -126,9 +169,18 @@ export function QuoteFormSection() {
               size="lg"
               className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white"
             >
-              Submit Request
+              Send Inquiry
             </Button>
           </form>
+
+          {/* Success Message */}
+          {showSuccess && (
+            <div className="mt-4 rounded-xl bg-[#2D6A4F]/20 p-4 text-center">
+              <p className="text-sm font-medium text-[#2D6A4F]">
+                Thank you for your inquiry! We will contact you as soon as possible within 24 hours.
+              </p>
+            </div>
+          )}
 
           {/* Support Note */}
           <div className="mt-8 flex items-center justify-center gap-2 text-sm text-[#636E72]">

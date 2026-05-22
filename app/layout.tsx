@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Hexia Biotechnology | Animal Nutrition & Food Ingredients',
-  description: 'Comprehensive solutions for global sourcing and supply chain management. 10+ Years Experience | One-Stop Sourcing | Global Logistics',
+  title: 'HexiaBio | Morehope Group, Feed Additives, Food Additives & Nutritional Raw Materials Supplier',
+  description: 'Suzhou Hexia Biotechnology is a professional supplier of feed additives, food additives, vitamins, amino acids and health nutrition raw materials. OEM & ODM premix service, global export from China.',
   generator: 'v0.app',
   icons: {
     icon: [

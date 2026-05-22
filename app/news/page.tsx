@@ -73,23 +73,6 @@ export default function NewsPage() {
       <Navbar />
 
       <main className="pt-20 lg:pt-24">
-        {/* Header */}
-        <section className="bg-[#2D6A4F]/5 py-8">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {/* Breadcrumb */}
-            <nav className="mb-4 flex items-center gap-2 text-sm">
-              <Link href="/" className="text-[#636E72] hover:text-[#2D6A4F]">Home</Link>
-              <ChevronRight className="size-4 text-[#636E72]" />
-              <span className="font-medium text-[#2D6A4F]">News</span>
-            </nav>
-
-            <h1 className="text-3xl font-bold text-[#1B4D3E] sm:text-4xl">News & Insights</h1>
-            <p className="mt-2 text-[#636E72]">
-              Stay updated with the latest market trends, industry news, and company updates
-            </p>
-          </div>
-        </section>
-
         {/* Featured Article */}
         <section className="py-12 lg:py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -201,27 +184,6 @@ export default function NewsPage() {
                       </li>
                     ))}
                   </ul>
-                </div>
-
-                {/* Newsletter Signup */}
-                <div className="rounded-xl bg-gradient-to-br from-[#2D6A4F] to-[#1B4D3E] p-6 text-white">
-                  <h3 className="font-semibold">Subscribe to Updates</h3>
-                  <p className="mt-2 text-sm text-white/80">
-                    Get the latest market reports and industry news delivered to your inbox.
-                  </p>
-                  <form className="mt-4 space-y-3">
-                    <input
-                      type="email"
-                      placeholder="Your email address"
-                      className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/50 focus:border-[#E9B35F] focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      className="w-full rounded-lg bg-[#E9B35F] py-2.5 text-sm font-semibold text-[#1B4D3E] transition-colors hover:bg-[#D4A04A]"
-                    >
-                      Subscribe
-                    </button>
-                  </form>
                 </div>
 
                 {/* LinkedIn */}

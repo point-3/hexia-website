@@ -1,6 +1,6 @@
 "use client"
 
-import { Truck, Shield, TrendingUp, ArrowRight } from "lucide-react"
+import { Truck, Shield, TrendingUp } from "lucide-react"
 
 const services = [
   {
@@ -53,15 +53,6 @@ export function ServicesSection() {
               <p className="mt-3 text-pretty text-[#636E72] leading-relaxed">
                 {service.description}
               </p>
-
-              {/* Learn More Link */}
-              <a
-                href="#"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
-              >
-                Learn More
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-              </a>
             </div>
           ))}
         </div>

@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
 const stats = [
-  { value: 10, suffix: "+", label: "Years Experience" },
+  { value: 20, suffix: "+", label: "Years Experience" },
   { value: 642, suffix: "+", label: "Global Partners" },
   { value: 175, suffix: "+", label: "Countries Served" },
   { value: 24, suffix: "/7", label: "Online Support" },
@@ -68,8 +68,7 @@ export function AboutSection() {
             <div className="mt-6 space-y-4 text-pretty text-[#636E72] leading-relaxed">
               <p>
                 Hexia (Suzhou) is a growing trading company focusing on distribution 
-                of feed additives and food ingredients to international markets. Most 
-                of our team members have been in this business for over 10 years.
+                of feed additives and food ingredients to international markets. Most of our team members have been in this business for over 20 years.
               </p>
               <p>
                 Established in 2023, headquartered in Suzhou Free Trade Zone, with 

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ChevronRight, Mail, Clock, Building2, Headphones, MapPin } from "lucide-react"
+import { ChevronRight, Mail, Clock, Building2, Headphones, MapPin, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
@@ -11,38 +11,35 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    company: "",
+    country: "",
     productInterest: "",
+    quantity: "",
     message: "",
   })
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert("Form submitted – backend integration needed")
+    setShowSuccess(true)
+    setTimeout(() => setShowSuccess(false), 3000)
   }
 
   return (
     <div className="min-h-screen bg-[#FDFBF7]">
+      {/* Success Message Modal */}
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="rounded-xl bg-[#2D6A4F]/20 px-8 py-6 text-center backdrop-blur-sm">
+            <p className="text-base font-medium text-[#2D6A4F]">
+              Thank you for your inquiry! We will contact you as soon as possible within 24 hours.
+            </p>
+          </div>
+        </div>
+      )}
+
       <Navbar />
 
       <main className="pt-20 lg:pt-24">
-        {/* Header */}
-        <section className="bg-[#2D6A4F]/5 py-8">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {/* Breadcrumb */}
-            <nav className="mb-4 flex items-center gap-2 text-sm">
-              <Link href="/" className="text-[#636E72] hover:text-[#2D6A4F]">Home</Link>
-              <ChevronRight className="size-4 text-[#636E72]" />
-              <span className="font-medium text-[#2D6A4F]">Contact Us</span>
-            </nav>
-
-            <h1 className="text-3xl font-bold text-[#1B4D3E] sm:text-4xl">Contact Us</h1>
-            <p className="mt-2 text-[#636E72]">
-              Get in touch with our team for inquiries, quotes, or any questions
-            </p>
-          </div>
-        </section>
-
         {/* Main Content */}
         <section className="py-12 lg:py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -57,7 +54,7 @@ export default function ContactPage() {
                 <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-[#2D3436]">
-                      Name <span className="text-red-500">*</span>
+                      Your Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -66,13 +63,13 @@ export default function ContactPage() {
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
                       className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                      placeholder="Your name"
+                      placeholder="Enter your name"
                     />
                   </div>
 
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-[#2D3436]">
-                      Email <span className="text-red-500">*</span>
+                      Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
@@ -86,22 +83,22 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-[#2D3436]">
-                      Company
+                    <label htmlFor="country" className="block text-sm font-medium text-[#2D3436]">
+                      Country
                     </label>
                     <input
                       type="text"
-                      id="company"
-                      value={formData.company}
-                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      id="country"
+                      value={formData.country}
+                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                       className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                      placeholder="Company name"
+                      placeholder="Enter your country"
                     />
                   </div>
 
                   <div>
                     <label htmlFor="productInterest" className="block text-sm font-medium text-[#2D3436]">
-                      Product Interest
+                      Interested Product
                     </label>
                     <input
                       type="text"
@@ -114,8 +111,22 @@ export default function ContactPage() {
                   </div>
 
                   <div>
+                    <label htmlFor="quantity" className="block text-sm font-medium text-[#2D3436]">
+                      Quantity
+                    </label>
+                    <input
+                      type="text"
+                      id="quantity"
+                      value={formData.quantity}
+                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                      placeholder="Enter quantity"
+                    />
+                  </div>
+
+                  <div>
                     <label htmlFor="message" className="block text-sm font-medium text-[#2D3436]">
-                      Message <span className="text-red-500">*</span>
+                      Message / Requirement <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="message"
@@ -133,7 +144,7 @@ export default function ContactPage() {
                     size="lg"
                     className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white"
                   >
-                    Send Message
+                    Send Inquiry
                   </Button>
                 </form>
 
@@ -153,35 +164,16 @@ export default function ContactPage() {
                       <Building2 className="size-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-[#1B4D3E]">Suzhou Headquarters</h3>
+                      <h3 className="font-semibold text-[#1B4D3E]">Suzhou HQ</h3>
                       <p className="text-sm text-[#636E72]">China</p>
                     </div>
                   </div>
                   <div className="mt-4 flex items-start gap-3">
                     <MapPin className="mt-0.5 size-5 shrink-0 text-[#A3B18A]" />
                     <p className="text-[#636E72]">
-                      RM205, Building 1-B, HR Service Industrial Park,<br />
-                      No. 336 Fengli Street, Suzhou Industrial Park, China
-                    </p>
-                  </div>
-                </div>
-
-                {/* Japan Office */}
-                <div className="rounded-2xl border border-[#A3B18A] bg-white p-6 sm:p-8">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-12 items-center justify-center rounded-full bg-[#1B4D3E]">
-                      <Building2 className="size-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-[#1B4D3E]">Japan Office</h3>
-                      <p className="text-sm text-[#636E72]">Osaka, Japan</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-start gap-3">
-                    <MapPin className="mt-0.5 size-5 shrink-0 text-[#A3B18A]" />
-                    <p className="text-[#636E72]">
-                      103-9-1, Hirano Shi, Hirano-Ku,<br />
-                      Osaka, Japan
+                      ROOM 232A, BUILDING A, NO. 188 SUHONG EAST ROAD,<br />
+                      SUZHOU INDUSTRIAL PARK, SUZHOU AREA,<br />
+                      CHINA (JIANGSU) PILOT FREE TRADE ZONE
                     </p>
                   </div>
                 </div>
@@ -194,12 +186,33 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-[#1B4D3E]">Email</h3>
-                      <a
-                        href="mailto:sales@hexia.com"
-                        className="text-[#2D6A4F] hover:text-[#E9B35F] transition-colors"
-                      >
-                        sales@hexia.com
-                      </a>
+                      <div className="mt-1 space-y-1">
+                        <a
+                          href="mailto:justin@hexiabio.com"
+                          className="block text-[#2D6A4F] hover:text-[#E9B35F] transition-colors"
+                        >
+                          justin@hexiabio.com
+                        </a>
+                        <a
+                          href="mailto:morehope.justin@gmail.com"
+                          className="block text-[#2D6A4F] hover:text-[#E9B35F] transition-colors"
+                        >
+                          morehope.justin@gmail.com
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* WeChat/WhatsApp */}
+                <div className="rounded-2xl border border-[#A3B18A] bg-white p-6 sm:p-8">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-12 items-center justify-center rounded-full bg-[#25D366]">
+                      <MessageCircle className="size-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-[#1B4D3E]">WeChat/WhatsApp</h3>
+                      <span className="text-[#2D6A4F]">+86 138 6232 0011</span>
                     </div>
                   </div>
                 </div>

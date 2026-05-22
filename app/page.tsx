@@ -7,10 +7,11 @@ import { ServicesSection } from "@/components/hexia/services-section"
 import { QuoteFormSection } from "@/components/hexia/quote-form-section"
 import { PartnersSection } from "@/components/hexia/partners-section"
 import { Footer } from "@/components/hexia/footer"
+import { BackToTop } from "@/components/hexia/back-to-top"
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen home">
       {/* Navigation */}
       <Navbar variant="transparent" />
 
@@ -37,6 +38,9 @@ export default function HomePage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Back to Top */}
+      <BackToTop />
     </main>
   )
 }

@@ -50,14 +50,17 @@ export default function ServicePage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    company: "",
-    service: "",
+    country: "",
+    productInterest: "",
+    quantity: "",
     message: "",
   })
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert("Form submitted – backend integration needed")
+    setShowSuccess(true)
+    setTimeout(() => setShowSuccess(false), 3000)
   }
 
   return (
@@ -65,23 +68,6 @@ export default function ServicePage() {
       <Navbar />
 
       <main className="pt-20 lg:pt-24">
-        {/* Header */}
-        <section className="bg-[#2D6A4F]/5 py-8">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {/* Breadcrumb */}
-            <nav className="mb-4 flex items-center gap-2 text-sm">
-              <Link href="/" className="text-[#636E72] hover:text-[#2D6A4F]">Home</Link>
-              <ChevronRight className="size-4 text-[#636E72]" />
-              <span className="font-medium text-[#2D6A4F]">Service</span>
-            </nav>
-
-            <h1 className="text-3xl font-bold text-[#1B4D3E] sm:text-4xl">Our Services</h1>
-            <p className="mt-2 text-[#636E72]">
-              Comprehensive solutions to support your business growth in animal nutrition and food ingredients
-            </p>
-          </div>
-        </section>
-
         {/* Services Section */}
         <section className="py-16 lg:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -134,7 +120,7 @@ export default function ServicePage() {
 
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                { value: "10+", label: "Years of Industry Experience" },
+                { value: "20+", label: "Years of Industry Experience" },
                 { value: "99%", label: "Customer Satisfaction Rate" },
                 { value: "48h", label: "Average Response Time" },
                 { value: "24/7", label: "Online Support" },
@@ -164,81 +150,91 @@ export default function ServicePage() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="mt-10 space-y-6">
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-[#2D3436]">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-[#2D3436]">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                </div>
-
+              <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-[#2D3436]">
-                    Company
+                  <label htmlFor="name" className="block text-sm font-medium text-[#2D3436]">
+                    Your Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
-                    id="company"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
                     className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                    placeholder="Company name"
+                    placeholder="Enter your name"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="service" className="block text-sm font-medium text-[#2D3436]">
-                    Service Interest
+                  <label htmlFor="email" className="block text-sm font-medium text-[#2D3436]">
+                    Email Address <span className="text-red-500">*</span>
                   </label>
-                  <select
-                    id="service"
-                    value={formData.service}
-                    onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                    className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                  >
-                    <option value="">Select a service</option>
-                    <option value="supply-chain">Supply Chain Management</option>
-                    <option value="market-intel">Market Intelligence</option>
-                    <option value="academy">Bioway Business Academy</option>
-                    <option value="other">Other</option>
-                  </select>
+                  <input
+                    type="email"
+                    id="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="country" className="block text-sm font-medium text-[#2D3436]">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    id="country"
+                    value={formData.country}
+                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                    className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                    placeholder="Enter your country"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="productInterest" className="block text-sm font-medium text-[#2D3436]">
+                    Interested Product
+                  </label>
+                  <input
+                    type="text"
+                    id="productInterest"
+                    value={formData.productInterest}
+                    onChange={(e) => setFormData({ ...formData, productInterest: e.target.value })}
+                    className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                    placeholder="e.g., Methionine, NMN, Biluochun Tea"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="quantity" className="block text-sm font-medium text-[#2D3436]">
+                    Quantity
+                  </label>
+                  <input
+                    type="text"
+                    id="quantity"
+                    value={formData.quantity}
+                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                    className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                    placeholder="Enter quantity"
+                  />
                 </div>
 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-[#2D3436]">
-                    Message
+                    Message / Requirement <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     id="message"
-                    rows={4}
+                    rows={5}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    required
                     className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                    placeholder="Tell us more about your requirements..."
+                    placeholder="Please describe your requirements in detail..."
                   />
                 </div>
 
@@ -247,9 +243,18 @@ export default function ServicePage() {
                   size="lg"
                   className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white"
                 >
-                  Submit Request
+                  Send Inquiry
                 </Button>
               </form>
+
+              {/* Success Message */}
+              {showSuccess && (
+                <div className="mt-4 rounded-xl bg-[#2D6A4F]/20 p-4 text-center">
+                  <p className="text-sm font-medium text-[#2D6A4F]">
+                    Thank you for your inquiry! We will contact you as soon as possible within 24 hours.
+                  </p>
+                </div>
+              )}
 
               <div className="mt-8 flex items-center justify-center gap-2 text-sm text-[#636E72]">
                 <Headphones className="size-5 text-[#2D6A4F]" />

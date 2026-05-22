@@ -123,3 +123,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+header.header-transparent,
+header.header-transparent * {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+header.header-transparent a,
+header.header-transparent span,
+header.header-transparent button,
+header.header-transparent .menu-item {
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.6) !important;
+}
