@@ -4,6 +4,8 @@ import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getFileUrl, Category, Subcategory } from "@/lib/directus"
+import { useSearchParams } from "next/navigation"
+import { t, getHrefWithLang } from "@/lib/i18n"
 
 interface ProductsSectionProps {
   categories: Category[]
@@ -11,6 +13,9 @@ interface ProductsSectionProps {
 }
 
 export function ProductsSection({ categories, subcategories }: ProductsSectionProps) {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
+
   // 严格执行禁止兜底原则：若必需的数据参数为空或未定义，则直接报错退出
   if (!categories || categories.length === 0) {
     throw new Error("ProductsSection: 缺少必须的 categories 数据或为空！")
@@ -27,12 +32,11 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
         return catId === category.id
       })
       .slice(0, 3)
-      .map((sub) => sub.name)
+      .map((sub) => (lang === "zh" ? sub.name_cn : sub.name))
 
     return {
       id: category.id,
-      title: category.name,
-      titleCn: category.name_cn,
+      title: lang === "zh" ? category.name_cn : category.name,
       image: getFileUrl(category.image),
       items: matchedSubs,
     }
@@ -44,10 +48,18 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
         {/* Section Header */}
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
-            Our Core <span className="text-[var(--hexia-gold)]">Products</span>
+            {lang === "zh" ? (
+              <>
+                我们的核心 <span className="text-[var(--hexia-gold)]">产品</span>
+              </>
+            ) : (
+              <>
+                Our Core <span className="text-[var(--hexia-gold)]">Products</span>
+              </>
+            )}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
-            Premium feed additives, food ingredients, and nutrition solutions for global markets.
+            {t("home.coreDesc", lang)}
           </p>
         </div>
 
@@ -77,7 +89,6 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
                   <h3 className="text-lg font-semibold text-[var(--hexia-forest-dark)]">
                     {product.title}
                   </h3>
-                  <p className="text-sm text-[#636E72]">{product.titleCn}</p>
 
                   <ul className="mt-3 space-y-1.5">
                     {product.items.map((item) => (
@@ -95,10 +106,10 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
 
               <div className="p-5 pt-0">
                 <a
-                  href="/products"
+                  href={getHrefWithLang("/products", lang)}
                   className="inline-flex items-center gap-1 text-sm font-medium text-[var(--hexia-forest)] transition-colors hover:text-[var(--hexia-gold)]"
                 >
-                  Learn More
+                  {t("home.learnMore", lang)}
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                 </a>
               </div>
@@ -108,13 +119,13 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
 
         {/* View All Button */}
         <div className="mt-12 text-center">
-          <a href="/products">
+          <a href={getHrefWithLang("/products", lang)}>
             <Button
               variant="outline"
               size="lg"
               className="border-2 border-[var(--hexia-forest)] text-[var(--hexia-forest)] transition-all duration-300 hover:bg-[var(--hexia-forest)] hover:text-white"
             >
-              View All Products
+              {t("home.viewAll", lang)}
             </Button>
           </a>
         </div>

@@ -1,22 +1,8 @@
 "use client"
 
 import { Mail, MapPin, Linkedin, Facebook, Instagram, MessageCircle } from "lucide-react"
-
-const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "Products", href: "/products" },
-  { label: "Service", href: "/service" },
-  { label: "About Us", href: "/about" },
-  { label: "News", href: "/news" },
-  { label: "Contact Us", href: "/contact" },
-]
-
-const productLinks = [
-  { label: "Feed Additives", href: "/products?category=Feed+Additives" },
-  { label: "Food Additives", href: "/products?category=Food+Additives" },
-  { label: "Nutrition", href: "/products?category=Nutrition" },
-  { label: "Chinese Specialty", href: "/products?category=Chinese+Specialty" },
-]
+import { useSearchParams } from "next/navigation"
+import { t, getHrefWithLang } from "@/lib/i18n"
 
 const socialLinks = [
   { icon: Linkedin, href: "https://www.linkedin.com/in/justin-jia-8995a6364", label: "LinkedIn" },
@@ -25,6 +11,24 @@ const socialLinks = [
 ]
 
 export function Footer() {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
+
+  const quickLinks = [
+    { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
+    { label: t("nav.products", lang), href: getHrefWithLang("/products", lang) },
+    { label: t("nav.service", lang), href: getHrefWithLang("/service", lang) },
+    { label: t("nav.about", lang), href: getHrefWithLang("/about", lang) },
+    { label: t("nav.news", lang), href: getHrefWithLang("/news", lang) },
+    { label: t("nav.contact", lang), href: getHrefWithLang("/contact", lang) },
+  ]
+
+  const productLinks = [
+    { label: t("footer.feedAdditives", lang), href: getHrefWithLang("/products?category=Feed+Additives", lang) },
+    { label: t("footer.foodAdditives", lang), href: getHrefWithLang("/products?category=Food+Additives", lang) },
+    { label: t("footer.nutrition", lang), href: getHrefWithLang("/products?category=Nutrition", lang) },
+    { label: t("footer.chineseSpecialty", lang), href: getHrefWithLang("/products?category=Chinese+Specialty", lang) },
+  ]
   return (
     <footer id="contact" className="bg-[#2D6A4F]">
       {/* Main Footer */}
@@ -32,14 +36,13 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div>
-            <a href="/" className="flex items-center gap-2">
+            <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2">
               <span className="text-lg font-bold text-white">
                 HEXIA
               </span>
             </a>
             <p className="mt-4 text-sm text-white leading-relaxed">
-              Hexia (Suzhou) Biotechnology Co., Ltd. - Your reliable partner in 
-              animal nutrition and food ingredients.
+              Hexia (Suzhou) Biotechnology Co., Ltd. - {t("footer.tagline", lang)}
             </p>
             
             {/* Social Icons */}
@@ -62,7 +65,7 @@ export function Footer() {
           {/* Quick Links */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-[#E9B35F]">
-              Quick Links
+              {t("footer.quickLinks", lang)}
             </h4>
             <ul className="mt-4 space-y-3">
               {quickLinks.map((link) => (
@@ -81,7 +84,7 @@ export function Footer() {
           {/* Products */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-[#E9B35F]">
-              Products
+              {t("footer.products", lang)}
             </h4>
             <ul className="mt-4 space-y-3">
               {productLinks.map((link) => (
@@ -100,7 +103,7 @@ export function Footer() {
           {/* Contact */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-[#E9B35F]">
-              Contact
+              {t("footer.contact", lang)}
             </h4>
             <ul className="mt-4 space-y-4">
               <li className="flex items-start gap-3 text-sm text-white">
@@ -111,7 +114,7 @@ export function Footer() {
                 </span>
               </li>
               <li className="flex items-start gap-3 text-sm text-white">
-                <Mail className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" title="Email" />
+                <Mail className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" />
                 <span>
                   <a href="mailto:justin@hexiabio.com" className="text-white transition-colors hover:text-[#E9B35F]">
                     justin@hexiabio.com
@@ -122,7 +125,7 @@ export function Footer() {
                 </span>
               </li>
               <li className="flex items-start gap-3 text-sm text-white">
-                <MessageCircle className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" title="WhatsApp" />
+                <MessageCircle className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" />
                 <a href="https://wa.me/+8613862320011" target="_blank" rel="noopener noreferrer" className="text-white transition-colors hover:text-[#E9B35F]">
                   +86 138 6232 0011
                 </a>
@@ -136,7 +139,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <p className="text-center text-xs text-white">
-            Copyright © 2026 Hexia (Suzhou) Biotechnology Co., Ltd. All Rights Reserved.
+            Copyright © 2026 Hexia (Suzhou) Biotechnology Co., Ltd. {t("footer.rights", lang)}
           </p>
         </div>
       </div>

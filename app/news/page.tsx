@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight, Calendar, ArrowRight, TrendingUp, FileText, Newspaper } from "lucide-react"
@@ -8,17 +9,25 @@ import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 import { getFileUrl, Article } from "@/lib/directus"
 import { getArticles } from "@/lib/api/articles"
+import { t, getHrefWithLang } from "@/lib/i18n"
 
-const marketReports = [
-  { title: "Amino Acid Monthly Report", period: "April 2026" },
-  { title: "Vitamin Price Index", period: "April 2026" },
-  { title: "Feed Additives Market Overview", period: "Q1 2026" },
-]
+function NewsContent() {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
 
-export default function NewsPage() {
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const marketReports = lang === "zh" ? [
+    { title: "氨基酸月度市场报告", period: "2026年4月" },
+    { title: "维生素价格指数", period: "2026年4月" },
+    { title: "饲料添加剂市场行情概述", period: "2026年第一季度" },
+  ] : [
+    { title: "Amino Acid Monthly Report", period: "April 2026" },
+    { title: "Vitamin Price Index", period: "April 2026" },
+    { title: "Feed Additives Market Overview", period: "Q1 2026" },
+  ]
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -43,7 +52,7 @@ export default function NewsPage() {
   const formatDate = (dateString?: string) => {
     if (!dateString) return ""
     const date = new Date(dateString)
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(lang === "zh" ? "zh-CN" : "en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -58,18 +67,18 @@ export default function NewsPage() {
         {/* Loading / Error state */}
         {loading ? (
           <div className="flex items-center justify-center py-24 text-[#636E72]">
-            Loading news articles...
+            {t("news.loading", lang)}
           </div>
         ) : error ? (
           <div className="mx-auto max-w-7xl px-4 py-16 text-center text-red-500">
             <p>{error}</p>
             <button onClick={() => window.location.reload()} className="mt-4 underline text-[#2D6A4F]">
-              Click to reload
+              {lang === "zh" ? "点击重新加载" : "Click to reload"}
             </button>
           </div>
         ) : articles.length === 0 ? (
           <div className="mx-auto max-w-7xl px-4 py-24 text-center text-[#636E72]">
-            No news articles found.
+            {lang === "zh" ? "暂无新闻文章。" : "No news articles found."}
           </div>
         ) : (
           <>
@@ -88,7 +97,7 @@ export default function NewsPage() {
                         />
                         <div className="absolute left-4 top-4">
                           <span className="rounded-full bg-[#E9B35F] px-3 py-1 text-sm font-medium text-[#1B4D3E]">
-                            Featured
+                            {t("news.featured", lang)}
                           </span>
                         </div>
                       </div>
@@ -109,10 +118,10 @@ export default function NewsPage() {
                           {featuredNews.excerpt}
                         </p>
                         <Link
-                          href={`/news/${featuredNews.slug}`}
+                          href={getHrefWithLang(`/news/${featuredNews.slug}`, lang)}
                           className="mt-6 inline-flex items-center gap-2 font-medium text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
                         >
-                          Read More
+                          {t("news.readMore", lang)}
                           <ArrowRight className="size-4" />
                         </Link>
                       </div>
@@ -130,7 +139,7 @@ export default function NewsPage() {
                   <div className="lg:col-span-2">
                     <h2 className="flex items-center gap-2 text-xl font-bold text-[#1B4D3E]">
                       <Newspaper className="size-5" />
-                      Latest Articles
+                      {t("news.latest", lang)}
                     </h2>
                     <div className="mt-6 grid gap-6 sm:grid-cols-2">
                       {newsArticles.map((article) => (
@@ -154,10 +163,10 @@ export default function NewsPage() {
                           </div>
                           <div className="mt-4">
                             <Link
-                              href={`/news/${article.slug}`}
+                              href={getHrefWithLang(`/news/${article.slug}`, lang)}
                               className="inline-flex items-center gap-1 text-sm font-medium text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
                             >
-                              Read More
+                              {t("news.readMore", lang)}
                               <ArrowRight className="size-3" />
                             </Link>
                           </div>
@@ -172,7 +181,7 @@ export default function NewsPage() {
                     <div className="rounded-xl border border-[#A3B18A] bg-white p-6">
                       <h3 className="flex items-center gap-2 font-semibold text-[#1B4D3E]">
                         <TrendingUp className="size-5 text-[#E9B35F]" />
-                        Market Reports
+                        {lang === "zh" ? "市场行情分析" : "Market Reports"}
                       </h3>
                       <ul className="mt-4 space-y-3">
                         {marketReports.map((report) => (
@@ -194,9 +203,11 @@ export default function NewsPage() {
 
                     {/* LinkedIn */}
                     <div className="rounded-xl border border-[#A3B18A] bg-white p-6">
-                      <h3 className="font-semibold text-[#1B4D3E]">Follow Us on LinkedIn</h3>
+                      <h3 className="font-semibold text-[#1B4D3E]">
+                        {lang === "zh" ? "关注我们的 LinkedIn" : "Follow Us on LinkedIn"}
+                      </h3>
                       <p className="mt-2 text-sm text-[#636E72]">
-                        Stay connected for daily updates on market trends and company news.
+                        {lang === "zh" ? "随时获取最新的市场行情趋势和公司动态。" : "Stay connected for daily updates on market trends and company news."}
                       </p>
                       <a
                         href="https://linkedin.com"
@@ -207,7 +218,7 @@ export default function NewsPage() {
                         <svg className="size-4" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                         </svg>
-                        Follow Hexia
+                        {lang === "zh" ? "关注赫夏" : "Follow Hexia"}
                       </a>
                     </div>
                   </div>
@@ -220,5 +231,17 @@ export default function NewsPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function NewsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <div className="text-[#636E72]">Loading...</div>
+      </div>
+    }>
+      <NewsContent />
+    </Suspense>
   )
 }

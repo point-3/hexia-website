@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { Navbar } from "@/components/hexia/navbar"
 import { HeroSection } from "@/components/hexia/hero-section"
 import { WhyChooseSection } from "@/components/hexia/why-choose-section"
@@ -21,36 +22,42 @@ export default async function HomePage() {
   ])
 
   return (
-    <main className="min-h-screen home">
-      {/* Navigation */}
-      <Navbar variant="transparent" />
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <div className="text-[#636E72]">Loading...</div>
+      </div>
+    }>
+      <main className="min-h-screen home">
+        {/* Navigation */}
+        <Navbar variant="transparent" />
 
-      {/* Hero Section */}
-      <HeroSection banners={banners} />
+        {/* Hero Section */}
+        <HeroSection banners={banners} />
 
-      {/* Why Choose Hexia */}
-      <WhyChooseSection />
+        {/* Why Choose Hexia */}
+        <WhyChooseSection />
 
-      {/* Products Preview */}
-      <ProductsSection categories={categories} subcategories={subcategories} />
+        {/* Products Preview */}
+        <ProductsSection categories={categories} subcategories={subcategories} />
 
-      {/* About Us with Stats */}
-      <AboutSection />
+        {/* About Us with Stats */}
+        <AboutSection />
 
-      {/* Services */}
-      <ServicesSection />
+        {/* Services */}
+        <ServicesSection />
 
-      {/* Quote Form */}
-      <QuoteFormSection />
+        {/* Quote Form */}
+        <QuoteFormSection />
 
-      {/* Partners */}
-      <PartnersSection />
+        {/* Partners */}
+        <PartnersSection />
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer />
 
-      {/* Back to Top */}
-      <BackToTop />
-    </main>
+        {/* Back to Top */}
+        <BackToTop />
+      </main>
+    </Suspense>
   )
 }

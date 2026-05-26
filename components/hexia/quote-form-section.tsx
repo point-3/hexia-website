@@ -5,8 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Headphones } from "lucide-react"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
+import { useSearchParams } from "next/navigation"
+import { t } from "@/lib/i18n"
 
 export function QuoteFormSection() {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -31,7 +35,7 @@ export function QuoteFormSection() {
         message: formData.message,
         source_page: "Home Page Quote Section",
       })
-      toast.success("Inquiry submitted successfully!")
+      toast.success(t("inquiry.successToast", lang))
       setShowSuccess(true)
       setFormData({
         name: "",
@@ -44,7 +48,7 @@ export function QuoteFormSection() {
       setTimeout(() => setShowSuccess(false), 5000)
     } catch (err: any) {
       console.error(err)
-      toast.error(`Submission failed: ${err.message || "Unknown error"}`)
+      toast.error(`${t("inquiry.errorToast", lang)}: ${err.message || "Unknown error"}`)
     } finally {
       setIsSubmitting(false)
     }
@@ -66,10 +70,18 @@ export function QuoteFormSection() {
           {/* Header */}
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
-              Request a <span className="text-[#E9B35F]">Quote</span>
+              {lang === "zh" ? (
+                <>
+                  获取专属 <span className="text-[#E9B35F]">报价询盘</span>
+                </>
+              ) : (
+                <>
+                  Request a <span className="text-[#E9B35F]">Quote</span>
+                </>
+              )}
             </h2>
             <p className="mt-4 text-[#636E72]">
-              Tell us about your needs and we&apos;ll get back to you promptly.
+              {t("home.quoteDesc", lang)}
             </p>
           </div>
 
@@ -81,7 +93,7 @@ export function QuoteFormSection() {
                 htmlFor="name"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Your Name <span className="text-red-500">*</span>
+                {t("home.formName", lang)} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -92,7 +104,7 @@ export function QuoteFormSection() {
                 required
                 disabled={isSubmitting}
                 className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
-                placeholder="Enter your name"
+                placeholder={t("home.placeholderName", lang)}
               />
             </div>
 
@@ -102,7 +114,7 @@ export function QuoteFormSection() {
                 htmlFor="email"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Email Address <span className="text-red-500">*</span>
+                {t("home.formEmail", lang)} <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -113,7 +125,7 @@ export function QuoteFormSection() {
                 required
                 disabled={isSubmitting}
                 className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
-                placeholder="your@email.com"
+                placeholder={t("home.placeholderEmail", lang)}
               />
             </div>
 
@@ -123,7 +135,7 @@ export function QuoteFormSection() {
                 htmlFor="country"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Country
+                {t("home.formCountry", lang)}
               </label>
               <input
                 type="text"
@@ -133,7 +145,7 @@ export function QuoteFormSection() {
                 onChange={handleChange}
                 disabled={isSubmitting}
                 className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
-                placeholder="Enter your country"
+                placeholder={t("home.placeholderCountry", lang)}
               />
             </div>
 
@@ -143,7 +155,7 @@ export function QuoteFormSection() {
                 htmlFor="productInterest"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Interested Product
+                {t("home.formProduct", lang)}
               </label>
               <input
                 type="text"
@@ -153,7 +165,7 @@ export function QuoteFormSection() {
                 onChange={handleChange}
                 disabled={isSubmitting}
                 className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
-                placeholder="e.g., Methionine, NMN, Biluochun Tea"
+                placeholder={t("home.placeholderProduct", lang)}
               />
             </div>
 
@@ -163,7 +175,7 @@ export function QuoteFormSection() {
                 htmlFor="quantity"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Quantity
+                {t("home.formQuantity", lang)}
               </label>
               <input
                 type="text"
@@ -173,7 +185,7 @@ export function QuoteFormSection() {
                 onChange={handleChange}
                 disabled={isSubmitting}
                 className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
-                placeholder="Enter quantity"
+                placeholder={t("home.placeholderQuantity", lang)}
               />
             </div>
 
@@ -183,7 +195,7 @@ export function QuoteFormSection() {
                 htmlFor="message"
                 className="block text-sm font-medium text-[#2D3436]"
               >
-                Message / Requirement <span className="text-red-500">*</span>
+                {t("home.formMessage", lang)} <span className="text-red-500">*</span>
               </label>
               <textarea
                 id="message"
@@ -194,7 +206,7 @@ export function QuoteFormSection() {
                 required
                 disabled={isSubmitting}
                 className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
-                placeholder="Please describe your requirements in detail..."
+                placeholder={t("home.placeholderMessage", lang)}
               />
             </div>
 
@@ -205,7 +217,7 @@ export function QuoteFormSection() {
               disabled={isSubmitting}
               className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white disabled:opacity-50"
             >
-              {isSubmitting ? "Submitting..." : "Send Inquiry"}
+              {isSubmitting ? t("inquiry.submitting", lang) : t("home.formSubmit", lang)}
             </Button>
           </form>
 
@@ -213,7 +225,7 @@ export function QuoteFormSection() {
           {showSuccess && (
             <div className="mt-4 rounded-xl bg-[#2D6A4F]/20 p-4 text-center">
               <p className="text-sm font-medium text-[#2D6A4F]">
-                Thank you for your inquiry! We will contact you as soon as possible within 24 hours.
+                {t("home.formSuccess", lang)}
               </p>
             </div>
           )}
@@ -221,7 +233,7 @@ export function QuoteFormSection() {
           {/* Support Note */}
           <div className="mt-8 flex items-center justify-center gap-2 text-sm text-[#636E72]">
             <Headphones className="size-5 text-[#2D6A4F]" />
-            <span>7x24H Online Support</span>
+            <span>{t("home.onlineSupport", lang)}</span>
           </div>
         </div>
       </div>

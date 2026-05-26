@@ -11,6 +11,7 @@ import { Footer } from "@/components/hexia/footer"
 import { cn } from "@/lib/utils"
 import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
 import { getProducts, getCategories, getSubcategories } from "@/lib/api/products"
+import { t, getHrefWithLang } from "@/lib/i18n"
 
 // 对应页面分类菜单的数据结构
 type MenuCategory = {
@@ -29,6 +30,7 @@ type SelectedCategoryType = {
 
 function ProductsContent() {
   const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
   const categoryFromUrl = searchParams.get("category") // 从首页跳转可能会有 category 参数 (如 "Feed Additives")
 
   const [products, setProducts] = useState<DirectusProduct[]>([])
@@ -88,9 +90,16 @@ function ProductsContent() {
 
         // 如果 URL 中有 category 参数，匹配并选中对应分类
         if (categoryFromUrl) {
-          const matchedCat = builtCategories.find((c) => c.name.toLowerCase() === categoryFromUrl.toLowerCase())
+          const matchedCat = builtCategories.find(
+            (c) => c.name.toLowerCase() === categoryFromUrl.toLowerCase() ||
+                   c.name_cn.toLowerCase() === categoryFromUrl.toLowerCase()
+          )
           if (matchedCat) {
-            setSelectedCategory({ type: "category", id: matchedCat.id, name: matchedCat.name })
+            setSelectedCategory({
+              type: "category",
+              id: matchedCat.id,
+              name: lang === "zh" ? matchedCat.name_cn : matchedCat.name,
+            })
           }
         }
       } catch (err: any) {
@@ -102,11 +111,11 @@ function ProductsContent() {
     }
 
     fetchData()
-  }, [categoryFromUrl])
+  }, [categoryFromUrl, lang])
 
   const toggleCategory = (category: MenuCategory) => {
     if (!category.hasSubcategories) {
-      setSelectedCategory({ type: "category", id: category.id, name: category.name })
+      setSelectedCategory({ type: "category", id: category.id, name: lang === "zh" ? category.name_cn : category.name })
       return
     }
     setExpandedCategories((prev) =>
@@ -120,7 +129,11 @@ function ProductsContent() {
     if (selectedCategory?.type === "subcategory" && selectedCategory.id === sub.id) {
       setSelectedCategory(null)
     } else {
-      setSelectedCategory({ type: "subcategory", id: sub.id, name: `${category.name} > ${sub.name}` })
+      setSelectedCategory({
+        type: "subcategory",
+        id: sub.id,
+        name: lang === "zh" ? `${category.name_cn} > ${sub.name_cn}` : `${category.name} > ${sub.name}`,
+      })
     }
   }
 
@@ -159,13 +172,13 @@ function ProductsContent() {
                 className="flex items-center gap-2 rounded-lg border border-[#A3B18A] px-4 py-2 text-sm font-medium text-[#2D6A4F] lg:hidden"
               >
                 <Menu className="size-4" />
-                Categories
+                {t("products.categories", lang)}
               </button>
               <div className="relative flex-1 sm:w-64">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#636E72]" />
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder={t("products.search", lang)}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full rounded-lg border border-[#A3B18A] bg-white py-2 pl-10 pr-4 text-sm text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
@@ -182,7 +195,7 @@ function ProductsContent() {
                 onClick={() => window.location.reload()}
                 className="mt-2 text-sm underline"
               >
-                点击刷新重试
+                {lang === "zh" ? "点击刷新重试" : "Click to refresh and retry"}
               </button>
             </div>
           )}
@@ -191,7 +204,7 @@ function ProductsContent() {
             {/* Sidebar - Desktop */}
             <aside className="hidden w-64 shrink-0 lg:block">
               <div className="sticky top-28 rounded-xl border border-[#A3B18A] bg-white p-4">
-                <h2 className="mb-4 font-semibold text-[#1B4D3E]">Categories</h2>
+                <h2 className="mb-4 font-semibold text-[#1B4D3E]">{t("products.categories", lang)}</h2>
                 <button
                   onClick={() => setSelectedCategory(null)}
                   className={cn(
@@ -199,15 +212,16 @@ function ProductsContent() {
                     !selectedCategory ? "bg-[#2D6A4F] text-white" : "text-[#636E72] hover:bg-[#2D6A4F]/10"
                   )}
                 >
-                  All Products ({products.length})
+                  {t("products.all", lang)} ({products.length})
                 </button>
 
                 {categories.length === 0 && !loading && (
-                  <p className="text-sm text-[#636E72]">暂无类目数据</p>
+                  <p className="text-sm text-[#636E72]">{t("products.noCategories", lang)}</p>
                 )}
 
                 {categories.map((category) => {
                   const isCat1Selected = selectedCategory?.type === "category" && selectedCategory.id === category.id
+                  const categoryName = lang === "zh" ? category.name_cn : category.name
 
                   if (!category.hasSubcategories) {
                     return (
@@ -219,7 +233,7 @@ function ProductsContent() {
                           isCat1Selected ? "bg-[#2D6A4F] text-white" : "text-[#2D3436] hover:bg-[#2D6A4F]/10"
                         )}
                       >
-                        {category.name}
+                        {categoryName}
                       </button>
                     )
                   }
@@ -233,7 +247,7 @@ function ProductsContent() {
                           isCat1Selected ? "bg-[#2D6A4F] text-white" : "text-[#2D3436] hover:bg-[#2D6A4F]/10"
                         )}
                       >
-                        {category.name}
+                        {categoryName}
                         <ChevronDown
                           className={cn(
                             "size-4 transition-transform",
@@ -246,6 +260,7 @@ function ProductsContent() {
                         <div className="ml-3 mt-1 space-y-1 border-l-2 border-[#A3B18A] pl-3">
                           {category.subcategories.map((sub) => {
                             const isSubSelected = selectedCategory?.type === "subcategory" && selectedCategory.id === sub.id
+                            const subName = lang === "zh" ? sub.name_cn : sub.name
 
                             return (
                               <button
@@ -258,7 +273,7 @@ function ProductsContent() {
                                     : "text-[#636E72] hover:text-[#2D6A4F]"
                                 )}
                               >
-                                {sub.name} ({sub.count})
+                                {subName} ({sub.count})
                               </button>
                             )
                           })}
@@ -276,7 +291,7 @@ function ProductsContent() {
                 <div className="absolute inset-0 bg-black/50" onClick={() => setIsSidebarOpen(false)} />
                 <div className="absolute left-0 top-0 h-full w-72 bg-white p-4 shadow-xl">
                   <div className="mb-4 flex items-center justify-between">
-                    <h2 className="font-semibold text-[#1B4D3E]">Categories</h2>
+                    <h2 className="font-semibold text-[#1B4D3E]">{t("products.categories", lang)}</h2>
                     <button onClick={() => setIsSidebarOpen(false)}>
                       <X className="size-5 text-[#636E72]" />
                     </button>
@@ -291,10 +306,11 @@ function ProductsContent() {
                       !selectedCategory ? "bg-[#2D6A4F] text-white" : "text-[#636E72] hover:bg-[#2D6A4F]/10"
                     )}
                   >
-                    All Products ({products.length})
+                    {t("products.all", lang)} ({products.length})
                   </button>
                   {categories.map((category) => {
                     const isCat1Selected = selectedCategory?.type === "category" && selectedCategory.id === category.id
+                    const categoryName = lang === "zh" ? category.name_cn : category.name
 
                     if (!category.hasSubcategories) {
                       return (
@@ -309,7 +325,7 @@ function ProductsContent() {
                             isCat1Selected ? "bg-[#2D6A4F] text-white" : "text-[#2D3436] hover:bg-[#2D6A4F]/10"
                           )}
                         >
-                          {category.name}
+                          {categoryName}
                         </button>
                       )
                     }
@@ -323,7 +339,7 @@ function ProductsContent() {
                             isCat1Selected ? "bg-[#2D6A4F] text-white" : "text-[#2D3436] hover:bg-[#2D6A4F]/10"
                           )}
                         >
-                          {category.name}
+                          {categoryName}
                           <ChevronDown
                             className={cn(
                               "size-4 transition-transform",
@@ -335,6 +351,7 @@ function ProductsContent() {
                           <div className="ml-3 mt-1 space-y-1 border-l-2 border-[#A3B18A] pl-3">
                             {category.subcategories.map((sub) => {
                               const isSubSelected = selectedCategory?.type === "subcategory" && selectedCategory.id === sub.id
+                              const subName = lang === "zh" ? sub.name_cn : sub.name
 
                               return (
                                 <button
@@ -350,7 +367,7 @@ function ProductsContent() {
                                       : "text-[#636E72] hover:text-[#2D6A4F]"
                                   )}
                                 >
-                                  {sub.name} ({sub.count})
+                                  {subName} ({sub.count})
                                 </button>
                               )
                             })}
@@ -367,7 +384,7 @@ function ProductsContent() {
             <div className="flex-1">
               {selectedCategory && (
                 <div className="mb-4 flex items-center gap-2">
-                  <span className="text-sm text-[#636E72]">Filtered by:</span>
+                  <span className="text-sm text-[#636E72]">{t("products.filterBy", lang)}:</span>
                   <span className="rounded-full bg-[#2D6A4F]/10 px-3 py-1 text-sm font-medium text-[#2D6A4F]">
                     {selectedCategory.name}
                   </span>
@@ -375,46 +392,48 @@ function ProductsContent() {
                     onClick={() => setSelectedCategory(null)}
                     className="ml-1 text-xs text-[#636E72] hover:text-[#2D6A4F]"
                   >
-                    Clear
+                    {t("products.clear", lang)}
                   </button>
                 </div>
               )}
 
               {loading ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="text-[#636E72]">Loading products...</div>
+                  <div className="text-[#636E72]">{t("products.loading", lang)}</div>
                 </div>
               ) : filteredProducts.length === 0 ? (
                 <div className="rounded-xl border border-[#A3B18A] bg-white p-12 text-center">
-                  <p className="text-[#636E72]">No products found matching your criteria.</p>
-                  <p className="mt-2 text-sm text-[#636E72]">Total products: {products.length}</p>
+                  <p className="text-[#636E72]">{t("products.noProducts", lang)}</p>
+                  <p className="mt-2 text-sm text-[#636E72]">{t("products.totalProducts", lang)}: {products.length}</p>
                 </div>
               ) : (
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {filteredProducts.map((product) => {
-                    const subName = typeof product.subcategory_id === "object" ? product.subcategory_id?.name : ""
-                    const catName = typeof product.category_id === "object" ? product.category_id?.name : ""
+                    const subName = typeof product.subcategory_id === "object" ? (lang === "zh" ? product.subcategory_id?.name_cn : product.subcategory_id?.name) : ""
+                    const catName = typeof product.category_id === "object" ? (lang === "zh" ? product.category_id?.name_cn : product.category_id?.name) : ""
+                    const productTitle = lang === "zh" ? product.product_name : product.product_title
+
                     return (
                       <Link
                         key={product.id}
-                        href={`/products/${product.slug}`}
+                        href={getHrefWithLang(`/products/${product.slug}`, lang)}
                         className="group overflow-hidden rounded-xl border border-[#A3B18A] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between"
                       >
                         <div>
                           <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
                             <Image
                               src={getFileUrl(product.image) || "/images/feed-additives.jpg"}
-                              alt={product.product_title}
+                              alt={productTitle}
                               fill
                               className="object-cover transition-transform duration-500 group-hover:scale-105"
                             />
                           </div>
                           <div className="p-4">
                             <span className="text-xs font-medium text-[#2D6A4F]">
-                              {subName || catName || "Others"}
+                              {subName || catName || (lang === "zh" ? "其他" : "Others")}
                             </span>
                             <h3 className="mt-1 font-semibold text-[#1B4D3E] group-hover:text-[#2D6A4F] line-clamp-2">
-                              {product.product_title}
+                              {productTitle}
                             </h3>
                             <p className="mt-1 text-sm text-[#636E72] line-clamp-2">
                               {product.product_description || ""}
@@ -426,7 +445,7 @@ function ProductsContent() {
                             size="sm"
                             className="w-full bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white"
                           >
-                            Inquiry
+                            {t("products.inquiryButton", lang)}
                           </Button>
                         </div>
                       </Link>

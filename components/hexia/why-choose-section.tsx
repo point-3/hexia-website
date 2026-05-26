@@ -1,61 +1,73 @@
 "use client"
 
 import { Users, Building2, Package, Factory, Shield, Globe, Sparkles, Wrench } from "lucide-react"
-
-const features = [
-  {
-    icon: Users,
-    title: "Professional Team",
-    description: "Core team with over 20 years of experience in nutrition raw material export industry.",
-  },
-  {
-    icon: Building2,
-    title: "Company Layout",
-    description: "Headquartered in Suzhou Free Trade Zone, with independent subsidiaries in Hong Kong and the UK.",
-  },
-  {
-    icon: Package,
-    title: "Complete Product Range",
-    description: "Cover amino acids, vitamins, minerals, pigments, enzyme preparations and special nutritional raw materials.",
-  },
-  {
-    icon: Factory,
-    title: "Independent Production Capacity",
-    description: "Self-owned production lines, supporting OEM & ODM for vitamin and mineral premix feed.",
-  },
-  {
-    icon: Shield,
-    title: "Strict Quality Control",
-    description: "Standard quality inspection system, stable batch purity and consistent quality.",
-  },
-  {
-    icon: Globe,
-    title: "Global Market Coverage",
-    description: "Serving Europe, America, Southeast Asia and other international markets.",
-  },
-  {
-    icon: Sparkles,
-    title: "One-stop Solution",
-    description: "Provide overall supply chain solutions for animal nutrition and food nutrition.",
-  },
-  {
-    icon: Wrench,
-    title: "Customized Service",
-    description: "Flexible packaging, formula customization and professional technical support.",
-  },
-]
+import { useSearchParams } from "next/navigation"
+import { t } from "@/lib/i18n"
 
 export function WhyChooseSection() {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
+
+  const features = [
+    {
+      icon: Users,
+      title: t("home.teamTitle", lang),
+      description: t("home.teamDesc", lang),
+    },
+    {
+      icon: Building2,
+      title: t("home.layoutTitle", lang),
+      description: t("home.layoutDesc", lang),
+    },
+    {
+      icon: Package,
+      title: t("home.rangeTitle", lang),
+      description: t("home.rangeDesc", lang),
+    },
+    {
+      icon: Factory,
+      title: t("home.capacityTitle", lang),
+      description: t("home.capacityDesc", lang),
+    },
+    {
+      icon: Shield,
+      title: t("home.qcTitle", lang),
+      description: t("home.qcDesc", lang),
+    },
+    {
+      icon: Globe,
+      title: t("home.marketTitle", lang),
+      description: t("home.marketDesc", lang),
+    },
+    {
+      icon: Sparkles,
+      title: t("home.solutionTitle", lang),
+      description: t("home.solutionDesc", lang),
+    },
+    {
+      icon: Wrench,
+      title: t("home.customTitle", lang),
+      description: t("home.customDesc", lang),
+    },
+  ]
   return (
     <section className="bg-[#FDFBF7] pt-8 pb-20 lg:pt-12 lg:pb-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
-            Why Choose <span className="text-[var(--hexia-gold)]">Hexia</span>
+            {lang === "zh" ? (
+              <>
+                为什么选择 <span className="text-[var(--hexia-gold)]">赫夏</span>
+              </>
+            ) : (
+              <>
+                Why Choose <span className="text-[var(--hexia-gold)]">Hexia</span>
+              </>
+            )}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
-            We deliver excellence through experience, comprehensive solutions, and global reach.
+            {t("home.whyChooseDesc", lang)}
           </p>
         </div>
 
