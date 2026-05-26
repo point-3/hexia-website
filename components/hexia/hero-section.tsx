@@ -2,31 +2,32 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
+import { getFileUrl } from "@/lib/directus"
 
-const slides = [
-  {
-    id: 1,
-    image: "/feed.png",
-    category: "Food Additives",
-    title: "Premium Food Additives",
-    subtitle: "Enhance Quality. Ensure Safety. Delight Every Bite.",
-  },
-  {
-    id: 2,
-    image: "/food addi.jpg",
-    category: "Feed Additives",
-    title: "Premium Feed Additives",
-    subtitle: "Amino acids, vitamins, minerals for optimal animal nutrition",
-  },
-]
+export interface Banner {
+  id: number
+  image: any
+  category?: string
+  title: string
+  subtitle?: string
+}
 
-export function HeroSection() {
+interface HeroSectionProps {
+  banners: Banner[]
+}
+
+export function HeroSection({ banners }: HeroSectionProps) {
+  // 严格执行禁止兜底原则：若参数不存在或为空数组，直接报错暴露问题
+  if (!banners || banners.length === 0) {
+    throw new Error("HeroSection: 必须传入有效的 banners 列表且不能为空数组！")
+  }
+
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
   const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length)
-  }, [])
+    setCurrentSlide((prev) => (prev + 1) % banners.length)
+  }, [banners.length])
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index)
@@ -41,36 +42,57 @@ export function HeroSection() {
   }, [isAutoPlaying, nextSlide])
 
   return (
-    <section className="relative aspect-[1942/809] w-full overflow-visible">
+    <section className="relative aspect-[1942/809] w-full overflow-hidden">
       {/* Background Images */}
-      {slides.map((slide, index) => (
-        <div
-          key={slide.id}
-          className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <Image
-            src={slide.image}
-            alt={slide.category}
-            fill
-            className="object-cover"
-            priority={index === 0}
-          />
+      {banners.map((slide, index) => {
+        const imageUrl = getFileUrl(slide.image)
+        if (!imageUrl) {
+          throw new Error(`HeroSection: 轮播图项目 ID ${slide.id} 的背景图 URL 不能为空！`)
+        }
+        return (
+          <div
+            key={slide.id}
+            className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
+              index === currentSlide ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <Image
+              src={imageUrl}
+              alt={slide.category || "Banner"}
+              fill
+              className="object-cover"
+              priority={index === 0}
+            />
+          </div>
+        )
+      })}
+
+      {/* Slide Content */}
+      <div className="absolute inset-0 z-10 flex flex-col justify-center bg-black/20 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-7xl">
+          <span className="rounded-full bg-[#E9B35F] px-4 py-1 text-sm font-semibold text-[#1B4D3E] uppercase tracking-wider">
+            {banners[currentSlide].category}
+          </span>
+          <h1 className="mt-4 text-4xl font-extrabold text-white sm:text-5xl md:text-6xl max-w-3xl leading-tight drop-shadow-md">
+            {banners[currentSlide].title}
+          </h1>
+          <p className="mt-4 text-lg text-white/90 sm:text-xl max-w-2xl drop-shadow-sm">
+            {banners[currentSlide].subtitle}
+          </p>
         </div>
-      ))}
+      </div>
 
       {/* Slide Controls - Dots */}
-      {slides.length >= 2 && (
+      {banners.length >= 2 && (
         <div className="absolute bottom-[60px] left-1/2 z-30 -translate-x-1/2">
           <div className="flex items-center gap-3">
-            {slides.map((_, index) => (
+            {banners.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`h-3 w-3 rounded-full transition-all duration-300 ${
                   index === currentSlide
-                    ? "bg-[#2D6A4F]"
+                    ? "bg-[#2D6A4F] scale-125"
                     : "bg-white/90 hover:bg-white"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}

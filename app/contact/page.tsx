@@ -6,6 +6,8 @@ import { ChevronRight, Mail, Clock, Building2, Headphones, MapPin, MessageCircle
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { createInquiry } from "@/lib/api/inquiries"
+import { toast } from "sonner"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -16,12 +18,39 @@ export default function ContactPage() {
     quantity: "",
     message: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setShowSuccess(true)
-    setTimeout(() => setShowSuccess(false), 3000)
+    setIsSubmitting(true)
+    try {
+      await createInquiry({
+        name: formData.name,
+        email: formData.email,
+        country: formData.country || undefined,
+        product_interest: formData.productInterest || undefined,
+        quantity: formData.quantity || undefined,
+        message: formData.message,
+        source_page: "Contact Page",
+      })
+      toast.success("Inquiry submitted successfully!")
+      setShowSuccess(true)
+      setFormData({
+        name: "",
+        email: "",
+        country: "",
+        productInterest: "",
+        quantity: "",
+        message: "",
+      })
+      setTimeout(() => setShowSuccess(false), 5000)
+    } catch (err: any) {
+      console.error(err)
+      toast.error(`Submission failed: ${err.message || "Unknown error"}`)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -62,7 +91,8 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -77,7 +107,8 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                       placeholder="your@email.com"
                     />
                   </div>
@@ -91,7 +122,8 @@ export default function ContactPage() {
                       id="country"
                       value={formData.country}
                       onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                       placeholder="Enter your country"
                     />
                   </div>
@@ -105,7 +137,8 @@ export default function ContactPage() {
                       id="productInterest"
                       value={formData.productInterest}
                       onChange={(e) => setFormData({ ...formData, productInterest: e.target.value })}
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                       placeholder="e.g., Methionine, NMN, Biluochun Tea"
                     />
                   </div>
@@ -119,7 +152,8 @@ export default function ContactPage() {
                       id="quantity"
                       value={formData.quantity}
                       onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                       placeholder="Enter quantity"
                     />
                   </div>
@@ -134,7 +168,8 @@ export default function ContactPage() {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
-                      className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                       placeholder="Please describe your requirements in detail..."
                     />
                   </div>
@@ -142,9 +177,10 @@ export default function ContactPage() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white disabled:opacity-50"
                   >
-                    Send Inquiry
+                    {isSubmitting ? "Submitting..." : "Send Inquiry"}
                   </Button>
                 </form>
 
@@ -237,8 +273,6 @@ export default function ContactPage() {
             </div>
           </div>
         </section>
-
-
       </main>
 
       <Footer />

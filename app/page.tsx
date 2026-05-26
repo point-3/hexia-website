@@ -9,20 +9,30 @@ import { PartnersSection } from "@/components/hexia/partners-section"
 import { Footer } from "@/components/hexia/footer"
 import { BackToTop } from "@/components/hexia/back-to-top"
 
-export default function HomePage() {
+import { getBanners } from "@/lib/api/banners"
+import { getCategories, getSubcategories } from "@/lib/api/products"
+
+export default async function HomePage() {
+  // 服务端并发获取数据模型
+  const [banners, categories, subcategories] = await Promise.all([
+    getBanners(),
+    getCategories(),
+    getSubcategories()
+  ])
+
   return (
     <main className="min-h-screen home">
       {/* Navigation */}
       <Navbar variant="transparent" />
 
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection banners={banners} />
 
       {/* Why Choose Hexia */}
       <WhyChooseSection />
 
       {/* Products Preview */}
-      <ProductsSection />
+      <ProductsSection categories={categories} subcategories={subcategories} />
 
       {/* About Us with Stats */}
       <AboutSection />

@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Headphones } from "lucide-react"
+import { createInquiry } from "@/lib/api/inquiries"
+import { toast } from "sonner"
 
 export function QuoteFormSection() {
   const [formData, setFormData] = useState({
@@ -13,12 +15,39 @@ export function QuoteFormSection() {
     quantity: "",
     message: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setShowSuccess(true)
-    setTimeout(() => setShowSuccess(false), 3000)
+    setIsSubmitting(true)
+    try {
+      await createInquiry({
+        name: formData.name,
+        email: formData.email,
+        country: formData.country || undefined,
+        product_interest: formData.productInterest || undefined,
+        quantity: formData.quantity || undefined,
+        message: formData.message,
+        source_page: "Home Page Quote Section",
+      })
+      toast.success("Inquiry submitted successfully!")
+      setShowSuccess(true)
+      setFormData({
+        name: "",
+        email: "",
+        country: "",
+        productInterest: "",
+        quantity: "",
+        message: "",
+      })
+      setTimeout(() => setShowSuccess(false), 5000)
+    } catch (err: any) {
+      console.error(err)
+      toast.error(`Submission failed: ${err.message || "Unknown error"}`)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (
@@ -61,7 +90,8 @@ export function QuoteFormSection() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                disabled={isSubmitting}
+                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                 placeholder="Enter your name"
               />
             </div>
@@ -81,7 +111,8 @@ export function QuoteFormSection() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                disabled={isSubmitting}
+                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                 placeholder="your@email.com"
               />
             </div>
@@ -100,7 +131,8 @@ export function QuoteFormSection() {
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                disabled={isSubmitting}
+                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                 placeholder="Enter your country"
               />
             </div>
@@ -119,7 +151,8 @@ export function QuoteFormSection() {
                 name="productInterest"
                 value={formData.productInterest}
                 onChange={handleChange}
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                disabled={isSubmitting}
+                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                 placeholder="e.g., Methionine, NMN, Biluochun Tea"
               />
             </div>
@@ -138,7 +171,8 @@ export function QuoteFormSection() {
                 name="quantity"
                 value={formData.quantity}
                 onChange={handleChange}
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                disabled={isSubmitting}
+                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                 placeholder="Enter quantity"
               />
             </div>
@@ -158,7 +192,8 @@ export function QuoteFormSection() {
                 onChange={handleChange}
                 rows={5}
                 required
-                className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                disabled={isSubmitting}
+                className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
                 placeholder="Please describe your requirements in detail..."
               />
             </div>
@@ -167,9 +202,10 @@ export function QuoteFormSection() {
             <Button
               type="submit"
               size="lg"
-              className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white"
+              disabled={isSubmitting}
+              className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white disabled:opacity-50"
             >
-              Send Inquiry
+              {isSubmitting ? "Submitting..." : "Send Inquiry"}
             </Button>
           </form>
 
