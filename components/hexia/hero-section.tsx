@@ -67,20 +67,7 @@ export function HeroSection({ banners }: HeroSectionProps) {
         )
       })}
 
-      {/* Slide Content */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-center bg-black/20 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-7xl">
-          <span className="rounded-full bg-[#E9B35F] px-4 py-1 text-sm font-semibold text-[#1B4D3E] uppercase tracking-wider">
-            {banners[currentSlide].category}
-          </span>
-          <h1 className="mt-4 text-4xl font-extrabold text-white sm:text-5xl md:text-6xl max-w-3xl leading-tight drop-shadow-md">
-            {banners[currentSlide].title}
-          </h1>
-          <p className="mt-4 text-lg text-white/90 sm:text-xl max-w-2xl drop-shadow-sm">
-            {banners[currentSlide].subtitle}
-          </p>
-        </div>
-      </div>
+
 
       {/* Slide Controls - Dots */}
       {banners.length >= 2 && (
