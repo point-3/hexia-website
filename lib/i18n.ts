@@ -1,5 +1,6 @@
 import { en } from './locales/en';
 import { zh } from './locales/zh';
+import { Product } from './directus';
 
 export type SupportedLocale = 'en' | 'zh';
 
@@ -73,4 +74,52 @@ export function getHrefWithLang(href: string, lang: string | null | undefined): 
   }
 
   return `${href}?lang=${cleanLang}`;
+}
+
+/**
+ * 提取产品对应当前语言的翻译标题与描述。
+ * 按照规范，禁止任何降级或默认值兜底，匹配不到翻译时直接抛出 Error！
+ * 
+ * @param product 产品数据对象
+ * @param lang 语种参数 ('zh' | 'en')
+ */
+export function getProductTranslation(
+  product: Product,
+  lang: string | null | undefined
+): { product_title: string; product_description: string } {
+  if (!product) {
+    throw new Error('getProductTranslation: 必须提供非空 product 对象进行翻译解析！');
+  }
+  if (!lang) {
+    throw new Error(`getProductTranslation: 必须提供有效的目标语言参数，当前传入值为 "${String(lang)}"，无法翻译产品 "${product.slug}"！`);
+  }
+
+  const normalizedLang = lang.toLowerCase();
+  let targetLangCode = '';
+  if (normalizedLang === 'zh') {
+    targetLangCode = 'zh-CN';
+  } else if (normalizedLang === 'en') {
+    targetLangCode = 'en-US';
+  } else {
+    throw new Error(`getProductTranslation: 不支持的目标语言 "${lang}"！当前仅支持 "zh" 和 "en"`);
+  }
+
+  if (!product.translations || !Array.isArray(product.translations)) {
+    throw new Error(`getProductTranslation: 产品 "${product.slug}" 缺少 translations 关联数组，无法解析翻译！`);
+  }
+
+  const translation = product.translations.find(t => t.languages_code === targetLangCode);
+  if (!translation) {
+    throw new Error(`getProductTranslation: 找不到产品 "${product.slug}" 对应的语言为 "${targetLangCode}" 的翻译记录！`);
+  }
+
+  // 严格要求 product_title 必须存在，防止出现白屏或空文字
+  if (!translation.product_title || !translation.product_title.trim()) {
+    throw new Error(`getProductTranslation: 产品 "${product.slug}" 对应的语言 "${targetLangCode}" 翻译标题(product_title)为空！`);
+  }
+
+  return {
+    product_title: translation.product_title,
+    product_description: translation.product_description || ''
+  };
 }

@@ -12,7 +12,7 @@ import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
 import { getProductBySlug, getProducts } from "@/lib/api/products"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
-import { t, getHrefWithLang } from "@/lib/i18n"
+import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
 
 function ProductDetailContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: rawSlug } = use(params)
@@ -67,13 +67,14 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
     e.preventDefault()
     setIsSubmitting(true)
     try {
+      const { product_title: currentTitle } = getProductTranslation(product!, lang)
       await createInquiry({
         name: formData.name,
         email: formData.email,
         message: formData.message,
-        source_page: `Product Detail [${product?.slug}]: ${lang === "zh" ? product?.product_name : product?.product_title}`,
+        source_page: `Product Detail [${product?.slug}]: ${currentTitle}`,
         source_product_slug: product?.slug,
-        product_interest: lang === "zh" ? product?.product_name : product?.product_title
+        product_interest: currentTitle
       })
       toast.success(t("inquiry.successToast", lang))
       setFormData({ name: "", email: "", message: "" })
@@ -132,6 +133,11 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
   const subcategoryName = typeof product.subcategory_id === "object" ? (lang === "zh" ? product.subcategory_id?.name_cn : product.subcategory_id?.name) : ""
   const categoryName = typeof product.category_id === "object" ? (lang === "zh" ? product.category_id?.name_cn : product.category_id?.name) : ""
 
+  const { product_title: productTitle, product_description: productDesc } = getProductTranslation(product, lang)
+  const { product_title: titleZH } = getProductTranslation(product, "zh")
+  const { product_title: titleEN } = getProductTranslation(product, "en")
+  const subTitle = lang === "zh" ? titleEN : titleZH
+
   return (
     <div className="min-h-screen bg-[#FDFBF7]">
       <Navbar />
@@ -147,7 +153,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
               {t("nav.products", lang)}
             </Link>
             <ChevronRight className="size-4 text-[#636E72]" />
-            <span className="font-medium text-[#2D6A4F]">{lang === "zh" ? product.product_name : product.product_title}</span>
+            <span className="font-medium text-[#2D6A4F]">{productTitle}</span>
           </nav>
 
           {/* Product Header */}
@@ -157,7 +163,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
               <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#A3B18A] bg-white">
                 <Image
                   src={getFileUrl(product.image) || "/images/feed-additives.jpg"}
-                  alt={lang === "zh" ? product.product_name : product.product_title}
+                  alt={productTitle}
                   fill
                   className="object-cover"
                 />
@@ -171,11 +177,8 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   {subcategoryName || categoryName || (lang === "zh" ? "其他" : "Others")}
                 </span>
                 <h1 className="mt-3 text-3xl font-bold text-[#1B4D3E] lg:text-4xl">
-                  {lang === "zh" ? product.product_name : product.product_title}
+                  {productTitle}
                 </h1>
-                <p className="mt-2 text-lg text-[#636E72]">
-                  {lang === "zh" ? product.product_title : product.product_name}
-                </p>
               </div>
 
               <div className="mt-6">
@@ -196,7 +199,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
               {lang === "zh" ? "产品描述" : "Product Description"}
             </h2>
             <div className="prose prose-sm max-w-none text-[#636E72]">
-              <p className="leading-relaxed whitespace-pre-line">{product.product_description}</p>
+              <p className="leading-relaxed whitespace-pre-line">{productDesc}</p>
             </div>
           </div>
 
@@ -268,7 +271,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                 {relatedProducts.map((item) => {
                   const itemSubName = typeof item.subcategory_id === "object" ? (lang === "zh" ? item.subcategory_id?.name_cn : item.subcategory_id?.name) : ""
                   const itemCatName = typeof item.category_id === "object" ? (lang === "zh" ? item.category_id?.name_cn : item.category_id?.name) : ""
-                  const itemTitle = lang === "zh" ? item.product_name : item.product_title
+                  const { product_title: itemTitle, product_description: itemDesc } = getProductTranslation(item, lang)
 
                   return (
                     <Link
@@ -293,7 +296,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                             {itemTitle}
                           </h3>
                           <p className="mt-2 text-sm text-[#636E72] line-clamp-2">
-                            {item.product_description}
+                            {itemDesc}
                           </p>
                         </div>
                       </div>

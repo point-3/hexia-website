@@ -27,17 +27,23 @@ export interface Subcategory {
   sort?: number;
 }
 
+export interface ProductTranslation {
+  id: number;
+  products_id: number | Product;
+  languages_code: string;
+  product_title: string;
+  product_description?: string;
+}
+
 export interface Product {
   id: number;
   slug: string;
-  product_name: string;
-  product_title: string;
-  product_description?: string;
   image?: string | DirectusFile | null;
   category_id?: number | Category | null;
   subcategory_id?: number | Subcategory | null;
   sort?: number;
   status: 'published' | 'draft' | 'archived';
+  translations?: ProductTranslation[] | null;
 }
 
 export interface Article {
@@ -80,6 +86,7 @@ export interface Schema {
   categories: Category[];
   subcategories: Subcategory[];
   products: Product[];
+  products_translations: ProductTranslation[];
   articles: Article[];
   banners: Banner[];
   inquiries: Inquiry[];

@@ -10,14 +10,12 @@ export async function getProducts() {
       fields: [
         'id',
         'slug',
-        'product_name',
-        'product_title',
-        'product_description',
         'image',
         'sort',
         'status',
         { category_id: ['id', 'name', 'name_cn', 'slug'] },
-        { subcategory_id: ['id', 'name', 'name_cn', 'slug'] }
+        { subcategory_id: ['id', 'name', 'name_cn', 'slug'] },
+        { translations: ['id', 'languages_code', 'product_title', 'product_description'] }
       ],
       filter: {
         status: { _eq: 'published' }
@@ -43,14 +41,12 @@ export async function getProductBySlug(slug: string) {
       fields: [
         'id',
         'slug',
-        'product_name',
-        'product_title',
-        'product_description',
         'image',
         'sort',
         'status',
         { category_id: ['id', 'name', 'name_cn', 'slug'] },
-        { subcategory_id: ['id', 'name', 'name_cn', 'slug'] }
+        { subcategory_id: ['id', 'name', 'name_cn', 'slug'] },
+        { translations: ['id', 'languages_code', 'product_title', 'product_description'] }
       ],
       filter: {
         slug: { _eq: slug },

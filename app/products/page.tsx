@@ -11,7 +11,7 @@ import { Footer } from "@/components/hexia/footer"
 import { cn } from "@/lib/utils"
 import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
 import { getProducts, getCategories, getSubcategories } from "@/lib/api/products"
-import { t, getHrefWithLang } from "@/lib/i18n"
+import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
 
 // 对应页面分类菜单的数据结构
 type MenuCategory = {
@@ -139,11 +139,11 @@ function ProductsContent() {
 
   // 过滤产品
   const filteredProducts = products.filter((product) => {
+    const { product_title, product_description } = getProductTranslation(product, lang)
     const searchLower = searchQuery.toLowerCase()
     const matchesSearch =
-      product.product_title.toLowerCase().includes(searchLower) ||
-      product.product_name.toLowerCase().includes(searchLower) ||
-      (product.product_description?.toLowerCase().includes(searchLower) ?? false)
+      product_title.toLowerCase().includes(searchLower) ||
+      product_description.toLowerCase().includes(searchLower)
 
     if (!selectedCategory) {
       return matchesSearch
@@ -411,7 +411,7 @@ function ProductsContent() {
                   {filteredProducts.map((product) => {
                     const subName = typeof product.subcategory_id === "object" ? (lang === "zh" ? product.subcategory_id?.name_cn : product.subcategory_id?.name) : ""
                     const catName = typeof product.category_id === "object" ? (lang === "zh" ? product.category_id?.name_cn : product.category_id?.name) : ""
-                    const productTitle = lang === "zh" ? product.product_name : product.product_title
+                    const { product_title: productTitle, product_description: productDesc } = getProductTranslation(product, lang)
 
                     return (
                       <Link
@@ -436,7 +436,7 @@ function ProductsContent() {
                               {productTitle}
                             </h3>
                             <p className="mt-1 text-sm text-[#636E72] line-clamp-2">
-                              {product.product_description || ""}
+                              {productDesc}
                             </p>
                           </div>
                         </div>
