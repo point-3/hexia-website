@@ -2,15 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
-import { getFileUrl } from "@/lib/directus"
-
-export interface Banner {
-  id: number
-  image: any
-  category?: string
-  title: string
-  subtitle?: string
-}
+import { getBannerImageUrl, type Banner } from "@/lib/directus"
 
 interface HeroSectionProps {
   banners: Banner[]
@@ -45,20 +37,21 @@ export function HeroSection({ banners }: HeroSectionProps) {
     <section className="relative aspect-[1942/809] w-full overflow-hidden">
       {/* Background Images */}
       {banners.map((slide, index) => {
-        const imageUrl = getFileUrl(slide.image)
+        const imageUrl = getBannerImageUrl(slide)
         if (!imageUrl) {
           throw new Error(`HeroSection: 轮播图项目 ID ${slide.id} 的背景图 URL 不能为空！`)
         }
         return (
           <div
-            key={slide.id}
+            key={imageUrl}
             className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
               index === currentSlide ? "opacity-100" : "opacity-0"
             }`}
           >
             <Image
+              key={imageUrl}
               src={imageUrl}
-              alt={slide.category || "Banner"}
+              alt={`Banner ${slide.id}`}
               fill
               className="object-cover"
               priority={index === 0}

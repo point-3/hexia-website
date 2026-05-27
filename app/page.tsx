@@ -13,6 +13,9 @@ import { BackToTop } from "@/components/hexia/back-to-top"
 import { getBanners } from "@/lib/api/banners"
 import { getCategories, getSubcategories } from "@/lib/api/products"
 
+/** 首页含轮播图，须与 Directus 后台实时同步（避免换图后仍显示旧缓存） */
+export const dynamic = 'force-dynamic'
+
 export default async function HomePage() {
   // 服务端并发获取数据模型
   const [banners, categories, subcategories] = await Promise.all([

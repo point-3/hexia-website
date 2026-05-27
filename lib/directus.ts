@@ -6,6 +6,10 @@ export interface DirectusFile {
   filename_download: string;
   title?: string;
   type?: string;
+  /** 文件元数据，用于拼接缓存破坏参数（后台换图后强制浏览器重新拉取） */
+  modified_on?: string;
+  uploaded_on?: string;
+  filesize?: number | string;
 }
 
 export interface Category {
@@ -69,9 +73,6 @@ export interface Article {
 export interface Banner {
   id: number;
   image: string | DirectusFile;
-  category?: string;
-  title: string;
-  subtitle?: string;
   sort?: number;
   status: 'published' | 'draft';
 }
@@ -106,17 +107,51 @@ if (!directusUrl) {
   throw new Error('NEXT_PUBLIC_DIRECTUS_URL 环境变量未配置，请检查您的 .env 文件！');
 }
 
-export const directus = createDirectus<Schema>(directusUrl).with(rest());
+export { directusUrl };
+
+/** CMS 内容读取：开发环境不缓存；生产环境 ISR 60 秒，后台更新后较快反映到前台 */
+const cmsFetchRevalidateSeconds = 60;
+
+export const directus = createDirectus<Schema>(directusUrl).with(
+  rest({
+    onRequest: (options) => {
+      if (process.env.NODE_ENV === 'development') {
+        return { ...options, cache: 'no-store' as RequestCache };
+      }
+      return {
+        ...options,
+        next: { revalidate: cmsFetchRevalidateSeconds },
+      };
+    },
+  }),
+);
+
+function getFileVersionToken(image: DirectusFile): string | null {
+  const parts = [image.modified_on, image.uploaded_on, image.filesize, image.filename_download];
+  const token = parts
+    .filter((part) => part !== undefined && part !== null && String(part).trim() !== '')
+    .join('-');
+  return token || null;
+}
 
 /**
- * 拼装 Directus 文件的绝对 URL 链接
- * 
- * @param image 图像 UUID 或文件对象
- * @returns 完整的静态资源访问链接，若无则返回空字符串
+ * 返回站内代理后的 CMS 图片 URL（避免 Directus /assets 默认长期缓存）。
+ *
+ * @param image 图像 UUID 或 Directus 文件对象（推荐传对象以携带 modified_on / filesize）
  */
 export function getFileUrl(image: string | DirectusFile | null | undefined): string {
   if (!image) return '';
   const id = typeof image === 'object' ? image.id : image;
   if (!id) return '';
-  return `${directusUrl}/assets/${id}`;
+
+  const version = typeof image === 'object' ? getFileVersionToken(image) : null;
+  if (version) {
+    return `/api/cms-assets/${id}?v=${encodeURIComponent(version)}`;
+  }
+  return `/api/cms-assets/${id}`;
+}
+
+/** 轮播图 URL（使用文件 modified_on / filesize 等元数据破坏缓存） */
+export function getBannerImageUrl(banner: { image: Banner['image'] }): string {
+  return getFileUrl(banner.image);
 }
