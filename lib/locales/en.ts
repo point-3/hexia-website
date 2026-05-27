@@ -19,6 +19,9 @@ export const en = {
     nutrition: "Nutrition",
     chineseSpecialty: "Chinese Specialty",
     contact: "CONTACT",
+    hqTitle: "Suzhou HQ",
+    hqAddress:
+      "ROOM 232A, BUILDING A, NO. 188 SUHONG EAST ROAD,\nSUZHOU INDUSTRIAL PARK, SUZHOU AREA,\nCHINA (JIANGSU) PILOT FREE TRADE ZONE",
     rights: "All Rights Reserved.",
   },
   inquiry: {

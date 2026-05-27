@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { SupportedLocale } from "@/lib/i18n"
 
@@ -14,7 +14,8 @@ function parseLocale(value: string | null): SupportedLocale | null {
 }
 
 /**
- * 当前页面语言：优先 URL ?lang=，否则读取 localStorage（上次选择）
+ * 当前页面语言：优先 URL ?lang=，否则在客户端挂载后读取 localStorage。
+ * 首屏 SSR/水合阶段不使用 localStorage，避免与服务端 HTML 不一致。
  */
 export function useLocale(): SupportedLocale {
   const searchParams = useSearchParams()
@@ -22,15 +23,18 @@ export function useLocale(): SupportedLocale {
   const router = useRouter()
   const paramLang = parseLocale(searchParams.get("lang"))
 
-  const storedLang = useMemo(() => {
-    if (typeof window === "undefined") return null
-    return parseLocale(localStorage.getItem(STORAGE_KEY))
-  }, [paramLang])
-
-  const lang: SupportedLocale = paramLang ?? storedLang ?? "en"
+  const [mounted, setMounted] = useState(false)
+  const [storedLang, setStoredLang] = useState<SupportedLocale | null>(null)
 
   useEffect(() => {
-    if (typeof window === "undefined") return
+    setMounted(true)
+    setStoredLang(parseLocale(localStorage.getItem(STORAGE_KEY)))
+  }, [])
+
+  const lang: SupportedLocale = paramLang ?? (mounted ? storedLang : null) ?? "en"
+
+  useEffect(() => {
+    if (!mounted) return
 
     if (paramLang) {
       localStorage.setItem(STORAGE_KEY, paramLang)
@@ -43,7 +47,7 @@ export function useLocale(): SupportedLocale {
     const params = new URLSearchParams(searchParams.toString())
     params.set("lang", saved)
     router.replace(`${pathname}?${params.toString()}`)
-  }, [paramLang, pathname, router, searchParams])
+  }, [mounted, paramLang, pathname, router, searchParams])
 
   return lang
 }

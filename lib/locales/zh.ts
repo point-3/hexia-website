@@ -19,6 +19,9 @@ export const zh = {
     nutrition: "营养保健",
     chineseSpecialty: "中国特色产品",
     contact: "联系方式",
+    hqTitle: "苏州总部",
+    hqAddress:
+      "中国 (江苏) 自由贸易试验区苏州片区\n苏州工业园区苏虹东路188号A幢232A室",
     rights: "版权所有。",
   },
   inquiry: {

@@ -1,6 +1,6 @@
 import { en } from './locales/en';
 import { zh } from './locales/zh';
-import { Product } from './directus';
+import { Article, Product } from './directus';
 
 export type SupportedLocale = 'en' | 'zh';
 
@@ -122,4 +122,82 @@ export function getProductTranslation(
     product_title: translation.product_title,
     product_description: translation.product_description || ''
   };
+}
+
+export type ArticleCopy = {
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+};
+
+function resolveArticleLangCode(lang: string | null | undefined, slug: string): string {
+  if (!lang) {
+    throw new Error(
+      `resolveArticleTranslation: 必须提供有效的目标语言，当前为 "${String(lang)}"，文章 "${slug}"！`,
+    );
+  }
+  const normalizedLang = lang.toLowerCase();
+  if (normalizedLang === 'zh') return 'zh-CN';
+  if (normalizedLang === 'en') return 'en-US';
+  throw new Error(`resolveArticleTranslation: 不支持的目标语言 "${lang}"！`);
+}
+
+/**
+ * 解析文章当前语言文案。缺少该语言翻译或标题为空时返回 null（供页面走 404 / 列表过滤）。
+ * translations 结构异常时仍抛出 Error。
+ */
+export function resolveArticleTranslation(
+  article: Article,
+  lang: string | null | undefined,
+): ArticleCopy | null {
+  if (!article) {
+    throw new Error('resolveArticleTranslation: 必须提供非空 article 对象！');
+  }
+
+  const targetLangCode = resolveArticleLangCode(lang, article.slug);
+
+  if (!article.translations || !Array.isArray(article.translations)) {
+    throw new Error(`resolveArticleTranslation: 文章 "${article.slug}" 缺少 translations 关联数组！`);
+  }
+
+  const translation = article.translations.find((t) => {
+    const code =
+      typeof t.languages_code === 'string'
+        ? t.languages_code
+        : t.languages_code &&
+            typeof t.languages_code === 'object' &&
+            'code' in t.languages_code &&
+            typeof (t.languages_code as { code: string }).code === 'string'
+          ? (t.languages_code as { code: string }).code
+          : null;
+    return code === targetLangCode;
+  });
+  if (!translation || !translation.title?.trim()) {
+    return null;
+  }
+
+  return {
+    title: translation.title,
+    excerpt: translation.excerpt || '',
+    content: translation.content || '',
+    category: translation.category || '',
+  };
+}
+
+/**
+ * 提取文章对应当前语言的标题、摘要、正文与分类（必须有可用翻译，否则抛错）。
+ */
+export function getArticleTranslation(
+  article: Article,
+  lang: string | null | undefined,
+): ArticleCopy {
+  const copy = resolveArticleTranslation(article, lang);
+  if (!copy) {
+    const targetLangCode = resolveArticleLangCode(lang, article.slug);
+    throw new Error(
+      `getArticleTranslation: 文章 "${article.slug}" 缺少可用的 "${targetLangCode}" 翻译！`,
+    );
+  }
+  return copy;
 }

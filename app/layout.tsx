@@ -36,8 +36,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className="font-sans antialiased bg-background">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body className="font-sans antialiased bg-background" suppressHydrationWarning>
         {children}
         <Toaster />
         {process.env.NODE_ENV === 'production' && <Analytics />}

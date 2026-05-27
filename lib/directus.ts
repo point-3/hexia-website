@@ -46,17 +46,24 @@ export interface Product {
   translations?: ProductTranslation[] | null;
 }
 
-export interface Article {
+export interface ArticleTranslation {
   id: number;
-  slug: string;
+  articles_id: number | Article;
+  languages_code: string;
   title: string;
   excerpt?: string;
   content?: string;
-  image?: string | DirectusFile | null;
   category?: string;
+}
+
+export interface Article {
+  id: number;
+  slug: string;
+  image?: string | DirectusFile | null;
   is_featured?: boolean;
   status: 'published' | 'draft';
   date_published?: string;
+  translations?: ArticleTranslation[] | null;
 }
 
 export interface Banner {
@@ -88,6 +95,7 @@ export interface Schema {
   products: Product[];
   products_translations: ProductTranslation[];
   articles: Article[];
+  articles_translations: ArticleTranslation[];
   banners: Banner[];
   inquiries: Inquiry[];
 }

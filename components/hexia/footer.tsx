@@ -1,8 +1,8 @@
 "use client"
 
 import { Mail, MapPin, Linkedin, Facebook, Instagram, MessageCircle } from "lucide-react"
-import { useSearchParams } from "next/navigation"
 import { t, getHrefWithLang } from "@/lib/i18n"
+import { useLocale } from "@/hooks/use-locale"
 
 const socialLinks = [
   { icon: Linkedin, href: "https://www.linkedin.com/in/justin-jia-8995a6364", label: "LinkedIn" },
@@ -11,8 +11,7 @@ const socialLinks = [
 ]
 
 export function Footer() {
-  const searchParams = useSearchParams()
-  const lang = searchParams.get("lang") || "en"
+  const lang = useLocale()
 
   const quickLinks = [
     { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
@@ -109,8 +108,14 @@ export function Footer() {
               <li className="flex items-start gap-3 text-sm text-white">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" />
                 <span>
-                  <strong className="text-white">Suzhou HQ</strong><br />
-                  ROOM 232A, BUILDING A, NO. 188 SUHONG EAST ROAD, SUZHOU INDUSTRIAL PARK, SUZHOU AREA, CHINA (JIANGSU) PILOT FREE TRADE ZONE
+                  <strong className="text-white">{t("footer.hqTitle", lang)}</strong>
+                  <br />
+                  {t("footer.hqAddress", lang).split("\n").map((line, index, lines) => (
+                    <span key={index}>
+                      {line}
+                      {index < lines.length - 1 ? <br /> : null}
+                    </span>
+                  ))}
                 </span>
               </li>
               <li className="flex items-start gap-3 text-sm text-white">
