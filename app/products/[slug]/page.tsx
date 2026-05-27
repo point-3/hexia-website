@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, use, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronRight, Headphones } from "lucide-react"
@@ -13,12 +12,12 @@ import { getProductBySlug, getProducts } from "@/lib/api/products"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
 import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
+import { useLocale } from "@/hooks/use-locale"
 
 function ProductDetailContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: rawSlug } = use(params)
   const slug = decodeURIComponent(rawSlug)
-  const searchParams = useSearchParams()
-  const lang = searchParams.get("lang") || "en"
+  const lang = useLocale()
 
   const [product, setProduct] = useState<DirectusProduct | null>(null)
   const [allProducts, setAllProducts] = useState<DirectusProduct[]>([])

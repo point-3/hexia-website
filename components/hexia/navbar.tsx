@@ -4,18 +4,16 @@ import { useState, useEffect } from "react"
 import { Menu, X, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { useSearchParams, usePathname, useRouter } from "next/navigation"
 import { t, getHrefWithLang } from "@/lib/i18n"
+import { useLocale, useToggleLocale } from "@/hooks/use-locale"
 
 interface NavbarProps {
   variant?: "transparent" | "solid"
 }
 
 export function Navbar({ variant = "solid" }: NavbarProps) {
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const router = useRouter()
-  const lang = searchParams.get("lang") || "en"
+  const lang = useLocale()
+  const toggleLocale = useToggleLocale()
 
   const navItems = [
     { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
@@ -25,13 +23,6 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
     { label: t("nav.news", lang), href: getHrefWithLang("/news", lang) },
     { label: t("nav.contact", lang), href: getHrefWithLang("/contact", lang) },
   ]
-
-  const handleLanguageToggle = () => {
-    const newLang = lang === "en" ? "zh" : "en"
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("lang", newLang)
-    router.push(`${pathname}?${params.toString()}`)
-  }
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [headerStyle, setHeaderStyle] = useState({
@@ -113,7 +104,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
           <div className="flex items-center gap-3">
             {/* Language Switch */}
             <button
-                onClick={handleLanguageToggle}
+                onClick={toggleLocale}
                 className="hidden items-center gap-1.5 text-base font-medium text-white transition-colors hover:text-[#63AE30] sm:flex"
               >
                 <Globe className="size-4" />
@@ -161,7 +152,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
             ))}
             <div className="mt-2 flex items-center gap-3 px-4">
               <button
-                onClick={handleLanguageToggle}
+                onClick={toggleLocale}
                 className="flex items-center gap-1.5 text-lg font-medium text-white"
               >
                 <Globe className="size-4" />

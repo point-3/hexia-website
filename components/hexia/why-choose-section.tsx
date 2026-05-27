@@ -58,7 +58,7 @@ export function WhyChooseSection() {
           <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
             {lang === "zh" ? (
               <>
-                为什么选择 <span className="text-[var(--hexia-gold)]">赫夏</span>
+                为什么选择 <span className="text-[var(--hexia-gold)]">禾夏</span>
               </>
             ) : (
               <>

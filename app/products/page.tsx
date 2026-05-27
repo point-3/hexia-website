@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
 import { getProducts, getCategories, getSubcategories } from "@/lib/api/products"
 import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
+import { useLocale } from "@/hooks/use-locale"
 
 // 对应页面分类菜单的数据结构
 type MenuCategory = {
@@ -30,7 +31,7 @@ type SelectedCategoryType = {
 
 function ProductsContent() {
   const searchParams = useSearchParams()
-  const lang = searchParams.get("lang") || "en"
+  const lang = useLocale()
   const categoryFromUrl = searchParams.get("category") // 从首页跳转可能会有 category 参数 (如 "Feed Additives")
 
   const [products, setProducts] = useState<DirectusProduct[]>([])
@@ -113,6 +114,32 @@ function ProductsContent() {
     fetchData()
   }, [categoryFromUrl, lang])
 
+  // 切换语言时更新已选分类的显示名称
+  useEffect(() => {
+    if (!selectedCategory) return
+    if (selectedCategory.type === "category") {
+      const cat = categories.find((c) => c.id === selectedCategory.id)
+      if (!cat) return
+      setSelectedCategory({
+        type: "category",
+        id: cat.id,
+        name: lang === "zh" ? cat.name_cn : cat.name,
+      })
+      return
+    }
+    for (const cat of categories) {
+      const sub = cat.subcategories.find((s) => s.id === selectedCategory.id)
+      if (sub) {
+        setSelectedCategory({
+          type: "subcategory",
+          id: sub.id,
+          name: lang === "zh" ? `${cat.name_cn} > ${sub.name_cn}` : `${cat.name} > ${sub.name}`,
+        })
+        break
+      }
+    }
+  }, [lang, categories, selectedCategory?.id, selectedCategory?.type])
+
   const toggleCategory = (category: MenuCategory) => {
     if (!category.hasSubcategories) {
       setSelectedCategory({ type: "category", id: category.id, name: lang === "zh" ? category.name_cn : category.name })
@@ -164,8 +191,7 @@ function ProductsContent() {
       <main className="pt-20 lg:pt-24">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           {/* Header with Search */}
-          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div />
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsSidebarOpen(true)}

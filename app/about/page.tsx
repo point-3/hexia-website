@@ -70,7 +70,7 @@ function AboutContent() {
             <div className="grid items-center gap-12 lg:grid-cols-2">
               <div>
                 <h2 className="text-2xl font-bold text-[#1B4D3E] sm:text-3xl">
-                  {lang === "zh" ? "关于赫夏" : <>About <span className="text-[#E9B35F]">Hexia</span></>}
+                  {lang === "zh" ? "关于禾夏" : <>About <span className="text-[#E9B35F]">Hexia</span></>}
                 </h2>
                 <div className="mt-6 space-y-4 text-[#636E72] leading-relaxed">
                   {lang === "zh" ? (
@@ -139,7 +139,7 @@ function AboutContent() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
-                {lang === "zh" ? "赫夏 (苏州) 生物科技有限公司" : "Hexia (Suzhou) Biotechnology Co., Ltd."}
+                {lang === "zh" ? "禾夏 (苏州) 生物科技有限公司" : "Hexia (Suzhou) Biotechnology Co., Ltd."}
               </h2>
               <p className="mx-auto mt-4 max-w-3xl text-pretty text-lg text-white/80">
                 {lang === "zh"

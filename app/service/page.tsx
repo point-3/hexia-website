@@ -42,7 +42,7 @@ function ServiceContent() {
     },
     {
       icon: GraduationCap,
-      title: "赫夏商学院",
+      title: "禾夏商学院",
       description: "专业的人才发展与知识共享平台",
       details: [
         "行业技能培训计划",

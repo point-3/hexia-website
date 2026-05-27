@@ -17,18 +17,18 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
           setHasAnimated(true)
           const duration = 2000
           const startTime = Date.now()
-          
+
           const animate = () => {
             const elapsed = Date.now() - startTime
             const progress = Math.min(elapsed / duration, 1)
             const easeOut = 1 - Math.pow(1 - progress, 3)
             setDisplayValue(Math.floor(value * easeOut))
-            
+
             if (progress < 1) {
               requestAnimationFrame(animate)
             }
           }
-          
+
           requestAnimationFrame(animate)
         }
       },
@@ -69,7 +69,7 @@ export function AboutSection() {
             <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
               {lang === "zh" ? (
                 <>
-                  关于 <span className="text-[#E9B35F]">赫夏</span> (苏州) 生物科技
+                  关于 <span className="text-[#E9B35F]">禾夏</span> (苏州) 生物科技
                 </>
               ) : (
                 <>
@@ -77,7 +77,7 @@ export function AboutSection() {
                 </>
               )}
             </h2>
-            
+
             <div className="mt-6 space-y-4 text-pretty text-[#636E72] leading-relaxed">
               <p>
                 {t("home.aboutP1", lang)}
