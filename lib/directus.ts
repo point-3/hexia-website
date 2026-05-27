@@ -134,24 +134,69 @@ function getFileVersionToken(image: DirectusFile): string | null {
   return token || null;
 }
 
+type CmsImageFormat = 'auto' | 'jpg' | 'png' | 'webp' | 'tiff';
+type CmsImageFit = 'cover' | 'contain' | 'inside' | 'outside';
+
+type CmsImageTransformOptions = {
+  width?: number;
+  height?: number;
+  quality?: number;
+  format?: CmsImageFormat;
+  fit?: CmsImageFit;
+};
+
+const DEFAULT_CMS_IMAGE_TRANSFORM: CmsImageTransformOptions = {
+  width: 1600,
+  quality: 80,
+  format: 'webp',
+};
+
+const BANNER_IMAGE_TRANSFORM: CmsImageTransformOptions = {
+  width: 1920,
+  quality: 80,
+  format: 'webp',
+};
+
+function appendImageTransformParams(
+  params: URLSearchParams,
+  transform: CmsImageTransformOptions,
+): void {
+  Object.entries(transform).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      params.set(key, String(value));
+    }
+  });
+}
+
 /**
  * 返回站内代理后的 CMS 图片 URL（避免 Directus /assets 默认长期缓存）。
+ * 同时附加 Directus 图片转换参数，在访问时输出压缩后的 WebP 版本。
  *
  * @param image 图像 UUID 或 Directus 文件对象（推荐传对象以携带 modified_on / filesize）
  */
-export function getFileUrl(image: string | DirectusFile | null | undefined): string {
+export function getFileUrl(
+  image: string | DirectusFile | null | undefined,
+  transform: CmsImageTransformOptions = DEFAULT_CMS_IMAGE_TRANSFORM,
+): string {
   if (!image) return '';
   const id = typeof image === 'object' ? image.id : image;
   if (!id) return '';
 
+  const params = new URLSearchParams();
   const version = typeof image === 'object' ? getFileVersionToken(image) : null;
   if (version) {
-    return `/api/cms-assets/${id}?v=${encodeURIComponent(version)}`;
+    params.set('v', version);
   }
-  return `/api/cms-assets/${id}`;
+  appendImageTransformParams(params, transform);
+  const query = params.toString();
+  const path = `/api/cms-assets/${id}`;
+  if (!query) {
+    return path;
+  }
+  return `${path}?${query}`;
 }
 
 /** 轮播图 URL（使用文件 modified_on / filesize 等元数据破坏缓存） */
 export function getBannerImageUrl(banner: { image: Banner['image'] }): string {
-  return getFileUrl(banner.image);
+  return getFileUrl(banner.image, BANNER_IMAGE_TRANSFORM);
 }
