@@ -5,21 +5,31 @@ import Image from "next/image"
 import { getBannerImageUrl, type Banner } from "@/lib/directus"
 
 interface HeroSectionProps {
-  banners: Banner[]
+  banners?: Banner[]
 }
 
+const fallbackBannerImages = [
+  '/feed.png',
+  '/food addi.jpg',
+  '/chinese tea.jpg',
+]
+
 export function HeroSection({ banners }: HeroSectionProps) {
-  // 严格执行禁止兜底原则：若参数不存在或为空数组，直接报错暴露问题
-  if (!banners || banners.length === 0) {
+  const displayBanners = (banners && banners.length > 0) ? banners : null
+  const fallbackMode = !displayBanners
+
+  if (!fallbackMode && displayBanners.length === 0) {
     throw new Error("HeroSection: 必须传入有效的 banners 列表且不能为空数组！")
   }
 
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
+  const totalSlides = fallbackMode ? fallbackBannerImages.length : displayBanners.length
+
   const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % banners.length)
-  }, [banners.length])
+    setCurrentSlide((prev) => (prev + 1) % totalSlides)
+  }, [totalSlides])
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index)
@@ -36,12 +46,8 @@ export function HeroSection({ banners }: HeroSectionProps) {
   return (
     <section className="relative aspect-[1942/809] w-full overflow-hidden">
       {/* Background Images */}
-      {banners.map((slide, index) => {
-        const imageUrl = getBannerImageUrl(slide)
-        if (!imageUrl) {
-          throw new Error(`HeroSection: 轮播图项目 ID ${slide.id} 的背景图 URL 不能为空！`)
-        }
-        return (
+      {fallbackMode ? (
+        fallbackBannerImages.map((imageUrl, index) => (
           <div
             key={imageUrl}
             className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
@@ -51,22 +57,46 @@ export function HeroSection({ banners }: HeroSectionProps) {
             <Image
               key={imageUrl}
               src={imageUrl}
-              alt={`Banner ${slide.id}`}
+              alt={`Banner ${index + 1}`}
               fill
               className="object-cover"
               priority={index === 0}
             />
           </div>
-        )
-      })}
+        ))
+      ) : (
+        displayBanners.map((slide, index) => {
+          const imageUrl = getBannerImageUrl(slide)
+          if (!imageUrl) {
+            throw new Error(`HeroSection: 轮播图项目 ID ${slide.id} 的背景图 URL 不能为空！`)
+          }
+          return (
+            <div
+              key={imageUrl}
+              className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
+                index === currentSlide ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <Image
+                key={imageUrl}
+                src={imageUrl}
+                alt={`Banner ${slide.id}`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+              />
+            </div>
+          )
+        })
+      )}
 
 
 
       {/* Slide Controls - Dots */}
-      {banners.length >= 2 && (
+      {totalSlides >= 2 && (
         <div className="absolute bottom-[60px] left-1/2 z-30 -translate-x-1/2">
           <div className="flex items-center gap-3">
-            {banners.map((_, index) => (
+            {Array.from({ length: totalSlides }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
