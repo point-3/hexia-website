@@ -1,36 +1,48 @@
 "use client"
 
 import { Truck, Shield, TrendingUp } from "lucide-react"
-
-const services = [
-  {
-    icon: Truck,
-    title: "Supply Chain Management",
-    description: "One-stop solution: refined supply-chain management, mixed container loading, flexible logistics.",
-  },
-  {
-    icon: Shield,
-    title: "Quality Assurance",
-    description: "Our partner factories adhere to HACCP, ISO, FAMI-QS, FDA, and GMP standards. Quality is our core value.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Live Market Information",
-    description: "We share the latest market trends and intelligence via our website and LinkedIn to keep our customers updated. Monthly reports on Amino Acid and Vitamin price trends.",
-  },
-]
+import { useSearchParams } from "next/navigation"
+import { t } from "@/lib/i18n"
 
 export function ServicesSection() {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
+
+  const services = [
+    {
+      icon: Truck,
+      title: t("home.serviceScmTitle", lang),
+      description: t("home.serviceScmDesc", lang),
+    },
+    {
+      icon: Shield,
+      title: t("home.serviceQaTitle", lang),
+      description: t("home.serviceQaDesc", lang),
+    },
+    {
+      icon: TrendingUp,
+      title: t("home.serviceMarketTitle", lang),
+      description: t("home.serviceMarketDesc", lang),
+    },
+  ]
   return (
     <section id="service" className="bg-[#FDFBF7] py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
-            Our <span className="text-[#E9B35F]">Services</span>
+            {lang === "zh" ? (
+              <>
+                我们的 <span className="text-[#E9B35F]">专属服务</span>
+              </>
+            ) : (
+              <>
+                Our <span className="text-[#E9B35F]">Services</span>
+              </>
+            )}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
-            Comprehensive solutions tailored to your business needs.
+            {t("home.servicesDesc", lang)}
           </p>
         </div>
 

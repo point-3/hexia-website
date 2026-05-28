@@ -5,23 +5,27 @@ import Image from "next/image"
 import { Menu, X, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Products", href: "/products" },
-  { label: "Service", href: "/service" },
-  { label: "About Us", href: "/about" },
-  { label: "News", href: "/news" },
-  { label: "Contact Us", href: "/contact" },
-]
+import { t, getHrefWithLang } from "@/lib/i18n"
+import { useLocale, useToggleLocale } from "@/hooks/use-locale"
 
 interface NavbarProps {
   variant?: "transparent" | "solid"
 }
 
 export function Navbar({ variant = "solid" }: NavbarProps) {
+  const lang = useLocale()
+  const toggleLocale = useToggleLocale()
+
+  const navItems = [
+    { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
+    { label: t("nav.products", lang), href: getHrefWithLang("/products", lang) },
+    { label: t("nav.service", lang), href: getHrefWithLang("/service", lang) },
+    { label: t("nav.about", lang), href: getHrefWithLang("/about", lang) },
+    { label: t("nav.news", lang), href: getHrefWithLang("/news", lang) },
+    { label: t("nav.contact", lang), href: getHrefWithLang("/contact", lang) },
+  ]
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [language, setLanguage] = useState<"EN" | "中">("EN")
   const [headerStyle, setHeaderStyle] = useState({
     backgroundColor: variant === "transparent" ? "rgba(45, 106, 79, 0.3)" : "rgba(45, 106, 79, 1)",
   })
@@ -78,6 +82,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
       <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
         <div className={`flex items-center justify-between transition-all duration-300 ${isSticky ? "h-[56px]" : "h-14 lg:h-20"}`}>
           {/* Logo */}
+<<<<<<< HEAD
           <a href="/" className="flex items-center gap-2" aria-label="Hexia homepage">
             <Image
               src="/images/金logo-03.svg"
@@ -87,6 +92,10 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
               className="h-auto w-auto sm:w-8"
             />
             <span className="text-lg font-bold leading-tight text-[#E9B35F] sm:text-xl lg:text-2xl">
+=======
+          <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2">
+            <span className="text-xl font-bold leading-tight text-white lg:text-2xl">
+>>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
               HEXIA
             </span>
           </a>
@@ -108,6 +117,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Language Switch */}
             <button
+<<<<<<< HEAD
               onClick={() => setLanguage(language === "EN" ? "中" : "EN")}
               className="flex size-10 items-center justify-center gap-1.5 rounded-lg text-sm font-medium text-white transition-colors hover:bg-white/10 hover:text-[#63AE30]"
               aria-label="Switch language"
@@ -115,14 +125,26 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
               <Globe className="size-4" />
               <span className="hidden sm:inline">{language}</span>
             </button>
+=======
+                onClick={toggleLocale}
+                className="hidden items-center gap-1.5 text-base font-medium text-white transition-colors hover:text-[#63AE30] sm:flex"
+              >
+                <Globe className="size-4" />
+                <span>{lang === "en" ? "中文" : "EN"}</span>
+              </button>
+>>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
 
             {/* Get a Quote Button */}
-            <a href="/contact">
+            <a href={getHrefWithLang("/contact", lang)}>
               <Button
                 className="hidden border-2 border-[#E9B35F] bg-transparent text-sm font-semibold text-[#E9B35F] transition-all duration-300 hover:scale-105 hover:text-white hover:border-white sm:inline-flex"
                 size="sm"
               >
+<<<<<<< HEAD
                 Get Quote
+=======
+                {t("common.getQuote", lang)}
+>>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
               </Button>
             </a>
 
@@ -155,6 +177,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
                 {item.label}
               </a>
             ))}
+<<<<<<< HEAD
             <div className="mt-2 flex items-center justify-center gap-3 px-4">
               <Button
                 className="w-full border-2 border-[#E9B35F] bg-transparent text-base font-semibold text-[#E9B35F] hover:bg-[#E9B35F] hover:text-white"
@@ -162,6 +185,24 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
               >
                 Get a Quote
               </Button>
+=======
+            <div className="mt-2 flex items-center gap-3 px-4">
+              <button
+                onClick={toggleLocale}
+                className="flex items-center gap-1.5 text-lg font-medium text-white"
+              >
+                <Globe className="size-4" />
+                <span>{lang === "en" ? "中文" : "EN"}</span>
+              </button>
+              <a href={getHrefWithLang("/contact", lang)}>
+                <Button
+                  className="border-2 border-[#E9B35F] bg-transparent text-[#E9B35F] hover:bg-[#E9B35F] hover:text-white"
+                  size="sm"
+                >
+                  {t("common.getQuote", lang)}
+                </Button>
+              </a>
+>>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
             </div>
           </nav>
         </div>

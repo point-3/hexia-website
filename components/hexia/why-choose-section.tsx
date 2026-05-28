@@ -2,63 +2,87 @@
 
 import { useState } from 'react'
 import { Users, Building2, Package, Factory, Shield, Globe, Sparkles, Wrench } from "lucide-react"
-
-const features = [
-  {
-    icon: Users,
-    title: "Professional Team",
-    description: "Core team with over 20 years of experience in nutrition raw material export industry.",
-  },
-  {
-    icon: Building2,
-    title: "Company Layout",
-    description: "Headquartered in Suzhou Free Trade Zone, with independent subsidiaries in Hong Kong and the UK.",
-  },
-  {
-    icon: Package,
-    title: "Complete Product Range",
-    description: "Cover amino acids, vitamins, minerals, pigments, enzyme preparations and special nutritional raw materials.",
-  },
-  {
-    icon: Factory,
-    title: "Independent Production Capacity",
-    description: "Self-owned production lines, supporting OEM & ODM for vitamin and mineral premix feed.",
-  },
-  {
-    icon: Shield,
-    title: "Strict Quality Control",
-    description: "Standard quality inspection system, stable batch purity and consistent quality.",
-  },
-  {
-    icon: Globe,
-    title: "Global Market Coverage",
-    description: "Serving Europe, America, Southeast Asia and other international markets.",
-  },
-  {
-    icon: Sparkles,
-    title: "One-stop Solution",
-    description: "Provide overall supply chain solutions for animal nutrition and food nutrition.",
-  },
-  {
-    icon: Wrench,
-    title: "Customized Service",
-    description: "Flexible packaging, formula customization and professional technical support.",
-  },
-]
+import { useSearchParams } from "next/navigation"
+import { t } from "@/lib/i18n"
 
 export function WhyChooseSection() {
+<<<<<<< HEAD
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
+=======
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
+
+  const features = [
+    {
+      icon: Users,
+      title: t("home.teamTitle", lang),
+      description: t("home.teamDesc", lang),
+    },
+    {
+      icon: Building2,
+      title: t("home.layoutTitle", lang),
+      description: t("home.layoutDesc", lang),
+    },
+    {
+      icon: Package,
+      title: t("home.rangeTitle", lang),
+      description: t("home.rangeDesc", lang),
+    },
+    {
+      icon: Factory,
+      title: t("home.capacityTitle", lang),
+      description: t("home.capacityDesc", lang),
+    },
+    {
+      icon: Shield,
+      title: t("home.qcTitle", lang),
+      description: t("home.qcDesc", lang),
+    },
+    {
+      icon: Globe,
+      title: t("home.marketTitle", lang),
+      description: t("home.marketDesc", lang),
+    },
+    {
+      icon: Sparkles,
+      title: t("home.solutionTitle", lang),
+      description: t("home.solutionDesc", lang),
+    },
+    {
+      icon: Wrench,
+      title: t("home.customTitle", lang),
+      description: t("home.customDesc", lang),
+    },
+  ]
+>>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
   return (
     <section className="bg-[#FDFBF7] py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
+<<<<<<< HEAD
         <div className="text-center mb-12 lg:mb-16">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1B4D3E]">
             Why Choose <span className="text-[#E9B35F]">Hexia</span>
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-[#636E72]">
             We deliver excellence through experience, comprehensive solutions, and global reach.
+=======
+        <div className="text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
+            {lang === "zh" ? (
+              <>
+                为什么选择 <span className="text-[var(--hexia-gold)]">禾夏</span>
+              </>
+            ) : (
+              <>
+                Why Choose <span className="text-[var(--hexia-gold)]">Hexia</span>
+              </>
+            )}
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
+            {t("home.whyChooseDesc", lang)}
+>>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
           </p>
         </div>
 

@@ -1,13 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { ChevronRight, Mail, Clock, Building2, Headphones, MapPin, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { createInquiry } from "@/lib/api/inquiries"
+import { toast } from "sonner"
+import { t, getHrefWithLang } from "@/lib/i18n"
 
-export default function ContactPage() {
+function ContactContent() {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,12 +23,39 @@ export default function ContactPage() {
     quantity: "",
     message: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setShowSuccess(true)
-    setTimeout(() => setShowSuccess(false), 3000)
+    setIsSubmitting(true)
+    try {
+      await createInquiry({
+        name: formData.name,
+        email: formData.email,
+        country: formData.country || undefined,
+        product_interest: formData.productInterest || undefined,
+        quantity: formData.quantity || undefined,
+        message: formData.message,
+        source_page: `Contact Page [${lang}]`,
+      })
+      toast.success(t("inquiry.successToast", lang))
+      setShowSuccess(true)
+      setFormData({
+        name: "",
+        email: "",
+        country: "",
+        productInterest: "",
+        quantity: "",
+        message: "",
+      })
+      setTimeout(() => setShowSuccess(false), 5000)
+    } catch (err: any) {
+      console.error(err)
+      toast.error(t("inquiry.errorToast", lang))
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -31,7 +65,7 @@ export default function ContactPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
           <div className="max-w-sm w-full rounded-xl bg-[#2D6A4F]/20 px-6 py-5 text-center backdrop-blur-sm">
             <p className="text-base font-medium text-[#2D6A4F]">
-              Thank you for your inquiry! We will contact you as soon as possible within 24 hours.
+              {t("inquiry.successToast", lang)}
             </p>
           </div>
         </div>
@@ -44,16 +78,16 @@ export default function ContactPage() {
           <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
             <div className="grid gap-6 lg:grid-cols-2">
               {/* Contact Form */}
-              <div className="rounded-xl bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-                <h2 className="text-lg font-bold text-[#1B4D3E] sm:text-xl">Send us a Message</h2>
-                <p className="mt-1 text-xs text-[#636E72] sm:text-sm">
-                  Fill out the form below and we&apos;ll get back to you as soon as possible.
+              <div className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
+                <h2 className="text-xl font-bold text-[#1B4D3E]">{t("inquiry.title", lang)}</h2>
+                <p className="mt-2 text-sm text-[#636E72]">
+                  {t("inquiry.subtitle", lang)}
                 </p>
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                   <div>
-                    <label htmlFor="name" className="block text-xs font-medium text-[#2D3436] sm:text-sm">
-                      Your Name <span className="text-red-500">*</span>
+                    <label htmlFor="name" className="block text-sm font-medium text-[#2D3436]">
+                      {t("inquiry.name", lang)} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -61,14 +95,15 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="mt-1 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-sm text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                      placeholder="Enter your name"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      placeholder={t("home.placeholderName", lang)}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-xs font-medium text-[#2D3436] sm:text-sm">
-                      Email Address <span className="text-red-500">*</span>
+                    <label htmlFor="email" className="block text-sm font-medium text-[#2D3436]">
+                      {t("inquiry.email", lang)} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
@@ -76,57 +111,60 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="mt-1 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-sm text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                      placeholder="your@email.com"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      placeholder={t("home.placeholderEmail", lang)}
                     />
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label htmlFor="country" className="block text-xs font-medium text-[#2D3436] sm:text-sm">
-                        Country
-                      </label>
-                      <input
-                        type="text"
-                        id="country"
-                        value={formData.country}
-                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                        className="mt-1 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-sm text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                        placeholder="Your country"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="productInterest" className="block text-xs font-medium text-[#2D3436] sm:text-sm">
-                        Interested Product
-                      </label>
-                      <input
-                        type="text"
-                        id="productInterest"
-                        value={formData.productInterest}
-                        onChange={(e) => setFormData({ ...formData, productInterest: e.target.value })}
-                        className="mt-1 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-sm text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                        placeholder="Product name"
-                      />
-                    </div>
+                  <div>
+                    <label htmlFor="country" className="block text-sm font-medium text-[#2D3436]">
+                      {t("inquiry.country", lang)}
+                    </label>
+                    <input
+                      type="text"
+                      id="country"
+                      value={formData.country}
+                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      placeholder={t("home.placeholderCountry", lang)}
+                    />
                   </div>
 
                   <div>
-                    <label htmlFor="quantity" className="block text-xs font-medium text-[#2D3436] sm:text-sm">
-                      Quantity
+                    <label htmlFor="productInterest" className="block text-sm font-medium text-[#2D3436]">
+                      {t("inquiry.product", lang)}
+                    </label>
+                    <input
+                      type="text"
+                      id="productInterest"
+                      value={formData.productInterest}
+                      onChange={(e) => setFormData({ ...formData, productInterest: e.target.value })}
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      placeholder={t("home.placeholderProduct", lang)}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="quantity" className="block text-sm font-medium text-[#2D3436]">
+                      {t("inquiry.quantity", lang)}
                     </label>
                     <input
                       type="text"
                       id="quantity"
                       value={formData.quantity}
                       onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                      className="mt-1 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-sm text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                      placeholder="Enter quantity"
+                      disabled={isSubmitting}
+                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      placeholder={t("home.placeholderQuantity", lang)}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-xs font-medium text-[#2D3436] sm:text-sm">
-                      Message / Requirement <span className="text-red-500">*</span>
+                    <label htmlFor="message" className="block text-sm font-medium text-[#2D3436]">
+                      {t("inquiry.message", lang)} <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="message"
@@ -134,23 +172,26 @@ export default function ContactPage() {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
-                      className="mt-1 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-sm text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
-                      placeholder="Please describe your requirements in detail..."
+                      disabled={isSubmitting}
+                      className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      placeholder={t("home.placeholderMessage", lang)}
                     />
                   </div>
 
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white disabled:opacity-50"
                   >
-                    Send Inquiry
+                    {isSubmitting ? t("inquiry.submitting", lang) : t("inquiry.submit", lang)}
                   </Button>
                 </form>
 
-                <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#2D6A4F]/5 p-3">
-                  <Clock className="size-4 text-[#2D6A4F]" />
-                  <span className="text-xs text-[#2D6A4F] font-medium sm:text-sm">We reply within 24 hours</span>
+                {/* Response time notice */}
+                <div className="mt-6 flex items-center justify-center gap-2 rounded-xl bg-[#2D6A4F]/5 p-4">
+                  <Clock className="size-5 text-[#2D6A4F]" />
+                  <span className="text-sm text-[#2D6A4F] font-medium">{t("inquiry.replyNotice", lang)}</span>
                 </div>
               </div>
 
@@ -163,14 +204,27 @@ export default function ContactPage() {
                       <Building2 className="size-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-[#1B4D3E]">Suzhou HQ</h3>
-                      <p className="text-xs text-[#636E72] sm:text-sm">China</p>
+                      <h3 className="font-semibold text-[#1B4D3E]">
+                        {lang === "zh" ? "苏州总部" : "Suzhou HQ"}
+                      </h3>
+                      <p className="text-sm text-[#636E72]">{lang === "zh" ? "中国" : "China"}</p>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-start gap-2">
-                    <MapPin className="mt-0.5 size-4 shrink-0 text-[#A3B18A]" />
-                    <p className="text-xs text-[#636E72] leading-relaxed sm:text-sm">
-                      Room 232A, Building A, No. 188 Suhong East Road, Suzhou Industrial Park, Suzhou Area, China (Jiangsu) Pilot Free Trade Zone
+                  <div className="mt-4 flex items-start gap-3">
+                    <MapPin className="mt-0.5 size-5 shrink-0 text-[#A3B18A]" />
+                    <p className="text-[#636E72]">
+                      {lang === "zh" ? (
+                        <>
+                          中国 (江苏) 自由贸易试验区苏州片区<br />
+                          苏州工业园区苏虹东路188号A幢232A室
+                        </>
+                      ) : (
+                        <>
+                          ROOM 232A, BUILDING A, NO. 188 SUHONG EAST ROAD,<br />
+                          SUZHOU INDUSTRIAL PARK, SUZHOU AREA,<br />
+                          CHINA (JIANGSU) PILOT FREE TRADE ZONE
+                        </>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -182,7 +236,7 @@ export default function ContactPage() {
                       <Mail className="size-5 text-[#1B4D3E]" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-[#1B4D3E]">Email</h3>
+                      <h3 className="font-semibold text-[#1B4D3E]">{lang === "zh" ? "电子邮箱" : "Email"}</h3>
                       <div className="mt-1 space-y-1">
                         <a
                           href="mailto:justin@hexiabio.com"
@@ -208,8 +262,8 @@ export default function ContactPage() {
                       <MessageCircle className="size-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-[#1B4D3E]">WeChat/WhatsApp</h3>
-                      <span className="text-xs text-[#2D6A4F] sm:text-sm">+86 138 6232 0011</span>
+                      <h3 className="font-semibold text-[#1B4D3E]">{lang === "zh" ? "微信 / WhatsApp" : "WeChat/WhatsApp"}</h3>
+                      <span className="text-[#2D6A4F]">+86 138 6232 0011</span>
                     </div>
                   </div>
                 </div>
@@ -221,12 +275,14 @@ export default function ContactPage() {
                       <Headphones className="size-5" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">7x24H Online Support</h3>
-                      <p className="text-xs text-white/80">We are always here to help</p>
+                      <h3 className="font-semibold">{t("home.onlineSupport", lang)}</h3>
+                      <p className="text-sm text-white/80">{lang === "zh" ? "随时为您提供帮助" : "We are always here to help"}</p>
                     </div>
                   </div>
-                  <p className="mt-3 text-xs text-white/70 leading-relaxed">
-                    Our team is available around the clock to assist you with any inquiries, technical questions, or urgent orders.
+                  <p className="mt-4 text-sm text-white/70">
+                    {lang === "zh"
+                      ? "我们的团队全天候为您服务，协助您进行任何查询、技术问题或紧急订单处理。"
+                      : "Our team is available around the clock to assist you with any inquiries, technical questions, or urgent orders."}
                   </p>
                 </div>
               </div>
@@ -237,5 +293,17 @@ export default function ContactPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <div className="text-[#636E72]">Loading...</div>
+      </div>
+    }>
+      <ContactContent />
+    </Suspense>
   )
 }

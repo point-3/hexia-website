@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { Navbar } from "@/components/hexia/navbar"
 import { HeroSection } from "@/components/hexia/hero-section"
 import { WhyChooseSection } from "@/components/hexia/why-choose-section"
@@ -10,41 +11,60 @@ import { Footer } from "@/components/hexia/footer"
 import { BackToTop } from "@/components/hexia/back-to-top"
 import { FloatingSidebar } from "@/components/hexia/floating-sidebar"
 
-export default function HomePage() {
+import { getBanners } from "@/lib/api/banners"
+import { getCategories, getSubcategories } from "@/lib/api/products"
+
+/** 首页含轮播图，须与 Directus 后台实时同步（避免换图后仍显示旧缓存） */
+export const dynamic = 'force-dynamic'
+
+export default async function HomePage() {
+  // 服务端并发获取数据模型
+  const [banners, categories, subcategories] = await Promise.all([
+    getBanners(),
+    getCategories(),
+    getSubcategories()
+  ])
+
   return (
-    <main className="min-h-screen home">
-      {/* Navigation */}
-      <Navbar variant="transparent" />
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <div className="text-[#636E72]">Loading...</div>
+      </div>
+    }>
+      <main className="min-h-screen home">
+        {/* Navigation */}
+        <Navbar variant="transparent" />
 
-      {/* Hero Section */}
-      <HeroSection />
+        {/* Hero Section */}
+        <HeroSection banners={banners} />
 
-      {/* Why Choose Hexia */}
-      <WhyChooseSection />
+        {/* Why Choose Hexia */}
+        <WhyChooseSection />
 
-      {/* Products Preview */}
-      <ProductsSection />
+        {/* Products Preview */}
+        <ProductsSection categories={categories} subcategories={subcategories} />
 
-      {/* About Us with Stats */}
-      <AboutSection />
+        {/* About Us with Stats */}
+        <AboutSection />
 
-      {/* Services */}
-      <ServicesSection />
+        {/* Services */}
+        <ServicesSection />
 
-      {/* Quote Form */}
-      <QuoteFormSection />
+        {/* Quote Form */}
+        <QuoteFormSection />
 
-      {/* Partners */}
-      <PartnersSection />
+        {/* Partners */}
+        <PartnersSection />
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer />
 
-      {/* Back to Top */}
-      <BackToTop />
+        {/* Back to Top */}
+        <BackToTop />
 
-      {/* Floating Sidebar */}
-      <FloatingSidebar />
-    </main>
+        {/* Floating Sidebar */}
+        <FloatingSidebar />
+      </main>
+    </Suspense>
   )
 }

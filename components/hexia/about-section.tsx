@@ -2,13 +2,8 @@
 
 import { ArrowRight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-
-const stats = [
-  { value: 20, suffix: "+", label: "Years Experience" },
-  { value: 642, suffix: "+", label: "Global Partners" },
-  { value: 175, suffix: "+", label: "Countries Served" },
-  { value: 24, suffix: "/7", label: "Online Support" },
-]
+import { useSearchParams } from "next/navigation"
+import { t, getHrefWithLang } from "@/lib/i18n"
 
 function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
   const [displayValue, setDisplayValue] = useState(0)
@@ -22,18 +17,18 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
           setHasAnimated(true)
           const duration = 2000
           const startTime = Date.now()
-          
+
           const animate = () => {
             const elapsed = Date.now() - startTime
             const progress = Math.min(elapsed / duration, 1)
             const easeOut = 1 - Math.pow(1 - progress, 3)
             setDisplayValue(Math.floor(value * easeOut))
-            
+
             if (progress < 1) {
               requestAnimationFrame(animate)
             }
           }
-          
+
           requestAnimationFrame(animate)
         }
       },
@@ -55,6 +50,16 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export function AboutSection() {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") || "en"
+
+  const stats = [
+    { value: 20, suffix: "+", label: t("home.statsExp", lang) },
+    { value: 642, suffix: "+", label: t("home.statsPartners", lang) },
+    { value: 175, suffix: "+", label: t("home.statsCountries", lang) },
+    { value: 24, suffix: "/7", label: t("home.statsSupport", lang) },
+  ]
+
   return (
     <section id="about" className="bg-[#FDFBF7] py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -62,26 +67,31 @@ export function AboutSection() {
           {/* Left Content */}
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
-              About <span className="text-[#E9B35F]">Hexia</span> (Suzhou) Biotech
+              {lang === "zh" ? (
+                <>
+                  关于 <span className="text-[#E9B35F]">禾夏</span> (苏州) 生物科技
+                </>
+              ) : (
+                <>
+                  About <span className="text-[#E9B35F]">Hexia</span> (Suzhou) Biotech
+                </>
+              )}
             </h2>
-            
+
             <div className="mt-6 space-y-4 text-pretty text-[#636E72] leading-relaxed">
               <p>
-                Hexia (Suzhou) is a growing trading company focusing on distribution 
-                of feed additives and food ingredients to international markets. Most of our team members have been in this business for over 20 years.
+                {t("home.aboutP1", lang)}
               </p>
               <p>
-                Established in 2023, headquartered in Suzhou Free Trade Zone, with 
-                branches in Japan and Hong Kong. We are committed to providing 
-                comprehensive solutions for global sourcing and supply chain management.
+                {t("home.aboutP2", lang)}
               </p>
             </div>
 
             <a
-              href="#"
+              href={getHrefWithLang("/about", lang)}
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
             >
-              Read More
+              {t("news.readMore", lang)}
               <ArrowRight className="size-4" />
             </a>
           </div>
