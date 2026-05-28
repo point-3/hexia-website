@@ -1,9 +1,5 @@
 import { type NextRequest } from 'next/server'
-
-const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL
-if (!directusUrl) {
-  throw new Error('NEXT_PUBLIC_DIRECTUS_URL 环境变量未配置，请检查 .env 文件！')
-}
+import { getDirectusUrl } from '@/lib/directus'
 
 /** GET 路由默认会被 Next 缓存；轮播换图必须每次向 Directus 拉最新字节 */
 export const dynamic = 'force-dynamic'
@@ -25,7 +21,7 @@ export async function GET(
   const upstreamParams = new URLSearchParams(request.nextUrl.searchParams)
   upstreamParams.delete('v')
   const query = upstreamParams.toString()
-  const upstreamUrl = `${directusUrl}/assets/${id}${query ? `?${query}` : ''}`
+  const upstreamUrl = `${getDirectusUrl()}/assets/${id}${query ? `?${query}` : ''}`
 
   const upstream = await fetch(upstreamUrl, {
     cache: 'no-store',

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
-import { getProductBySlug, getProducts } from "@/lib/api/products"
+import { getProductBySlugFromCms, getProductsFromCms } from "@/lib/api/cms-client"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
 import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
@@ -36,8 +36,8 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
       try {
         setLoading(true)
         const [currentProduct, productsList] = await Promise.all([
-          getProductBySlug(slug),
-          getProducts()
+          getProductBySlugFromCms(slug),
+          getProductsFromCms()
         ])
         setProduct(currentProduct)
         setAllProducts(productsList)

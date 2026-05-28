@@ -1,4 +1,4 @@
-import { createDirectus, rest } from '@directus/sdk';
+import { createDirectus, rest, type DirectusClient, type RestClient } from '@directus/sdk';
 
 export interface DirectusFile {
   id: string;
@@ -101,30 +101,45 @@ export interface Schema {
   inquiries: Inquiry[];
 }
 
-const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL;
-if (!directusUrl) {
-  // 禁止兜底默认值，必须抛出错误暴露缺失
-  throw new Error('NEXT_PUBLIC_DIRECTUS_URL 环境变量未配置，请检查您的 .env 文件！');
+export function getDirectusUrl(): string {
+  const directusUrl = process.env.DIRECTUS_URL;
+  if (!directusUrl) {
+    throw new Error('DIRECTUS_URL 环境变量未配置，请检查您的 .env 文件！');
+  }
+  return directusUrl;
 }
-
-export { directusUrl };
 
 /** CMS 内容读取：开发环境不缓存；生产环境 ISR 60 秒，后台更新后较快反映到前台 */
 const cmsFetchRevalidateSeconds = 60;
 
-export const directus = createDirectus<Schema>(directusUrl).with(
-  rest({
-    onRequest: (options) => {
-      if (process.env.NODE_ENV === 'development') {
-        return { ...options, cache: 'no-store' as RequestCache };
-      }
-      return {
-        ...options,
-        next: { revalidate: cmsFetchRevalidateSeconds },
-      };
-    },
-  }),
-);
+type DirectusRestClient = DirectusClient<Schema> & RestClient<Schema>;
+
+let directusClient: DirectusRestClient | null = null;
+
+function getDirectusClient() {
+  if (!directusClient) {
+    directusClient = createDirectus<Schema>(getDirectusUrl()).with(
+      rest({
+        onRequest: (options) => {
+          if (process.env.NODE_ENV === 'development') {
+            return { ...options, cache: 'no-store' as RequestCache };
+          }
+          return {
+            ...options,
+            next: { revalidate: cmsFetchRevalidateSeconds },
+          };
+        },
+      }),
+    ) as DirectusRestClient;
+  }
+  return directusClient;
+}
+
+export const directus = new Proxy({} as DirectusRestClient, {
+  get(_target, prop) {
+    return Reflect.get(getDirectusClient(), prop);
+  },
+});
 
 function getFileVersionToken(image: DirectusFile): string | null {
   const parts = [image.modified_on, image.uploaded_on, image.filesize, image.filename_download];

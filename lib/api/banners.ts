@@ -1,4 +1,4 @@
-import { directusUrl, type Banner } from '../directus';
+import { getDirectusUrl, type Banner } from '../directus';
 
 type DirectusListResponse<T> = {
   data?: T[];
@@ -25,7 +25,7 @@ export async function getBanners(): Promise<Banner[]> {
     _: Date.now().toString(),
   });
 
-  const response = await fetch(`${directusUrl}/items/banners?${params.toString()}`, {
+  const response = await fetch(`${getDirectusUrl()}/items/banners?${params.toString()}`, {
     cache: 'no-store',
     headers: {
       'Cache-Control': 'no-store',

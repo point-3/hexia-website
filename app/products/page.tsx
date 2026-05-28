@@ -10,7 +10,7 @@ import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 import { cn } from "@/lib/utils"
 import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
-import { getProducts, getCategories, getSubcategories } from "@/lib/api/products"
+import { getCategoriesFromCms, getProductsFromCms, getSubcategoriesFromCms } from "@/lib/api/cms-client"
 import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
 import { useLocale } from "@/hooks/use-locale"
 
@@ -49,9 +49,9 @@ function ProductsContent() {
       try {
         setLoading(true)
         const [rawProducts, rawCategories, rawSubcategories] = await Promise.all([
-          getProducts(),
-          getCategories(),
-          getSubcategories(),
+          getProductsFromCms(),
+          getCategoriesFromCms(),
+          getSubcategoriesFromCms(),
         ])
 
         setProducts(rawProducts)
