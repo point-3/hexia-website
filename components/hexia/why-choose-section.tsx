@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from 'react'
 import { Users, Building2, Package, Factory, Shield, Globe, Sparkles, Wrench } from "lucide-react"
 
 const features = [
@@ -46,43 +47,208 @@ const features = [
 ]
 
 export function WhyChooseSection() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+
   return (
-    <section className="bg-[#FDFBF7] pt-8 pb-20 lg:pt-12 lg:pb-28">
+    <section className="bg-[#FDFBF7] py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
-            Why Choose <span className="text-[var(--hexia-gold)]">Hexia</span>
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1B4D3E]">
+            Why Choose <span className="text-[#E9B35F]">Hexia</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
+          <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-[#636E72]">
             We deliver excellence through experience, comprehensive solutions, and global reach.
           </p>
         </div>
 
-        {/* Feature Cards */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature) => (
-            <div
-              key={feature.title}
-              className="group relative rounded-2xl border border-[var(--hexia-sage)] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-            >
-              {/* Icon */}
-              <div className="mb-4 inline-flex rounded-xl bg-[var(--hexia-forest)] p-3 text-white transition-colors group-hover:bg-[var(--hexia-gold)]">
-                <feature.icon className="size-5" />
+        {/* PC Layout - 2 rows with flex for hover expansion */}
+        <div className="hidden lg:block">
+          {/* Row 1: Cards 0-3 */}
+          <div className="flex gap-8 mb-8">
+            {features.slice(0, 4).map((feature, index) => {
+              const isHovered = hoveredIndex === index
+              const isOtherInRow = hoveredIndex !== null && hoveredIndex !== index && hoveredIndex < 4
+              
+              return (
+                <div
+                  key={index}
+                  className="relative"
+                  style={{
+                    flex: isHovered ? '0 0 calc(25% + 80px)' : isOtherInRow ? '1' : '1',
+                    transition: 'flex 0.5s ease-out'
+                  }}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  {/* Hover Background - Dark Green - Place before content so it shows underneath */}
+                  <div 
+                    className="absolute top-0 left-0 right-0 bottom-0 rounded-none shadow-xl"
+                    style={{
+                      backgroundColor: '#2D6A4F',
+                      opacity: isHovered ? 1 : 0,
+                      zIndex: 0,
+                      transition: 'opacity 0.5s ease-out',
+                      marginLeft: isHovered ? '-40px' : '0',
+                      marginRight: isHovered ? '-40px' : '0'
+                    }}
+                  />
+
+                  {/* Card Content - Higher z-index to stay above background */}
+                  <div className="relative min-h-[260px] p-6 lg:p-8 flex flex-col items-center justify-center z-10">
+                    {/* Icon */}
+                    <div 
+                      className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
+                      style={{
+                        backgroundColor: isHovered ? '#E9B35F' : 'rgba(45, 106, 79, 0.1)',
+                        color: isHovered ? '#ffffff' : '#2D6A4F'
+                      }}
+                    >
+                      <feature.icon className="w-7 h-7" strokeWidth={1.5} />
+                    </div>
+
+                    {/* Title */}
+                    <h3 
+                      className="text-base font-semibold text-center mb-3 uppercase tracking-wide"
+                      style={{
+                        color: isHovered ? '#ffffff' : '#1B4D3E',
+                        transition: 'color 0.5s ease-out'
+                      }}
+                    >
+                      {feature.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p 
+                      className="text-sm text-center leading-relaxed"
+                      style={{
+                        opacity: isHovered ? 1 : 0,
+                        color: isHovered ? 'rgba(255,255,255,0.9)' : '#636E72',
+                        transition: 'opacity 0.5s ease-out, color 0.5s ease-out'
+                      }}
+                    >
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Row 2: Cards 4-7 */}
+          <div className="flex gap-8">
+            {features.slice(4, 8).map((feature, index) => {
+              const actualIndex = index + 4
+              const isHovered = hoveredIndex === actualIndex
+              const isOtherInRow = hoveredIndex !== null && hoveredIndex >= 4 && hoveredIndex !== actualIndex
+              
+              return (
+                <div
+                  key={actualIndex}
+                  className="relative"
+                  style={{
+                    flex: isHovered ? '0 0 calc(25% + 80px)' : isOtherInRow ? '1' : '1',
+                    transition: 'flex 0.5s ease-out'
+                  }}
+                  onMouseEnter={() => setHoveredIndex(actualIndex)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  {/* Hover Background - Dark Green - Place before content so it shows underneath */}
+                  <div 
+                    className="absolute top-0 left-0 right-0 bottom-0 rounded-none shadow-xl"
+                    style={{
+                      backgroundColor: '#2D6A4F',
+                      opacity: isHovered ? 1 : 0,
+                      zIndex: 0,
+                      transition: 'opacity 0.5s ease-out',
+                      marginLeft: isHovered ? '-40px' : '0',
+                      marginRight: isHovered ? '-40px' : '0'
+                    }}
+                  />
+
+                  {/* Card Content - Higher z-index to stay above background */}
+                  <div className="relative min-h-[260px] p-6 lg:p-8 flex flex-col items-center justify-center z-10">
+                    {/* Icon */}
+                    <div 
+                      className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
+                      style={{
+                        backgroundColor: isHovered ? '#E9B35F' : 'rgba(45, 106, 79, 0.1)',
+                        color: isHovered ? '#ffffff' : '#2D6A4F'
+                      }}
+                    >
+                      <feature.icon className="w-7 h-7" strokeWidth={1.5} />
+                    </div>
+
+                    {/* Title */}
+                    <h3 
+                      className="text-base font-semibold text-center mb-3 uppercase tracking-wide"
+                      style={{
+                        color: isHovered ? '#ffffff' : '#1B4D3E',
+                        transition: 'color 0.5s ease-out'
+                      }}
+                    >
+                      {feature.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p 
+                      className="text-sm text-center leading-relaxed"
+                      style={{
+                        opacity: isHovered ? 1 : 0,
+                        color: isHovered ? 'rgba(255,255,255,0.9)' : '#636E72',
+                        transition: 'opacity 0.5s ease-out, color 0.5s ease-out'
+                      }}
+                    >
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Mobile/Tablet Layout - Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-6">
+          {features.map((feature, index) => {
+            const isHovered = hoveredIndex === index
+            
+            return (
+              <div
+                key={index}
+                className="relative min-h-[260px] p-6 lg:p-8 flex flex-col items-center justify-center"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                {/* Icon */}
+                <div 
+                  className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
+                  style={{
+                    backgroundColor: isHovered ? '#E9B35F' : 'rgba(45, 106, 79, 0.1)',
+                    color: isHovered ? '#ffffff' : '#2D6A4F'
+                  }}
+                >
+                  <feature.icon className="w-7 h-7" strokeWidth={1.5} />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-base font-semibold text-center text-[#1B4D3E] mb-3 uppercase tracking-wide">
+                  {feature.title}
+                </h3>
+
+                {/* Description */}
+                <p 
+                  className="text-sm text-center text-[#636E72] leading-relaxed"
+                  style={{
+                    opacity: isHovered ? 1 : 0,
+                    transition: 'opacity 0.5s ease-out'
+                  }}
+                >
+                  {feature.description}
+                </p>
               </div>
-
-              {/* Content */}
-              <h3 className="text-base font-semibold text-[var(--hexia-forest-dark)]">
-                {feature.title}
-              </h3>
-              <p className="mt-2 text-sm text-pretty text-[#636E72]">
-                {feature.description}
-              </p>
-
-              {/* Decorative Element */}
-              <div className="absolute bottom-0 left-0 h-1 w-0 rounded-b-2xl bg-[var(--hexia-gold)] transition-all duration-300 group-hover:w-full" />
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>

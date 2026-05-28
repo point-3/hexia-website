@@ -63,7 +63,6 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
@@ -130,4 +129,9 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Force white background for View All Products card */
+.force-white-bg {
+  background-color: #ffffff !important;
 }

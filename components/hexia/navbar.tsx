@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { Menu, X, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -74,22 +75,29 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
       className={`fixed left-0 right-0 z-50 transition-all duration-300 shadow-sm top-0 ${isTransparent ? "header-transparent" : ""}`}
       style={headerStyle}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className={`flex items-center justify-between transition-all duration-300 ${isSticky ? "h-[60px]" : "h-16 lg:h-20"}`}>
+      <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
+        <div className={`flex items-center justify-between transition-all duration-300 ${isSticky ? "h-[56px]" : "h-14 lg:h-20"}`}>
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold leading-tight text-white lg:text-2xl">
+          <a href="/" className="flex items-center gap-2" aria-label="Hexia homepage">
+            <Image
+              src="/images/金logo-03.svg"
+              alt="Hexia Logo"
+              width={28}
+              height={28}
+              className="h-auto w-auto sm:w-8"
+            />
+            <span className="text-lg font-bold leading-tight text-[#E9B35F] sm:text-xl lg:text-2xl">
               HEXIA
             </span>
           </a>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex lg:items-center lg:gap-8">
+          <nav className="hidden lg:flex lg:items-center lg:gap-6 xl:gap-8">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="relative text-base text-white transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-[#E9B35F] after:transition-all after:duration-300 hover:text-[#63AE30] hover:after:w-full"
+                className="relative text-sm text-white transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-[#E9B35F] after:transition-all after:duration-300 hover:text-[#63AE30] hover:after:w-full lg:text-base"
               >
                 {item.label}
               </a>
@@ -97,15 +105,16 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Language Switch */}
             <button
-                onClick={() => setLanguage(language === "EN" ? "中" : "EN")}
-                className="hidden items-center gap-1.5 text-base font-medium text-white transition-colors hover:text-[#63AE30] sm:flex"
-              >
-                <Globe className="size-4" />
-                <span>{language}</span>
-              </button>
+              onClick={() => setLanguage(language === "EN" ? "中" : "EN")}
+              className="flex size-10 items-center justify-center gap-1.5 rounded-lg text-sm font-medium text-white transition-colors hover:bg-white/10 hover:text-[#63AE30]"
+              aria-label="Switch language"
+            >
+              <Globe className="size-4" />
+              <span className="hidden sm:inline">{language}</span>
+            </button>
 
             {/* Get a Quote Button */}
             <a href="/contact">
@@ -113,14 +122,14 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
                 className="hidden border-2 border-[#E9B35F] bg-transparent text-sm font-semibold text-[#E9B35F] transition-all duration-300 hover:scale-105 hover:text-white hover:border-white sm:inline-flex"
                 size="sm"
               >
-                Get a Quote
+                Get Quote
               </Button>
             </a>
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex items-center justify-center text-white transition-colors lg:hidden"
+              className="flex size-10 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10 lg:hidden"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -132,36 +141,27 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
         <div
           className={cn(
             "overflow-hidden transition-all duration-300 lg:hidden",
-            isMobileMenuOpen ? "max-h-96 pb-4" : "max-h-0"
+            isMobileMenuOpen ? "max-h-[500px] pb-4" : "max-h-0"
           )}
         >
-          <nav className="flex flex-col gap-2 pt-2">
+          <nav className="flex flex-col gap-1 pt-2">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="rounded-lg px-4 py-2 text-sm text-white transition-colors hover:bg-[#63AE30]/10 hover:text-[#63AE30]"
+                className="flex size-12 items-center rounded-lg px-4 text-base text-white transition-colors hover:bg-[#63AE30]/10 hover:text-[#63AE30]"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
-            <div className="mt-2 flex items-center gap-3 px-4">
-              <button
-                onClick={() => setLanguage(language === "EN" ? "中" : "EN")}
-                className="flex items-center gap-1.5 text-lg font-medium text-white"
+            <div className="mt-2 flex items-center justify-center gap-3 px-4">
+              <Button
+                className="w-full border-2 border-[#E9B35F] bg-transparent text-base font-semibold text-[#E9B35F] hover:bg-[#E9B35F] hover:text-white"
+                size="lg"
               >
-                <Globe className="size-4" />
-                <span>{language}</span>
-              </button>
-              <a href="/contact">
-                <Button
-                  className="border-2 border-[#E9B35F] bg-transparent text-[#E9B35F] hover:bg-[#E9B35F] hover:text-white"
-                  size="sm"
-                >
-                  Get a Quote
-                </Button>
-              </a>
+                Get a Quote
+              </Button>
             </div>
           </nav>
         </div>

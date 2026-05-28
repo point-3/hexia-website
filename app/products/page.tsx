@@ -466,12 +466,12 @@ function ProductsContent() {
                   <p className="mt-2 text-sm text-[#636E72]">Total products: {products.length}</p>
                 </div>
               ) : (
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {filteredProducts.map((product, index) => (
                     <Link
                       key={index}
                       href={`/products/${encodeURIComponent(generateProductId(product, index))}?name=${encodeURIComponent(product?.productname || "")}`}
-                      className="group overflow-hidden rounded-xl border border-[#A3B18A] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                      className="group flex flex-col overflow-hidden rounded-xl border border-[#A3B18A] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                     >
                       <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
                         <Image
@@ -485,19 +485,19 @@ function ProductsContent() {
                           }}
                         />
                       </div>
-                      <div className="p-4">
+                      <div className="flex flex-1 flex-col p-3 sm:p-4">
                         <span className="text-xs font-medium text-[#2D6A4F]">
                           {translateCategory(product?.["二级分类"]) || product?.category1 || "Others"}
                         </span>
-                        <h3 className="mt-1 font-semibold text-[#1B4D3E] group-hover:text-[#2D6A4F] line-clamp-2">
+                        <h3 className="mt-1 flex-1 font-semibold text-sm text-[#1B4D3E] group-hover:text-[#2D6A4F] line-clamp-2">
                           {product?.producttitle || "Untitled Product"}
                         </h3>
-                        <p className="mt-1 text-sm text-[#636E72] line-clamp-2">
+                        <p className="mt-1 text-xs text-[#636E72] line-clamp-2 sm:text-sm">
                           {product?.productdescription || ""}
                         </p>
                         <Button
                           size="sm"
-                          className="mt-3 bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white"
+                          className="mt-3 w-full bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white"
                         >
                           Inquiry
                         </Button>

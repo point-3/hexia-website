@@ -8,6 +8,7 @@ import { QuoteFormSection } from "@/components/hexia/quote-form-section"
 import { PartnersSection } from "@/components/hexia/partners-section"
 import { Footer } from "@/components/hexia/footer"
 import { BackToTop } from "@/components/hexia/back-to-top"
+import { FloatingSidebar } from "@/components/hexia/floating-sidebar"
 
 export default function HomePage() {
   return (
@@ -41,6 +42,9 @@ export default function HomePage() {
 
       {/* Back to Top */}
       <BackToTop />
+
+      {/* Floating Sidebar */}
+      <FloatingSidebar />
     </main>
   )
 }

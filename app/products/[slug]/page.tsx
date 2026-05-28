@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 
-// Chinese to English category translation dictionary
 const categoryMap: Record<string, string> = {
   "氨基酸": "Amino Acids",
   "维生素": "Vitamins",
@@ -35,7 +34,6 @@ type Product = {
   productdescription?: string
 }
 
-// Translate Chinese category to English
 const translateCategory = (chineseName: string | undefined): string => {
   if (!chineseName) return "Others"
   return categoryMap[chineseName] || chineseName
@@ -60,7 +58,6 @@ export default function ProductDetailPage() {
           const validProducts = data.filter((p: Product) => p.productname && p.productname.trim() !== "")
           setAllProducts(validProducts)
 
-          // Find product by name or slug
           const slug = params?.slug || ""
           const currentProduct = validProducts.find((p: Product) => 
             p.productname === productName ||
@@ -92,7 +89,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen bg-[#FDFBF7]">
         <Navbar />
         <main className="pt-32 lg:pt-36">
-          <div className="mx-auto max-w-7xl px-4 py-12 text-center">
+          <div className="mx-auto max-w-7xl px-3 py-12 text-center">
             <div className="text-[#636E72]">Loading product...</div>
           </div>
         </main>
@@ -106,8 +103,8 @@ export default function ProductDetailPage() {
       <div className="min-h-screen bg-[#FDFBF7]">
         <Navbar />
         <main className="pt-32 lg:pt-36">
-          <div className="mx-auto max-w-7xl px-4 py-12 text-center">
-            <h1 className="text-2xl font-bold text-[#1B4D3E]">Product not found</h1>
+          <div className="mx-auto max-w-7xl px-3 py-12 text-center">
+            <h1 className="text-xl font-bold text-[#1B4D3E] sm:text-2xl">Product not found</h1>
             <Link href="/products" className="mt-4 inline-block text-[#2D6A4F] hover:underline">
               Back to products
             </Link>
@@ -122,21 +119,21 @@ export default function ProductDetailPage() {
     <div className="min-h-screen bg-[#FDFBF7]">
       <Navbar />
       <main className="pt-20 lg:pt-24">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+        <div className="mx-auto max-w-7xl px-3 py-6 sm:px-4 lg:px-6 lg:py-10">
           {/* Breadcrumb */}
-          <nav className="mb-8 flex items-center gap-2 text-sm">
+          <nav className="mb-6 flex items-center gap-1.5 text-xs sm:text-sm">
             <Link href="/" className="text-[#636E72] hover:text-[#2D6A4F]">Home</Link>
-            <ChevronRight className="size-4 text-[#636E72]" />
+            <ChevronRight className="size-3 sm:size-4 text-[#636E72]" />
             <Link href="/products" className="text-[#636E72] hover:text-[#2D6A4F]">Products</Link>
-            <ChevronRight className="size-4 text-[#636E72]" />
-            <span className="font-medium text-[#2D6A4F]">{product.producttitle}</span>
+            <ChevronRight className="size-3 sm:size-4 text-[#636E72]" />
+            <span className="font-medium text-[#2D6A4F] truncate max-w-[150px] sm:max-w-none">{product.producttitle}</span>
           </nav>
 
           {/* Product Header */}
-          <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
             {/* Image */}
             <div>
-              <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#A3B18A] bg-white">
+              <div className="relative aspect-square overflow-hidden rounded-xl border border-[#A3B18A] bg-white">
                 <Image
                   src={`/images/${product.imagename}`}
                   alt={product.producttitle}
@@ -151,94 +148,98 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Product Info */}
-            <div>
-              <span className="inline-block rounded-full bg-[#2D6A4F]/10 px-3 py-1 text-sm font-medium text-[#2D6A4F]">
+            <div className="flex flex-col">
+              <span className="inline-block rounded-full bg-[#2D6A4F]/10 px-3 py-1 text-xs font-medium text-[#2D6A4F] sm:text-sm">
                 {translateCategory(product["二级分类"]) || product.category1}
               </span>
-              <h1 className="mt-3 text-3xl font-bold text-[#1B4D3E] lg:text-4xl">{product.producttitle}</h1>
-              <p className="mt-2 text-lg text-[#636E72]">{product.productname}</p>
+              <h1 className="mt-3 text-2xl font-bold text-[#1B4D3E] sm:text-3xl lg:text-4xl">{product.producttitle}</h1>
+              <p className="mt-2 text-sm text-[#636E72] sm:text-base">{product.productname}</p>
 
-              <Button
-                size="lg"
-                className="mt-6 w-full bg-[#E9B35F] py-6 text-lg font-semibold text-[#1B4D3E] transition-all hover:bg-[#2D6A4F] hover:text-white sm:w-auto sm:px-12"
-              >
-                Request Quote
-              </Button>
+              <div className="mt-auto">
+                <Button
+                  size="lg"
+                  className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all hover:bg-[#2D6A4F] hover:text-white sm:w-auto sm:px-10 lg:text-lg"
+                >
+                  Request Quote
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Full Description */}
-          <div className="mt-12 rounded-2xl border border-[#A3B18A] bg-white p-6 lg:p-8">
-            <h2 className="mb-4 text-xl font-bold text-[#1B4D3E]">Product Description</h2>
+          <div className="mt-8 rounded-xl border border-[#A3B18A] bg-white p-4 sm:p-6 lg:p-8">
+            <h2 className="mb-3 text-lg font-bold text-[#1B4D3E] sm:text-xl">Product Description</h2>
             <div className="prose prose-sm max-w-none text-[#636E72]">
-              <p className="leading-relaxed whitespace-pre-line">{product.productdescription}</p>
+              <p className="text-sm leading-relaxed whitespace-pre-line sm:text-base">{product.productdescription}</p>
             </div>
           </div>
 
           {/* Inquiry Form */}
-          <div className="mt-12 rounded-2xl border border-[#A3B18A] bg-white p-6 lg:p-8">
-            <h2 className="mb-2 text-xl font-bold text-[#1B4D3E]">Send Inquiry</h2>
-            <p className="mb-6 text-sm text-[#636E72]">Interested in this product? Fill out the form below and we&apos;ll get back to you.</p>
+          <div className="mt-8 rounded-xl border border-[#A3B18A] bg-white p-4 sm:p-6 lg:p-8">
+            <h2 className="mb-2 text-lg font-bold text-[#1B4D3E] sm:text-xl">Send Inquiry</h2>
+            <p className="mb-4 text-xs text-[#636E72] sm:text-sm">Interested in this product? Fill out the form below and we&apos;ll get back to you.</p>
 
-            <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-[#2D3436]">Name</label>
+                <label htmlFor="name" className="block text-xs font-medium text-[#2D3436] sm:text-sm">Name</label>
                 <input
                   type="text"
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="mt-1 w-full rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                  className="mt-1 w-full rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-sm text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                  placeholder="Your name"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#2D3436]">Email</label>
+                <label htmlFor="email" className="block text-xs font-medium text-[#2D3436] sm:text-sm">Email</label>
                 <input
                   type="email"
                   id="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="mt-1 w-full rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                  className="mt-1 w-full rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-sm text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                  placeholder="your@email.com"
                 />
               </div>
               <div className="sm:col-span-2">
-                <label htmlFor="message" className="block text-sm font-medium text-[#2D3436]">Message</label>
+                <label htmlFor="message" className="block text-xs font-medium text-[#2D3436] sm:text-sm">Message</label>
                 <textarea
                   id="message"
-                  rows={4}
+                  rows={3}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="mt-1 w-full resize-none rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                  className="mt-1 w-full resize-none rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-sm text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
                   placeholder="Please describe your requirements..."
                 />
               </div>
               <div className="sm:col-span-2">
-                <Button type="submit" className="bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white">
+                <Button type="submit" className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white">
                   Submit Inquiry
                 </Button>
               </div>
             </form>
 
-            <div className="mt-4 flex items-center gap-2 text-sm text-[#636E72]">
-              <Headphones className="size-4 text-[#2D6A4F]" />
+            <div className="mt-3 flex items-center gap-2 text-xs text-[#636E72] sm:text-sm">
+              <Headphones className="size-3 sm:size-4 text-[#2D6A4F]" />
               <span>7x24H Online Support</span>
             </div>
           </div>
 
           {/* Related Products */}
           {relatedProducts.length > 0 && (
-            <div className="mt-12">
-              <h2 className="mb-6 text-xl font-bold text-[#1B4D3E]">Related Products</h2>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8">
+              <h2 className="mb-4 text-lg font-bold text-[#1B4D3E] sm:text-xl">Related Products</h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {relatedProducts.map((item, index) => (
                   <Link
                     key={index}
                     href={`/products/${encodeURIComponent(item.productname?.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '') || `product-${index}`)}?name=${encodeURIComponent(item.productname || "")}`}
-                    className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#A3B18A] bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+                    className="group flex flex-col overflow-hidden rounded-xl border border-[#A3B18A] bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
                   >
-                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F5F3EF]">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
                       <Image
                         src={`/images/${item.imagename}`}
                         alt={item.producttitle}
@@ -250,19 +251,19 @@ export default function ProductDetailPage() {
                         }}
                       />
                     </div>
-                    <div className="flex flex-1 flex-col p-4">
+                    <div className="flex flex-1 flex-col p-3 sm:p-4">
                       <span className="text-xs font-medium text-[#2D6A4F]">
                         {translateCategory(item["二级分类"]) || item.category1}
                       </span>
-                      <h3 className="mt-1 flex-1 font-semibold text-[#1B4D3E] group-hover:text-[#2D6A4F] line-clamp-2">
+                      <h3 className="mt-1 flex-1 text-sm font-semibold text-[#1B4D3E] group-hover:text-[#2D6A4F] line-clamp-2">
                         {item.producttitle}
                       </h3>
-                      <p className="mt-2 text-sm text-[#636E72] line-clamp-2">
+                      <p className="mt-1 text-xs text-[#636E72] line-clamp-2 sm:text-sm">
                         {item.productdescription}
                       </p>
                       <Button
                         size="sm"
-                        className="mt-3 w-full bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white"
+                        className="mt-2 w-full bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white"
                       >
                         Inquiry
                       </Button>

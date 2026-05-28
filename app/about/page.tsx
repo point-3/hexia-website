@@ -3,17 +3,11 @@
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ChevronRight, Target, Award, GraduationCap, MapPin, Users } from "lucide-react"
+import { ChevronRight, Target, Award, GraduationCap, MapPin } from "lucide-react"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 import { PartnersSection } from "@/components/hexia/partners-section"
 import { AboutHeroSection } from "@/components/hexia/about-hero-section"
-
-const teamActivities = [
-  { title: "Team Building", image: "/images/hexia-team.jpg" },
-  { title: "Annual Meetings", image: "/images/hexia-team.jpg" },
-  { title: "Training Programs", image: "/images/hexia-team.jpg" },
-]
 
 function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
   const [count, setCount] = useState(0)
@@ -186,43 +180,6 @@ export default function AboutPage() {
 
         {/* Partners */}
         <PartnersSection />
-
-        {/* Team Activities */}
-        <section className="py-16 lg:py-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#E9B35F]">
-                <Users className="size-8 text-[#1B4D3E]" />
-              </div>
-              <h2 className="mt-6 text-2xl font-bold text-[#1B4D3E] sm:text-3xl">Team Activities</h2>
-              <p className="mx-auto mt-4 max-w-2xl text-[#636E72]">
-                Building a strong team culture through various activities and events
-              </p>
-            </div>
-
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {teamActivities.map((activity) => (
-                <div
-                  key={activity.title}
-                  className="group overflow-hidden rounded-2xl border border-[#A3B18A] bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <Image
-                      src={activity.image}
-                      alt={activity.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1B4D3E]/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4">
-                      <h3 className="text-lg font-semibold text-white">{activity.title}</h3>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />
