@@ -81,9 +81,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
     >
       <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
         <div className={`flex items-center justify-between transition-all duration-300 ${isSticky ? "h-[56px]" : "h-14 lg:h-20"}`}>
-          {/* Logo */}
-<<<<<<< HEAD
-          <a href="/" className="flex items-center gap-2" aria-label="Hexia homepage">
+          <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label="Hexia homepage">
             <Image
               src="/images/金logo-03.svg"
               alt="Hexia Logo"
@@ -92,15 +90,10 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
               className="h-auto w-auto sm:w-8"
             />
             <span className="text-lg font-bold leading-tight text-[#E9B35F] sm:text-xl lg:text-2xl">
-=======
-          <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2">
-            <span className="text-xl font-bold leading-tight text-white lg:text-2xl">
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
               HEXIA
             </span>
           </a>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex lg:items-center lg:gap-6 xl:gap-8">
             {navItems.map((item) => (
               <a
@@ -113,42 +106,25 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
             ))}
           </nav>
 
-          {/* Right Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Switch */}
             <button
-<<<<<<< HEAD
-              onClick={() => setLanguage(language === "EN" ? "中" : "EN")}
-              className="flex size-10 items-center justify-center gap-1.5 rounded-lg text-sm font-medium text-white transition-colors hover:bg-white/10 hover:text-[#63AE30]"
+              onClick={toggleLocale}
+              className="hidden items-center gap-1.5 text-base font-medium text-white transition-colors hover:text-[#63AE30] sm:flex"
               aria-label="Switch language"
             >
               <Globe className="size-4" />
-              <span className="hidden sm:inline">{language}</span>
+              <span>{lang === "en" ? "中文" : "EN"}</span>
             </button>
-=======
-                onClick={toggleLocale}
-                className="hidden items-center gap-1.5 text-base font-medium text-white transition-colors hover:text-[#63AE30] sm:flex"
-              >
-                <Globe className="size-4" />
-                <span>{lang === "en" ? "中文" : "EN"}</span>
-              </button>
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
 
-            {/* Get a Quote Button */}
             <a href={getHrefWithLang("/contact", lang)}>
               <Button
                 className="hidden border-2 border-[#E9B35F] bg-transparent text-sm font-semibold text-[#E9B35F] transition-all duration-300 hover:scale-105 hover:text-white hover:border-white sm:inline-flex"
                 size="sm"
               >
-<<<<<<< HEAD
-                Get Quote
-=======
                 {t("common.getQuote", lang)}
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
               </Button>
             </a>
 
-            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="flex size-10 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10 lg:hidden"
@@ -159,7 +135,6 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <div
           className={cn(
             "overflow-hidden transition-all duration-300 lg:hidden",
@@ -177,15 +152,6 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
                 {item.label}
               </a>
             ))}
-<<<<<<< HEAD
-            <div className="mt-2 flex items-center justify-center gap-3 px-4">
-              <Button
-                className="w-full border-2 border-[#E9B35F] bg-transparent text-base font-semibold text-[#E9B35F] hover:bg-[#E9B35F] hover:text-white"
-                size="lg"
-              >
-                Get a Quote
-              </Button>
-=======
             <div className="mt-2 flex items-center gap-3 px-4">
               <button
                 onClick={toggleLocale}
@@ -202,7 +168,6 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
                   {t("common.getQuote", lang)}
                 </Button>
               </a>
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
             </div>
           </nav>
         </div>

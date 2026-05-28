@@ -7,70 +7,64 @@ import { getFileUrl, Category, Subcategory } from "@/lib/directus"
 import { useSearchParams } from "next/navigation"
 import { t, getHrefWithLang } from "@/lib/i18n"
 
-<<<<<<< HEAD
-const products = [
-  {
-    title: "Feed Additives",
-    image: "/images/feed1.jpg",
-    items: ["Amino Acids", "Vitamins", "Minerals"],
-  },
-  {
-    title: "Food Additives",
-    image: "/images/food1.jpg",
-    items: ["Sweeteners", "Preservatives", "Colorants"],
-  },
-  {
-    title: "Nutritional Products",
-    image: "/images/nutri.jpg",
-    items: ["NMN", "L-EGT", "Functional Ingredients"],
-  },
-  {
-    title: "Nutri. Ingredients",
-    image: "/images/nutri (2).png",
-    items: ["Nutraceutical Ingredients"],
-  },
-]
-=======
 interface ProductsSectionProps {
-  categories: Category[]
-  subcategories: Subcategory[]
+  categories?: Category[]
+  subcategories?: Subcategory[]
 }
 
 export function ProductsSection({ categories, subcategories }: ProductsSectionProps) {
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") || "en"
 
-  // 严格执行禁止兜底原则：若必需的数据参数为空或未定义，则直接报错退出
-  if (!categories || categories.length === 0) {
-    throw new Error("ProductsSection: 缺少必须的 categories 数据或为空！")
-  }
-  if (!subcategories) {
-    throw new Error("ProductsSection: 缺少必须的 subcategories 数据！")
-  }
+  const fallbackProducts = [
+    {
+      id: "1",
+      title: lang === "zh" ? "饲料添加剂" : "Feed Additives",
+      image: "/images/feed1.jpg",
+      items: lang === "zh" ? ["氨基酸", "维生素", "矿物质"] : ["Amino Acids", "Vitamins", "Minerals"],
+    },
+    {
+      id: "2",
+      title: lang === "zh" ? "食品添加剂" : "Food Additives",
+      image: "/images/food1.jpg",
+      items: lang === "zh" ? ["甜味剂", "防腐剂", "着色剂"] : ["Sweeteners", "Preservatives", "Colorants"],
+    },
+    {
+      id: "3",
+      title: lang === "zh" ? "营养产品" : "Nutritional Products",
+      image: "/images/nutri.jpg",
+      items: lang === "zh" ? ["NMN", "L-EGT", "功能成分"] : ["NMN", "L-EGT", "Functional Ingredients"],
+    },
+    {
+      id: "4",
+      title: lang === "zh" ? "营养成分" : "Nutri. Ingredients",
+      image: "/images/nutri (2).png",
+      items: lang === "zh" ? ["营养保健品成分"] : ["Nutraceutical Ingredients"],
+    },
+  ]
 
-  // 整理数据，为每个一级分类分配其所属的前 3 个二级分类
-  const displayProducts = categories.map((category) => {
-    const matchedSubs = subcategories
-      .filter((sub) => {
-        const catId = typeof sub.category_id === "object" ? sub.category_id.id : sub.category_id
-        return catId === category.id
+  const displayProducts = categories && categories.length > 0 && subcategories
+    ? categories.map((category) => {
+        const matchedSubs = subcategories
+          .filter((sub) => {
+            const catId = typeof sub.category_id === "object" ? sub.category_id.id : sub.category_id
+            return catId === category.id
+          })
+          .slice(0, 3)
+          .map((sub) => (lang === "zh" ? sub.name_cn : sub.name))
+
+        return {
+          id: category.id,
+          title: lang === "zh" ? category.name_cn : category.name,
+          image: category.image ? getFileUrl(category.image) : undefined,
+          items: matchedSubs.length > 0 ? matchedSubs : ["..."],
+        }
       })
-      .slice(0, 3)
-      .map((sub) => (lang === "zh" ? sub.name_cn : sub.name))
-
-    return {
-      id: category.id,
-      title: lang === "zh" ? category.name_cn : category.name,
-      image: getFileUrl(category.image),
-      items: matchedSubs,
-    }
-  })
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
+    : fallbackProducts
 
   return (
     <section id="products" className="bg-[#FDFBF7] py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
             {lang === "zh" ? (
@@ -88,79 +82,26 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
           </p>
         </div>
 
-        {/* Product Cards */}
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-<<<<<<< HEAD
-          {products.map((product, index) => (
+          {displayProducts.map((product) => (
             <a
-              key={index}
-              href="/products"
-              className={`group relative overflow-hidden p-4 transition-all duration-300 hover:shadow-xl bg-white`}
+              key={product.id}
+              href={getHrefWithLang("/products", lang)}
+              className="group relative overflow-hidden p-4 transition-all duration-300 hover:shadow-xl bg-white"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
                 <Image
-                  src={product.image}
+                  src={product.image || "/images/nutri.jpg"}
                   alt={product.title}
                   fill
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-=======
-          {displayProducts.map((product) => (
-            <div
-              key={product.id}
-              className="group overflow-hidden bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between"
-            >
-              <div>
-                {/* Image */}
-                {product.image && (
-                  <div className="relative aspect-[4/3] overflow-hidden bg-[#E5E5E5]">
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--hexia-forest-dark)]/60 to-transparent" />
-                  </div>
-                )}
-
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-[var(--hexia-forest-dark)]">
-                    {product.title}
-                  </h3>
-
-                  <ul className="mt-3 space-y-1.5">
-                    {product.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-center gap-2 text-sm text-[#636E72]"
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--hexia-gold)]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="p-5 pt-0">
-                <a
-                  href={getHrefWithLang("/products", lang)}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-[var(--hexia-forest)] transition-colors hover:text-[var(--hexia-gold)]"
-                >
-                  {t("home.learnMore", lang)}
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                </a>
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--hexia-forest-dark)]/60 to-transparent" />
               </div>
               <div className="mt-4">
                 <h3 className="text-base font-semibold text-[var(--hexia-forest-dark)]">
                   {product.title}
                 </h3>
-                {product.subtitle && (
-                  <p className="mt-1 text-sm text-[#636E72]">{product.subtitle}</p>
-                )}
                 <div className="mt-3 space-y-2">
                   {product.items.map((item) => (
                     <div key={item} className="flex items-center text-sm text-[#636E72]">
@@ -170,7 +111,7 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
                   ))}
                 </div>
                 <div className="mt-4 flex items-center text-sm font-medium text-[#2D6A4F] group-hover:text-[var(--hexia-forest)] transition-colors">
-                  Learn More
+                  {t("home.learnMore", lang)}
                   <ArrowRight className="ml-1 size-4" />
                 </div>
               </div>
@@ -178,31 +119,18 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
           ))}
         </div>
 
-        {/* CTA Button */}
         <div className="mt-12 text-center">
-<<<<<<< HEAD
           <Button
             asChild
             variant="outline"
             size="lg"
             className="border-2 border-[var(--hexia-forest)] bg-white text-[var(--hexia-forest)] transition-all duration-300 hover:bg-[var(--hexia-forest)] hover:text-white"
           >
-            <a href="/products">
-              View All Products
+            <a href={getHrefWithLang("/products", lang)}>
+              {t("home.viewAll", lang)}
               <ArrowRight className="ml-2 size-4" />
             </a>
           </Button>
-=======
-          <a href={getHrefWithLang("/products", lang)}>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-2 border-[var(--hexia-forest)] text-[var(--hexia-forest)] transition-all duration-300 hover:bg-[var(--hexia-forest)] hover:text-white"
-            >
-              {t("home.viewAll", lang)}
-            </Button>
-          </a>
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
         </div>
       </div>
     </section>

@@ -6,10 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { t } from "@/lib/i18n"
 
 export function WhyChooseSection() {
-<<<<<<< HEAD
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-
-=======
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") || "en"
 
@@ -55,20 +52,11 @@ export function WhyChooseSection() {
       description: t("home.customDesc", lang),
     },
   ]
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
+
   return (
     <section className="bg-[#FDFBF7] py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-<<<<<<< HEAD
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1B4D3E]">
-            Why Choose <span className="text-[#E9B35F]">Hexia</span>
-          </h2>
-          <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-[#636E72]">
-            We deliver excellence through experience, comprehensive solutions, and global reach.
-=======
-        <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
             {lang === "zh" ? (
               <>
@@ -82,13 +70,10 @@ export function WhyChooseSection() {
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
             {t("home.whyChooseDesc", lang)}
->>>>>>> 2bd17698e421a88bfe1acd84bdbe85b330dccc2e
           </p>
         </div>
 
-        {/* PC Layout - 2 rows with flex for hover expansion */}
         <div className="hidden lg:block">
-          {/* Row 1: Cards 0-3 */}
           <div className="flex gap-8 mb-8">
             {features.slice(0, 4).map((feature, index) => {
               const isHovered = hoveredIndex === index
@@ -105,7 +90,6 @@ export function WhyChooseSection() {
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  {/* Hover Background - Dark Green - Place before content so it shows underneath */}
                   <div 
                     className="absolute top-0 left-0 right-0 bottom-0 rounded-none shadow-xl"
                     style={{
@@ -118,9 +102,7 @@ export function WhyChooseSection() {
                     }}
                   />
 
-                  {/* Card Content - Higher z-index to stay above background */}
                   <div className="relative min-h-[260px] p-6 lg:p-8 flex flex-col items-center justify-center z-10">
-                    {/* Icon */}
                     <div 
                       className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
                       style={{
@@ -131,7 +113,6 @@ export function WhyChooseSection() {
                       <feature.icon className="w-7 h-7" strokeWidth={1.5} />
                     </div>
 
-                    {/* Title */}
                     <h3 
                       className="text-base font-semibold text-center mb-3 uppercase tracking-wide"
                       style={{
@@ -142,7 +123,6 @@ export function WhyChooseSection() {
                       {feature.title}
                     </h3>
 
-                    {/* Description */}
                     <p 
                       className="text-sm text-center leading-relaxed"
                       style={{
@@ -159,7 +139,6 @@ export function WhyChooseSection() {
             })}
           </div>
 
-          {/* Row 2: Cards 4-7 */}
           <div className="flex gap-8">
             {features.slice(4, 8).map((feature, index) => {
               const actualIndex = index + 4
@@ -177,7 +156,6 @@ export function WhyChooseSection() {
                   onMouseEnter={() => setHoveredIndex(actualIndex)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  {/* Hover Background - Dark Green - Place before content so it shows underneath */}
                   <div 
                     className="absolute top-0 left-0 right-0 bottom-0 rounded-none shadow-xl"
                     style={{
@@ -190,9 +168,7 @@ export function WhyChooseSection() {
                     }}
                   />
 
-                  {/* Card Content - Higher z-index to stay above background */}
                   <div className="relative min-h-[260px] p-6 lg:p-8 flex flex-col items-center justify-center z-10">
-                    {/* Icon */}
                     <div 
                       className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
                       style={{
@@ -203,7 +179,6 @@ export function WhyChooseSection() {
                       <feature.icon className="w-7 h-7" strokeWidth={1.5} />
                     </div>
 
-                    {/* Title */}
                     <h3 
                       className="text-base font-semibold text-center mb-3 uppercase tracking-wide"
                       style={{
@@ -214,7 +189,6 @@ export function WhyChooseSection() {
                       {feature.title}
                     </h3>
 
-                    {/* Description */}
                     <p 
                       className="text-sm text-center leading-relaxed"
                       style={{
@@ -232,7 +206,6 @@ export function WhyChooseSection() {
           </div>
         </div>
 
-        {/* Mobile/Tablet Layout - Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-6">
           {features.map((feature, index) => {
             const isHovered = hoveredIndex === index
@@ -244,7 +217,6 @@ export function WhyChooseSection() {
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                {/* Icon */}
                 <div 
                   className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
                   style={{
@@ -255,12 +227,10 @@ export function WhyChooseSection() {
                   <feature.icon className="w-7 h-7" strokeWidth={1.5} />
                 </div>
 
-                {/* Title */}
                 <h3 className="text-base font-semibold text-center text-[#1B4D3E] mb-3 uppercase tracking-wide">
                   {feature.title}
                 </h3>
 
-                {/* Description */}
                 <p 
                   className="text-sm text-center text-[#636E72] leading-relaxed"
                   style={{
