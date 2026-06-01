@@ -69,7 +69,7 @@ export function AboutSection() {
             <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
               {lang === "zh" ? (
                 <>
-                  关于 <span className="text-[#E9B35F]">禾夏</span> (苏州) 生物科技
+                  关于 <span className="text-[#E9B35F]">和夏</span> (苏州) 生物科技
                 </>
               ) : (
                 <>
