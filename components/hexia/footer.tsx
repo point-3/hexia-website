@@ -1,21 +1,35 @@
 "use client"
 
-import { Mail, MapPin, Linkedin, Facebook, Instagram, MessageCircle } from "lucide-react"
+import { Mail, MapPin, Linkedin, Facebook, Instagram, MessageCircle, Youtube } from "lucide-react"
 import { t, getHrefWithLang } from "@/lib/i18n"
 import { useLocale } from "@/hooks/use-locale"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { getRawCmsAssetUrl } from "@/lib/cms-assets"
+import {
+  companyAddress,
+  companyDescription,
+  companyName,
+  contactEmail,
+  contactWhatsapp,
+  footerCopyright,
+  socialProfiles,
+  whatsappHref,
+} from "@/lib/site-profile"
 
-const socialLinks = [
-  { icon: Linkedin, href: "https://www.linkedin.com/in/justin-jia-8995a6364", label: "LinkedIn" },
-  { icon: Instagram, href: "https://www.instagram.com/haibin2280?igsh=MTh0cXl2YnJxNnIxcQ%3D%3D&utm_source=qr", label: "Instagram" },
-  { icon: Facebook, href: "https://www.facebook.com/share/1BAkfLuv6y/?mibextid=wwXIfr", label: "Facebook" },
-]
+const socialIcons = {
+  linkedin: Linkedin,
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+} as const
 
 export function Footer() {
   const lang = useLocale()
   const siteSettings = useSiteSettings()
   const footerLogoSrc = getRawCmsAssetUrl(siteSettings.footer_logo) || getRawCmsAssetUrl(siteSettings.logo)
+  const socialLinks = socialProfiles(siteSettings)
+  const email = contactEmail(siteSettings)
+  const whatsapp = contactWhatsapp(siteSettings)
 
   const quickLinks = [
     { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
@@ -46,23 +60,29 @@ export function Footer() {
               </span>
             </a>
             <p className="mt-3 text-sm leading-relaxed text-[var(--site-footer-text-color)] opacity-80">
-              Hexia (Suzhou) Biotechnology Co., Ltd. - {t("footer.tagline", lang)}
+              {companyName(siteSettings, lang)} - {companyDescription(siteSettings, lang)}
             </p>
             
+            {socialLinks.length > 0 ? (
             <div className="mt-4 flex gap-2">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="flex size-9 items-center justify-center rounded-lg bg-white/10 text-[var(--site-footer-text-color)] opacity-70 transition-colors hover:bg-[var(--site-footer-link-color)] hover:text-[var(--site-primary-color)] hover:opacity-100"
-                >
-                  <social.icon className="size-4" />
-                </a>
-              ))}
+              {socialLinks.map((social) => {
+                const Icon = socialIcons[social.key.toLowerCase() as keyof typeof socialIcons]
+                if (!Icon) return null
+                return (
+                  <a
+                    key={social.key}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="flex size-9 items-center justify-center rounded-lg bg-white/10 text-[var(--site-footer-text-color)] opacity-70 transition-colors hover:bg-[var(--site-footer-link-color)] hover:text-[var(--site-primary-color)] hover:opacity-100"
+                  >
+                    <Icon className="size-4" />
+                  </a>
+                )
+              })}
             </div>
+            ) : null}
           </div>
 
           <div>
@@ -111,7 +131,7 @@ export function Footer() {
                 <span>
                   <strong className="text-[var(--site-footer-text-color)]">{t("footer.hqTitle", lang)}</strong>
                   <br />
-                  {t("footer.hqAddress", lang).split("\n").map((line, index, lines) => (
+                  {companyAddress(siteSettings, lang).split("\n").map((line, index, lines) => (
                     <span key={index}>
                       {line}
                       {index < lines.length - 1 ? <br /> : null}
@@ -122,15 +142,15 @@ export function Footer() {
               <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
                 <Mail className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" aria-hidden="true" />
                 <span>
-                  <a href="mailto:justin@hexiabio.com" className="text-[var(--site-footer-text-color)] transition-colors hover:text-[var(--site-footer-link-color)]">
-                    justin@hexiabio.com
+                  <a href={`mailto:${email}`} className="text-[var(--site-footer-text-color)] transition-colors hover:text-[var(--site-footer-link-color)]">
+                    {email}
                   </a>
                 </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
                 <MessageCircle className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" aria-hidden="true" />
-                <a href="https://wa.me/+8613862320011" target="_blank" rel="noopener noreferrer" className="text-[var(--site-footer-text-color)] transition-colors hover:text-[var(--site-footer-link-color)]">
-                  +86 138 6232 0011
+                <a href={whatsappHref(whatsapp)} target="_blank" rel="noopener noreferrer" className="text-[var(--site-footer-text-color)] transition-colors hover:text-[var(--site-footer-link-color)]">
+                  {whatsapp}
                 </a>
               </li>
             </ul>
@@ -141,7 +161,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-7xl px-3 py-4 sm:px-4 lg:px-6">
           <p className="text-center text-xs text-[var(--site-footer-text-color)] opacity-60">
-            Copyright © 2026 Hexia (Suzhou) Biotechnology Co., Ltd. {t("footer.rights", lang)}
+            {footerCopyright(siteSettings, lang)}
           </p>
         </div>
       </div>

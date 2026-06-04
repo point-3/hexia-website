@@ -4,6 +4,8 @@ import { ArrowRight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { t, getHrefWithLang } from "@/lib/i18n"
+import { useSiteSettings } from "@/components/hexia/site-config-provider"
+import { companyName } from "@/lib/site-profile"
 
 function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
   const [displayValue, setDisplayValue] = useState(0)
@@ -51,7 +53,8 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 
 export function AboutSection() {
   const searchParams = useSearchParams()
-  const lang = searchParams.get("lang") || "en"
+  const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
+  const siteSettings = useSiteSettings()
 
   const stats = [
     { value: 20, suffix: "+", label: t("home.statsExp", lang) },
@@ -67,15 +70,8 @@ export function AboutSection() {
           {/* Left Content */}
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
-              {lang === "zh" ? (
-                <>
-                  关于 <span className="text-[#E9B35F]">和夏</span> (苏州) 生物科技
-                </>
-              ) : (
-                <>
-                  About <span className="text-[#E9B35F]">Hexia</span> (Suzhou) Biotech
-                </>
-              )}
+              {lang === "zh" ? "关于 " : "About "}
+              <span className="text-[#E9B35F]">{companyName(siteSettings, lang)}</span>
             </h2>
 
             <div className="mt-6 space-y-4 text-pretty text-[#636E72] leading-relaxed">

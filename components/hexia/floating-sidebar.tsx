@@ -3,10 +3,16 @@
 import { useState, useRef } from "react"
 import type { CSSProperties } from "react"
 import { Phone, MessageCircle, Mail, ArrowUp } from "lucide-react"
+import { useSiteSettings } from "@/components/hexia/site-config-provider"
+import { contactEmail, contactPhone, contactWhatsapp, telHref, whatsappHref } from "@/lib/site-profile"
 
 type HoveredIcon = "phone" | "whatsapp" | "email" | null
 
 export function FloatingSidebar() {
+  const siteSettings = useSiteSettings()
+  const phone = contactPhone(siteSettings)
+  const whatsapp = contactWhatsapp(siteSettings)
+  const email = contactEmail(siteSettings)
   const [hoveredIcon, setHoveredIcon] = useState<HoveredIcon>(null)
   const [isInSidebar, setIsInSidebar] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -87,7 +93,7 @@ export function FloatingSidebar() {
                 className="text-sm font-medium"
                 style={{ color: "var(--text-color)" }}
               >
-                +86 138 6232 0011
+                {phone}
               </span>
             </div>
           )}
@@ -104,7 +110,7 @@ export function FloatingSidebar() {
                 className="text-sm font-medium"
                 style={{ color: "var(--text-color)" }}
               >
-                +86 138 6232 0011
+                {whatsapp}
               </span>
             </div>
           )}
@@ -121,13 +127,7 @@ export function FloatingSidebar() {
                 className="text-xs font-medium"
                 style={{ color: "var(--text-color)" }}
               >
-                justin@hexiabio.com
-              </span>
-              <span
-                className="text-xs font-medium"
-                style={{ color: "var(--text-color)" }}
-              >
-                morehope.justin@gmail.com
+                {email}
               </span>
             </div>
           )}
@@ -149,7 +149,7 @@ export function FloatingSidebar() {
         >
           {/* Phone */}
           <a
-            href="tel:+8613862320011"
+            href={telHref(phone)}
             className="flex items-center justify-center size-10 rounded-full transition-all duration-200 hover:scale-110 hover:bg-white/50"
             title="Phone"
             onMouseEnter={() => handleMouseEnter("phone")}
@@ -164,7 +164,7 @@ export function FloatingSidebar() {
 
           {/* WhatsApp */}
           <a
-            href="https://wa.me/+8613862320011"
+            href={whatsappHref(whatsapp)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center size-10 rounded-full transition-all duration-200 hover:scale-110 hover:bg-white/50"
@@ -181,7 +181,7 @@ export function FloatingSidebar() {
 
           {/* Email */}
           <a
-            href="mailto:justin@hexiabio.com"
+            href={`mailto:${email}`}
             className="flex items-center justify-center size-10 rounded-full transition-all duration-200 hover:scale-110 hover:bg-white/50"
             title="Email"
             onMouseEnter={() => handleMouseEnter("email")}

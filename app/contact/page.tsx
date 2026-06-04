@@ -7,13 +7,24 @@ import { ChevronRight, Mail, Clock, Building2, Headphones, MapPin, MessageCircle
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
 import { t, getHrefWithLang } from "@/lib/i18n"
+import {
+  companyAddress,
+  companyName,
+  contactEmail,
+  contactWhatsapp,
+  whatsappHref,
+} from "@/lib/site-profile"
 
 function ContactContent() {
   const searchParams = useSearchParams()
-  const lang = searchParams.get("lang") || "en"
+  const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
+  const siteSettings = useSiteSettings()
+  const email = contactEmail(siteSettings)
+  const whatsapp = contactWhatsapp(siteSettings)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -197,7 +208,7 @@ function ContactContent() {
 
               {/* Contact Info */}
               <div className="space-y-4">
-                {/* Suzhou HQ */}
+                {/* Company Address */}
                 <div className="rounded-xl border border-[#A3B18A] bg-white p-4 sm:p-6">
                   <div className="flex items-center gap-3">
                     <div className="flex size-11 items-center justify-center rounded-full bg-[#2D6A4F]">
@@ -205,26 +216,20 @@ function ContactContent() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-[#1B4D3E]">
-                        {lang === "zh" ? "苏州总部" : "Suzhou HQ"}
+                        {companyName(siteSettings, lang)}
                       </h3>
-                      <p className="text-sm text-[#636E72]">{lang === "zh" ? "中国" : "China"}</p>
+                      <p className="text-sm text-[#636E72]">{lang === "zh" ? "公司地址" : "Company Address"}</p>
                     </div>
                   </div>
                   <div className="mt-4 flex items-start gap-3">
                     <MapPin className="mt-0.5 size-5 shrink-0 text-[#A3B18A]" />
                     <p className="text-[#636E72]">
-                      {lang === "zh" ? (
-                        <>
-                          中国 (江苏) 自由贸易试验区苏州片区<br />
-                          苏州工业园区苏虹东路188号A幢232A室
-                        </>
-                      ) : (
-                        <>
-                          ROOM 232A, BUILDING A, NO. 188 SUHONG EAST ROAD,<br />
-                          SUZHOU INDUSTRIAL PARK, SUZHOU AREA,<br />
-                          CHINA (JIANGSU) PILOT FREE TRADE ZONE
-                        </>
-                      )}
+                      {companyAddress(siteSettings, lang).split("\n").map((line, index, lines) => (
+                        <span key={line}>
+                          {line}
+                          {index < lines.length - 1 ? <br /> : null}
+                        </span>
+                      ))}
                     </p>
                   </div>
                 </div>
@@ -239,16 +244,10 @@ function ContactContent() {
                       <h3 className="font-semibold text-[#1B4D3E]">{lang === "zh" ? "电子邮箱" : "Email"}</h3>
                       <div className="mt-1 space-y-1">
                         <a
-                          href="mailto:justin@hexiabio.com"
+                          href={`mailto:${email}`}
                           className="block text-xs text-[#2D6A4F] hover:text-[#E9B35F] transition-colors sm:text-sm"
                         >
-                          justin@hexiabio.com
-                        </a>
-                        <a
-                          href="mailto:morehope.justin@gmail.com"
-                          className="block text-xs text-[#2D6A4F] hover:text-[#E9B35F] transition-colors sm:text-sm"
-                        >
-                          morehope.justin@gmail.com
+                          {email}
                         </a>
                       </div>
                     </div>
@@ -263,7 +262,14 @@ function ContactContent() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-[#1B4D3E]">{lang === "zh" ? "微信 / WhatsApp" : "WeChat/WhatsApp"}</h3>
-                      <span className="text-[#2D6A4F]">+86 138 6232 0011</span>
+                      <a
+                        href={whatsappHref(whatsapp)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
+                      >
+                        {whatsapp}
+                      </a>
                     </div>
                   </div>
                 </div>
