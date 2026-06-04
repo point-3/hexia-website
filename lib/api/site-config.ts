@@ -1,6 +1,7 @@
 import { readItems } from '@directus/sdk';
 import {
   directus,
+  type FooterCertificate,
   type PageLayout,
   type SeoPage,
   type SiteSettings,
@@ -75,6 +76,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   translations: DEFAULT_SITE_TRANSLATIONS,
 };
 
+export const DEFAULT_FOOTER_CERTIFICATES: FooterCertificate[] = [];
+
 function warnCmsFallback(scope: string, error: unknown): void {
   if (process.env.NODE_ENV === 'production') return;
   const message = error instanceof Error ? error.message : String(error);
@@ -110,6 +113,39 @@ export function fallbackPageLayout(pageKey: SitePageKey): PageLayout {
     is_template: false,
     sections: [],
   };
+}
+
+export async function getFooterCertificates(): Promise<FooterCertificate[]> {
+  try {
+    const items = await directus.request(
+      readItems('footer_certificates', {
+        fields: [
+          'id',
+          'label',
+          'href',
+          'sort',
+          'status',
+          {
+            icon: [
+              'id',
+              'filename_download',
+              'modified_on',
+              'uploaded_on',
+              'filesize',
+              'type',
+            ],
+          },
+        ],
+        filter: { status: { _eq: 'published' } },
+        sort: ['sort', 'id'],
+      }),
+    );
+
+    return items ?? DEFAULT_FOOTER_CERTIFICATES;
+  } catch (error) {
+    warnCmsFallback('footer_certificates', error);
+    return DEFAULT_FOOTER_CERTIFICATES;
+  }
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {

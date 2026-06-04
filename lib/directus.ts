@@ -137,6 +137,15 @@ export interface SiteSettings {
   translations?: SiteSettingsTranslation[] | null;
 }
 
+export interface FooterCertificate {
+  id: number;
+  label: string;
+  icon?: string | DirectusFile | null;
+  href?: string;
+  sort?: number;
+  status: 'published' | 'draft';
+}
+
 export interface SeoPageTranslation {
   id: number;
   seo_pages_id?: number | SeoPage;
@@ -203,6 +212,7 @@ export interface Schema {
   inquiries: Inquiry[];
   site_settings: SiteSettings[];
   site_settings_translations: SiteSettingsTranslation[];
+  footer_certificates: FooterCertificate[];
   seo_pages: SeoPage[];
   seo_pages_translations: SeoPageTranslation[];
   page_layouts: PageLayout[];

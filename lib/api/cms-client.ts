@@ -1,4 +1,4 @@
-import type { Category, Product, Subcategory } from "@/lib/directus";
+import type { Category, FooterCertificate, Product, Subcategory } from "@/lib/directus";
 import type { SitePageKey, getSiteConfig } from "@/lib/api/site-config";
 
 async function fetchCmsJson<T>(path: string): Promise<T> {
@@ -31,6 +31,10 @@ export function getCategoriesFromCms(): Promise<Category[]> {
 
 export function getSubcategoriesFromCms(): Promise<Subcategory[]> {
   return fetchCmsJson<Subcategory[]>("/api/cms/subcategories");
+}
+
+export function getFooterCertificatesFromCms(): Promise<FooterCertificate[]> {
+  return fetchCmsJson<FooterCertificate[]>("/api/cms/footer-certificates");
 }
 
 export function getSiteConfigFromCms(page: SitePageKey = "home"): ReturnType<typeof getSiteConfig> {
