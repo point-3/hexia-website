@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
+import type { CSSProperties } from "react"
 import { Phone, MessageCircle, Mail, ArrowUp } from "lucide-react"
 
 type HoveredIcon = "phone" | "whatsapp" | "email" | null
@@ -58,7 +59,7 @@ export function FloatingSidebar() {
           "--text-color": "#ffffff",
           "--border-radius": "12px 0 0 12px",
           "--shadow": "0 4px 20px rgba(0, 0, 0, 0.1)",
-        }}
+        } as CSSProperties}
       >
         {/* 左侧文字容器 */}
         <div

@@ -113,7 +113,7 @@ export function Footer() {
                 </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-white/80">
-                <Mail className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" title="Email" />
+                <Mail className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" aria-hidden="true" />
                 <span>
                   <a href="mailto:justin@hexiabio.com" className="text-white transition-colors hover:text-[#E9B35F]">
                     justin@hexiabio.com
@@ -121,7 +121,7 @@ export function Footer() {
                 </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-white/80">
-                <MessageCircle className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" title="WhatsApp" />
+                <MessageCircle className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" aria-hidden="true" />
                 <a href="https://wa.me/+8613862320011" target="_blank" rel="noopener noreferrer" className="text-white transition-colors hover:text-[#E9B35F]">
                   +86 138 6232 0011
                 </a>

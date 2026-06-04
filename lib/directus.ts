@@ -33,7 +33,7 @@ export interface Subcategory {
 
 export interface ProductTranslation {
   id: number;
-  products_id: number | Product;
+  products_id?: number | Product;
   languages_code: string;
   product_title: string;
   product_description?: string;
@@ -52,7 +52,7 @@ export interface Product {
 
 export interface ArticleTranslation {
   id: number;
-  articles_id: number | Article;
+  articles_id?: number | Article;
   languages_code: string;
   title: string;
   excerpt?: string;
@@ -90,6 +90,108 @@ export interface Inquiry {
   status: 'new' | 'processing' | 'replied' | 'closed';
 }
 
+export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
+export interface SiteSettingsTranslation {
+  id: number;
+  site_settings_id?: number | SiteSettings;
+  languages_code: string;
+  company_name: string;
+  company_short_description?: string;
+  company_address?: string;
+  quote_button_text?: string;
+  footer_copyright?: string;
+  default_meta_title?: string;
+  default_meta_keywords?: string;
+  default_meta_description?: string;
+}
+
+export interface SiteSettings {
+  id: number;
+  status: 'published' | 'draft';
+  logo?: string | DirectusFile | null;
+  footer_logo?: string | DirectusFile | null;
+  favicon?: string | DirectusFile | null;
+  primary_color?: string;
+  cta_color?: string;
+  body_background?: string;
+  heading_text_color?: string;
+  body_text_color?: string;
+  font_family?: string;
+  header_background_color?: string;
+  header_background_opacity?: number;
+  header_text_color?: string;
+  header_hover_text_color?: string;
+  quote_button_enabled?: boolean;
+  language_switch_enabled?: boolean;
+  footer_background_color?: string;
+  footer_text_color?: string;
+  footer_link_color?: string;
+  email?: string;
+  phone?: string;
+  whatsapp?: string;
+  social_links?: JsonValue;
+  quick_links?: JsonValue;
+  certificates?: JsonValue;
+  analytics_settings?: JsonValue;
+  translations?: SiteSettingsTranslation[] | null;
+}
+
+export interface SeoPageTranslation {
+  id: number;
+  seo_pages_id?: number | SeoPage;
+  languages_code: string;
+  title: string;
+  keywords?: string;
+  description?: string;
+}
+
+export interface SeoPage {
+  id: number;
+  page_key: string;
+  status: 'published' | 'draft';
+  sort?: number;
+  translations?: SeoPageTranslation[] | null;
+}
+
+export interface PageSectionTranslation {
+  id: number;
+  page_sections_id?: number | PageSection;
+  languages_code: string;
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  content?: string;
+  cta_label?: string;
+  cta_href?: string;
+  content_json?: JsonValue;
+}
+
+export interface PageSection {
+  id: number;
+  page_layout_id?: number | PageLayout;
+  section_key: string;
+  section_type: string;
+  status: 'published' | 'draft';
+  sort?: number;
+  is_system?: boolean;
+  background_color?: string;
+  text_color?: string;
+  image?: string | DirectusFile | null;
+  settings?: JsonValue;
+  translations?: PageSectionTranslation[] | null;
+}
+
+export interface PageLayout {
+  id: number;
+  page_key: string;
+  name: string;
+  status: 'published' | 'draft';
+  sort?: number;
+  is_template?: boolean;
+  sections?: PageSection[] | null;
+}
+
 export interface Schema {
   categories: Category[];
   subcategories: Subcategory[];
@@ -99,6 +201,13 @@ export interface Schema {
   articles_translations: ArticleTranslation[];
   banners: Banner[];
   inquiries: Inquiry[];
+  site_settings: SiteSettings[];
+  site_settings_translations: SiteSettingsTranslation[];
+  seo_pages: SeoPage[];
+  seo_pages_translations: SeoPageTranslation[];
+  page_layouts: PageLayout[];
+  page_sections: PageSection[];
+  page_sections_translations: PageSectionTranslation[];
 }
 
 export function getDirectusUrl(): string {

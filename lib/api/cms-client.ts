@@ -1,4 +1,5 @@
 import type { Category, Product, Subcategory } from "@/lib/directus";
+import type { SitePageKey, getSiteConfig } from "@/lib/api/site-config";
 
 async function fetchCmsJson<T>(path: string): Promise<T> {
   const response = await fetch(path, {
@@ -30,4 +31,8 @@ export function getCategoriesFromCms(): Promise<Category[]> {
 
 export function getSubcategoriesFromCms(): Promise<Subcategory[]> {
   return fetchCmsJson<Subcategory[]>("/api/cms/subcategories");
+}
+
+export function getSiteConfigFromCms(page: SitePageKey = "home"): ReturnType<typeof getSiteConfig> {
+  return fetchCmsJson<Awaited<ReturnType<typeof getSiteConfig>>>(`/api/cms/site-config?page=${encodeURIComponent(page)}`);
 }
