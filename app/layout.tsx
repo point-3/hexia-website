@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { SiteConfigProvider } from '@/components/hexia/site-config-provider'
 import { getSiteSettings } from '@/lib/api/site-config'
 import { getRawFileUrl } from '@/lib/directus'
+import { resolveDefaultMetadata } from '@/lib/seo'
 import { createSiteThemeStyle } from '@/lib/site-theme'
 import './globals.css'
 
@@ -13,18 +14,10 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteSettings = await getSiteSettings()
-  const defaultTranslation =
-    siteSettings.translations?.find((item) => item.languages_code === 'en-US') ??
-    siteSettings.translations?.[0]
   const favicon = getRawFileUrl(siteSettings.favicon) || '/images/网站标签 (1).png'
 
   return {
-    title:
-      defaultTranslation?.default_meta_title ||
-      'HexiaBio | Morehope Group, Feed Additives, Food Additives & Nutritional Raw Materials Supplier',
-    description:
-      defaultTranslation?.default_meta_description ||
-      'Suzhou Hexia Biotechnology is a professional supplier of feed additives, food additives, vitamins, amino acids and health nutrition raw materials. OEM & ODM premix service, global export from China.',
+    ...resolveDefaultMetadata(siteSettings, 'en'),
     generator: 'v0.app',
     icons: {
       icon: [{ url: favicon }],

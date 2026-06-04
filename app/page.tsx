@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Suspense } from "react"
 import { Navbar } from "@/components/hexia/navbar"
 import { HeroSection } from "@/components/hexia/hero-section"
@@ -13,9 +14,18 @@ import { FloatingSidebar } from "@/components/hexia/floating-sidebar"
 
 import { getBanners } from "@/lib/api/banners"
 import { getCategories, getSubcategories } from "@/lib/api/products"
+import { getPageMetadataFromSearchParams } from "@/lib/seo"
 
 /** 首页含轮播图，须与 Directus 后台实时同步（避免换图后仍显示旧缓存） */
 export const dynamic = 'force-dynamic'
+
+type HomePageProps = {
+  searchParams: Promise<{ lang?: string }>
+}
+
+export async function generateMetadata({ searchParams }: HomePageProps): Promise<Metadata> {
+  return getPageMetadataFromSearchParams("home", searchParams)
+}
 
 export default async function HomePage() {
   // 服务端并发获取数据模型

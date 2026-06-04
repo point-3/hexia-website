@@ -1,5 +1,7 @@
+import type { Metadata } from "next"
 import { getArticles } from "@/lib/api/articles"
 import { resolveArticleTranslation, type SupportedLocale } from "@/lib/i18n"
+import { getPageMetadataFromSearchParams } from "@/lib/seo"
 import { NewsListClient } from "./news-list-client"
 
 function parsePageLang(value: string | undefined): SupportedLocale {
@@ -11,6 +13,10 @@ function parsePageLang(value: string | undefined): SupportedLocale {
 
 type NewsPageProps = {
   searchParams: Promise<{ lang?: string }>
+}
+
+export async function generateMetadata({ searchParams }: NewsPageProps): Promise<Metadata> {
+  return getPageMetadataFromSearchParams("news", searchParams)
 }
 
 export default async function NewsPage({ searchParams }: NewsPageProps) {
