@@ -8,6 +8,7 @@ import { AboutSection } from "@/components/hexia/about-section"
 import { ServicesSection } from "@/components/hexia/services-section"
 import { QuoteFormSection } from "@/components/hexia/quote-form-section"
 import { PartnersSection } from "@/components/hexia/partners-section"
+import { CustomContentSection } from "@/components/hexia/custom-content-section"
 import { Footer } from "@/components/hexia/footer"
 import { BackToTop } from "@/components/hexia/back-to-top"
 import { FloatingSidebar } from "@/components/hexia/floating-sidebar"
@@ -95,6 +96,9 @@ export default async function HomePage() {
           }
           if (section.section_key === "partners" || section.section_type === "partners") {
             return <PartnersSection key={section.id} section={section} />
+          }
+          if (section.section_type === "custom_content" || section.section_key.startsWith("custom_")) {
+            return <CustomContentSection key={section.id} section={section} />
           }
           return null
         })}
