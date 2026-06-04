@@ -9,6 +9,7 @@ import { useLocale, useToggleLocale } from "@/hooks/use-locale"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { getRawCmsAssetUrl } from "@/lib/cms-assets"
 import { hexToRgba } from "@/lib/site-theme"
+import { quoteButtonText } from "@/lib/site-profile"
 
 interface NavbarProps {
   variant?: "transparent" | "solid"
@@ -20,7 +21,12 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
   const siteSettings = useSiteSettings()
   const primaryColor = siteSettings.primary_color || "#2D6A4F"
   const ctaColor = siteSettings.cta_color || "#E9B35F"
+  const headerBackgroundColor = siteSettings.header_background_color || primaryColor
+  const headerOpacity = Math.max(0, Math.min(1, (siteSettings.header_background_opacity ?? 100) / 100))
+  const quoteEnabled = siteSettings.quote_button_enabled !== false
+  const languageSwitchEnabled = siteSettings.language_switch_enabled !== false
   const logoSrc = getRawCmsAssetUrl(siteSettings.logo) || "/images/金logo-03.svg"
+  const quoteText = quoteButtonText(siteSettings, lang)
 
   const navItems = [
     { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
@@ -33,14 +39,14 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [headerStyle, setHeaderStyle] = useState({
-    backgroundColor: variant === "transparent" ? hexToRgba(primaryColor, 0.3) : hexToRgba(primaryColor, 1),
+    backgroundColor: variant === "transparent" ? hexToRgba(headerBackgroundColor, 0.3) : hexToRgba(headerBackgroundColor, headerOpacity),
   })
   const [isTransparent, setIsTransparent] = useState(variant === "transparent")
   const [isSticky, setIsSticky] = useState(false)
 
   useEffect(() => {
     if (variant !== "transparent") {
-      setHeaderStyle({ backgroundColor: hexToRgba(primaryColor, 1) })
+      setHeaderStyle({ backgroundColor: hexToRgba(headerBackgroundColor, headerOpacity) })
       setIsTransparent(false)
       setIsSticky(true)
       return
@@ -55,22 +61,22 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
       if (scrollY <= 0) {
         opacity = 0.3
       } else if (scrollY < STICKY_THRESHOLD) {
-        opacity = 0.3 + (scrollY / STICKY_THRESHOLD) * 0.7
+        opacity = 0.3 + (scrollY / STICKY_THRESHOLD) * (headerOpacity - 0.3)
       } else {
-        opacity = 1
+        opacity = headerOpacity
       }
 
       if (scrollY <= STICKY_THRESHOLD) {
         setIsSticky(false)
         setIsTransparent(true)
         setHeaderStyle({
-          backgroundColor: hexToRgba(primaryColor, opacity),
+          backgroundColor: hexToRgba(headerBackgroundColor, opacity),
         })
       } else {
         setIsSticky(true)
         setIsTransparent(false)
         setHeaderStyle({
-          backgroundColor: primaryColor,
+          backgroundColor: hexToRgba(headerBackgroundColor, headerOpacity),
         })
       }
     }
@@ -78,7 +84,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
     handleScroll()
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [primaryColor, variant])
+  }, [headerBackgroundColor, headerOpacity, variant])
 
   return (
     <header
@@ -105,7 +111,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
               <a
                 key={item.label}
                 href={item.href}
-                className="relative text-sm text-[var(--site-header-text-color)] transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-[var(--site-cta-color)] after:transition-all after:duration-300 hover:text-[var(--site-cta-color)] hover:after:w-full lg:text-base"
+                className="relative text-sm text-[var(--site-header-text-color)] transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-[var(--site-cta-color)] after:transition-all after:duration-300 hover:text-[var(--site-header-hover-text-color)] hover:after:w-full lg:text-base"
               >
                 {item.label}
               </a>
@@ -113,23 +119,27 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <button
-              onClick={toggleLocale}
-              className="hidden items-center gap-1.5 text-base font-medium text-[var(--site-header-text-color)] transition-colors hover:text-[var(--site-cta-color)] sm:flex"
-              aria-label="Switch language"
-            >
-              <Globe className="size-4" />
-              <span>{lang === "en" ? "中文" : "EN"}</span>
-            </button>
+            {languageSwitchEnabled ? (
+              <button
+                onClick={toggleLocale}
+                className="hidden items-center gap-1.5 text-base font-medium text-[var(--site-header-text-color)] transition-colors hover:text-[var(--site-header-hover-text-color)] sm:flex"
+                aria-label="Switch language"
+              >
+                <Globe className="size-4" />
+                <span>{lang === "en" ? "中文" : "EN"}</span>
+              </button>
+            ) : null}
 
+            {quoteEnabled ? (
             <a href={getHrefWithLang("/contact", lang)}>
               <Button
                 className="hidden border-2 border-[var(--site-cta-color)] bg-transparent text-sm font-semibold text-[var(--site-cta-color)] transition-all duration-300 hover:scale-105 hover:border-white hover:text-white sm:inline-flex"
                 size="sm"
               >
-                {t("common.getQuote", lang)}
+                {quoteText}
               </Button>
             </a>
+            ) : null}
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -152,28 +162,32 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
               <a
                 key={item.label}
                 href={item.href}
-                className="flex size-12 items-center rounded-lg px-4 text-base text-[var(--site-header-text-color)] transition-colors hover:bg-white/10 hover:text-[var(--site-cta-color)]"
+                className="flex size-12 items-center rounded-lg px-4 text-base text-[var(--site-header-text-color)] transition-colors hover:bg-white/10 hover:text-[var(--site-header-hover-text-color)]"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
             <div className="mt-2 flex items-center gap-3 px-4">
-              <button
-                onClick={toggleLocale}
-                className="flex items-center gap-1.5 text-lg font-medium text-[var(--site-header-text-color)]"
-              >
-                <Globe className="size-4" />
-                <span>{lang === "en" ? "中文" : "EN"}</span>
-              </button>
+              {languageSwitchEnabled ? (
+                <button
+                  onClick={toggleLocale}
+                  className="flex items-center gap-1.5 text-lg font-medium text-[var(--site-header-text-color)]"
+                >
+                  <Globe className="size-4" />
+                  <span>{lang === "en" ? "中文" : "EN"}</span>
+                </button>
+              ) : null}
+              {quoteEnabled ? (
               <a href={getHrefWithLang("/contact", lang)}>
                 <Button
                   className="border-2 border-[var(--site-cta-color)] bg-transparent text-[var(--site-cta-color)] hover:bg-[var(--site-cta-color)] hover:text-white"
                   size="sm"
                 >
-                  {t("common.getQuote", lang)}
+                  {quoteText}
                 </Button>
               </a>
+              ) : null}
             </div>
           </nav>
         </div>

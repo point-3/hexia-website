@@ -37,6 +37,7 @@ export function createSiteThemeStyle(settings: SiteSettings): CSSProperties {
   const bodyText = colorValue(settings.body_text_color, "#2D3436")
   const fontFamily = siteFontFamily(settings.font_family)
   const headerText = colorValue(settings.header_text_color, "#FFFFFF")
+  const headerHoverText = colorValue(settings.header_hover_text_color, cta)
   const footerBackground = colorValue(settings.footer_background_color, primary)
   const footerText = colorValue(settings.footer_text_color, "#FFFFFF")
   const footerLink = colorValue(settings.footer_link_color, cta)
@@ -56,6 +57,7 @@ export function createSiteThemeStyle(settings: SiteSettings): CSSProperties {
     "--site-heading-color": headingText,
     "--site-body-text-color": bodyText,
     "--site-header-text-color": headerText,
+    "--site-header-hover-text-color": headerHoverText,
     "--site-footer-background-color": footerBackground,
     "--site-footer-text-color": footerText,
     "--site-footer-link-color": footerLink,

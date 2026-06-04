@@ -50,7 +50,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   heading_text_color: '#1B4D3E',
   body_text_color: '#636E72',
   font_family: 'Inter',
-  header_background_color: '#FFFFFF',
+  header_background_color: '#2D6A4F',
   header_background_opacity: 100,
   header_text_color: '#1B4D3E',
   header_hover_text_color: '#E9B35F',
