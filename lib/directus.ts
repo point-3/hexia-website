@@ -320,6 +320,22 @@ export function getFileUrl(
   return `${path}?${query}`;
 }
 
+/** 原始资源 URL：用于 SVG Logo、favicon、证书图标等不应强制转 WebP 的资源。 */
+export function getRawFileUrl(image: string | DirectusFile | null | undefined): string {
+  if (!image) return '';
+  const id = typeof image === 'object' ? image.id : image;
+  if (!id) return '';
+
+  const params = new URLSearchParams();
+  const version = typeof image === 'object' ? getFileVersionToken(image) : null;
+  if (version) {
+    params.set('v', version);
+  }
+  const query = params.toString();
+  const path = `/api/cms-assets/${id}`;
+  return query ? `${path}?${query}` : path;
+}
+
 /** 轮播图 URL（使用文件 modified_on / filesize 等元数据破坏缓存） */
 export function getBannerImageUrl(banner: { image: Banner['image'] }): string {
   return getFileUrl(banner.image, BANNER_IMAGE_TRANSFORM);

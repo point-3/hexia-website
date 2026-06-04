@@ -128,6 +128,15 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: var(--site-body-background, var(--background));
+    color: var(--site-body-text-color, var(--foreground));
+    font-family: var(--site-font-family, var(--font-sans));
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--site-heading-color, inherit);
   }
 }
 

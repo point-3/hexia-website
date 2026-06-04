@@ -3,6 +3,8 @@
 import { Mail, MapPin, Linkedin, Facebook, Instagram, MessageCircle } from "lucide-react"
 import { t, getHrefWithLang } from "@/lib/i18n"
 import { useLocale } from "@/hooks/use-locale"
+import { useSiteSettings } from "@/components/hexia/site-config-provider"
+import { getRawCmsAssetUrl } from "@/lib/cms-assets"
 
 const socialLinks = [
   { icon: Linkedin, href: "https://www.linkedin.com/in/justin-jia-8995a6364", label: "LinkedIn" },
@@ -12,6 +14,8 @@ const socialLinks = [
 
 export function Footer() {
   const lang = useLocale()
+  const siteSettings = useSiteSettings()
+  const footerLogoSrc = getRawCmsAssetUrl(siteSettings.footer_logo) || getRawCmsAssetUrl(siteSettings.logo)
 
   const quickLinks = [
     { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
@@ -29,16 +33,19 @@ export function Footer() {
     { label: t("footer.chineseSpecialty", lang), href: getHrefWithLang("/products?category=Chinese+Specialty", lang) },
   ]
   return (
-    <footer id="contact" className="bg-[#2D6A4F]">
+    <footer id="contact" style={{ backgroundColor: "var(--site-footer-background-color)", color: "var(--site-footer-text-color)" }}>
       <div className="mx-auto max-w-7xl px-3 py-8 sm:px-4 lg:px-6 lg:py-12">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
             <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label="Hexia homepage">
-              <span className="text-lg font-bold text-white">
+              {footerLogoSrc ? (
+                <img src={footerLogoSrc} alt="Hexia Logo" width={32} height={32} className="h-8 w-auto" />
+              ) : null}
+              <span className="text-lg font-bold text-[var(--site-footer-text-color)]">
                 HEXIA
               </span>
             </a>
-            <p className="mt-3 text-sm text-white/80 leading-relaxed">
+            <p className="mt-3 text-sm leading-relaxed text-[var(--site-footer-text-color)] opacity-80">
               Hexia (Suzhou) Biotechnology Co., Ltd. - {t("footer.tagline", lang)}
             </p>
             
@@ -50,7 +57,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="flex size-9 items-center justify-center rounded-lg bg-white/10 text-white/60 transition-colors hover:bg-[#E9B35F] hover:text-[#1B4D3E]"
+                  className="flex size-9 items-center justify-center rounded-lg bg-white/10 text-[var(--site-footer-text-color)] opacity-70 transition-colors hover:bg-[var(--site-footer-link-color)] hover:text-[var(--site-primary-color)] hover:opacity-100"
                 >
                   <social.icon className="size-4" />
                 </a>
@@ -59,7 +66,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-[#E9B35F]">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-[var(--site-footer-link-color)]">
               {t("footer.quickLinks", lang)}
             </h4>
             <ul className="mt-3 space-y-2">
@@ -67,7 +74,7 @@ export function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-white/80 transition-colors hover:text-[#E9B35F]"
+                    className="text-sm text-[var(--site-footer-text-color)] opacity-80 transition-colors hover:text-[var(--site-footer-link-color)] hover:opacity-100"
                   >
                     {link.label}
                   </a>
@@ -77,7 +84,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-[#E9B35F]">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-[var(--site-footer-link-color)]">
               {t("footer.products", lang)}
             </h4>
             <ul className="mt-3 space-y-2">
@@ -85,7 +92,7 @@ export function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-white/80 transition-colors hover:text-[#E9B35F]"
+                    className="text-sm text-[var(--site-footer-text-color)] opacity-80 transition-colors hover:text-[var(--site-footer-link-color)] hover:opacity-100"
                   >
                     {link.label}
                   </a>
@@ -95,14 +102,14 @@ export function Footer() {
           </div>
 
           <div className="sm:col-span-2 lg:col-span-1">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-[#E9B35F]">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-[var(--site-footer-link-color)]">
               {t("footer.contact", lang)}
             </h4>
             <ul className="mt-3 space-y-3">
-              <li className="flex items-start gap-2 text-sm text-white/80">
-                <MapPin className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" />
+              <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
+                <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" />
                 <span>
-                  <strong className="text-white">{t("footer.hqTitle", lang)}</strong>
+                  <strong className="text-[var(--site-footer-text-color)]">{t("footer.hqTitle", lang)}</strong>
                   <br />
                   {t("footer.hqAddress", lang).split("\n").map((line, index, lines) => (
                     <span key={index}>
@@ -112,17 +119,17 @@ export function Footer() {
                   ))}
                 </span>
               </li>
-              <li className="flex items-start gap-2 text-sm text-white/80">
-                <Mail className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" aria-hidden="true" />
+              <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
+                <Mail className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" aria-hidden="true" />
                 <span>
-                  <a href="mailto:justin@hexiabio.com" className="text-white transition-colors hover:text-[#E9B35F]">
+                  <a href="mailto:justin@hexiabio.com" className="text-[var(--site-footer-text-color)] transition-colors hover:text-[var(--site-footer-link-color)]">
                     justin@hexiabio.com
                   </a>
                 </span>
               </li>
-              <li className="flex items-start gap-2 text-sm text-white/80">
-                <MessageCircle className="mt-0.5 size-4 shrink-0 text-[#E9B35F]" aria-hidden="true" />
-                <a href="https://wa.me/+8613862320011" target="_blank" rel="noopener noreferrer" className="text-white transition-colors hover:text-[#E9B35F]">
+              <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
+                <MessageCircle className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" aria-hidden="true" />
+                <a href="https://wa.me/+8613862320011" target="_blank" rel="noopener noreferrer" className="text-[var(--site-footer-text-color)] transition-colors hover:text-[var(--site-footer-link-color)]">
                   +86 138 6232 0011
                 </a>
               </li>
@@ -133,7 +140,7 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-7xl px-3 py-4 sm:px-4 lg:px-6">
-          <p className="text-center text-xs text-white/60">
+          <p className="text-center text-xs text-[var(--site-footer-text-color)] opacity-60">
             Copyright © 2026 Hexia (Suzhou) Biotechnology Co., Ltd. {t("footer.rights", lang)}
           </p>
         </div>
