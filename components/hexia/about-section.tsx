@@ -3,9 +3,24 @@
 import { ArrowRight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import { t, getHrefWithLang } from "@/lib/i18n"
+import type { PageSection } from "@/lib/directus"
+import { getFileUrl } from "@/lib/directus"
+import { getHrefWithLang, t } from "@/lib/i18n"
+import {
+  asJsonArray,
+  fieldText,
+  getSectionConfig,
+  getSectionTranslation,
+  localizedText,
+} from "@/lib/page-section-content"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { companyName } from "@/lib/site-profile"
+
+type HomeStat = {
+  value: number
+  suffix: string
+  label: string
+}
 
 function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
   const [displayValue, setDisplayValue] = useState(0)
@@ -51,60 +66,136 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
   )
 }
 
-export function AboutSection() {
-  const searchParams = useSearchParams()
-  const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
-  const siteSettings = useSiteSettings()
+function numberValue(value: unknown, fallback = 0): number {
+  if (typeof value === "number" && Number.isFinite(value)) return value
+  if (typeof value === "string" && value.trim() && Number.isFinite(Number(value))) return Number(value)
+  return fallback
+}
 
-  const stats = [
+function fallbackStats(lang: "en" | "zh"): HomeStat[] {
+  return [
     { value: 20, suffix: "+", label: t("home.statsExp", lang) },
     { value: 642, suffix: "+", label: t("home.statsPartners", lang) },
     { value: 175, suffix: "+", label: t("home.statsCountries", lang) },
     { value: 24, suffix: "/7", label: t("home.statsSupport", lang) },
   ]
+}
+
+function configuredStats(section: PageSection | null | undefined, lang: "en" | "zh"): HomeStat[] {
+  const config = getSectionConfig(section, lang)
+  const items = asJsonArray(config.stats || config.items || config.cards)
+
+  return items
+    .slice()
+    .sort((a, b) => numberValue(a.sort, 0) - numberValue(b.sort, 0))
+    .flatMap((item) => {
+      const label = fieldText(item, "label", lang) || fieldText(item, "title", lang)
+      if (!label) return []
+      return [{
+        value: numberValue(item.value ?? item.number),
+        suffix: localizedText(item.suffix, lang),
+        label,
+      }]
+    })
+}
+
+function configuredParagraphs(value: unknown, lang: "en" | "zh"): string[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .map((item) => localizedText(item, lang))
+    .filter(Boolean)
+}
+
+function hrefWithLocale(href: string, lang: "en" | "zh"): string {
+  const trimmed = href.trim()
+  if (!trimmed || trimmed === "#" || trimmed.startsWith("#")) return trimmed || "#"
+  if (/^(https?:|mailto:|tel:|sms:|whatsapp:)/i.test(trimmed)) return trimmed
+  return getHrefWithLang(trimmed.startsWith("/") ? trimmed : `/${trimmed}`, lang)
+}
+
+export function AboutSection({ section }: { section?: PageSection | null }) {
+  const searchParams = useSearchParams()
+  const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
+  const siteSettings = useSiteSettings()
+  const translation = getSectionTranslation(section, lang)
+  const config = getSectionConfig(section, lang)
+  const stats = configuredStats(section, lang)
+  const displayStats = stats.length > 0 ? stats : fallbackStats(lang)
+  const title = translation?.title || localizedText(config.title, lang)
+  const subtitle = translation?.subtitle || localizedText(config.subtitle, lang)
+  const content = translation?.content || localizedText(config.content, lang)
+  const paragraphs = configuredParagraphs(config.paragraphs, lang)
+  const ctaLabel = translation?.cta_label || localizedText(config.cta_label || config.button_label, lang) || t("news.readMore", lang)
+  const ctaHref = translation?.cta_href || localizedText(config.cta_href || config.button_href, lang) || "/about"
+  const backgroundColor = section?.background_color || localizedText(config.background_color, lang) || "#FDFBF7"
+  const statBackgroundColor = localizedText(config.stat_background_color, lang) || "#1B4D3E"
+  const imageSrc = getFileUrl(section?.image || localizedText(config.image, lang), { width: 900, quality: 82, format: "webp" })
 
   return (
-    <section id="about" className="bg-[#FDFBF7] py-20 lg:py-28">
+    <section id="about" className="py-20 lg:py-28" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Left Content */}
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
-              {lang === "zh" ? "关于 " : "About "}
-              <span className="text-[#E9B35F]">{companyName(siteSettings, lang)}</span>
+              {title || (
+                <>
+                  {lang === "zh" ? "关于 " : "About "}
+                  <span className="text-[#E9B35F]">{companyName(siteSettings, lang)}</span>
+                </>
+              )}
             </h2>
+            {subtitle ? (
+              <p className="mt-4 text-lg font-medium text-[#2D6A4F]">{subtitle}</p>
+            ) : null}
 
             <div className="mt-6 space-y-4 text-pretty text-[#636E72] leading-relaxed">
-              <p>
-                {t("home.aboutP1", lang)}
-              </p>
-              <p>
-                {t("home.aboutP2", lang)}
-              </p>
+              {content ? (
+                <div className="space-y-4" dangerouslySetInnerHTML={{ __html: content }} />
+              ) : paragraphs.length > 0 ? (
+                paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
+              ) : (
+                <>
+                  <p>{t("home.aboutP1", lang)}</p>
+                  <p>{t("home.aboutP2", lang)}</p>
+                </>
+              )}
             </div>
 
             <a
-              href={getHrefWithLang("/about", lang)}
+              href={hrefWithLocale(ctaHref, lang)}
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
             >
-              {t("news.readMore", lang)}
+              {ctaLabel}
               <ArrowRight className="size-4" />
             </a>
           </div>
 
-          {/* Right Stats Cards */}
-          <div className="grid grid-cols-2 gap-4">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="flex flex-col items-center justify-center rounded-2xl bg-[#1B4D3E] p-6 text-center transition-all duration-300 hover:bg-[#2D6A4F]"
-              >
-                <span className="text-3xl font-bold text-white sm:text-4xl">
-                  <AnimatedNumber value={stat.value} suffix={stat.suffix} />
-                </span>
-                <span className="mt-2 text-sm text-white/70">{stat.label}</span>
-              </div>
-            ))}
+          <div className="space-y-5">
+            {imageSrc ? (
+              <img
+                src={imageSrc}
+                alt={title || companyName(siteSettings, lang)}
+                width={900}
+                height={560}
+                className="h-auto w-full rounded-lg object-cover shadow-sm"
+                loading="lazy"
+              />
+            ) : null}
+
+            <div className="grid grid-cols-2 gap-4">
+              {displayStats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex flex-col items-center justify-center rounded-lg p-6 text-center transition-all duration-300"
+                  style={{ backgroundColor: statBackgroundColor }}
+                >
+                  <span className="text-3xl font-bold text-white sm:text-4xl">
+                    <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+                  </span>
+                  <span className="mt-2 text-sm text-white/70">{stat.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
