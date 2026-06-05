@@ -1,6 +1,7 @@
 import { readItems } from '@directus/sdk';
 import {
   directus,
+  directusFileField,
   type FooterCertificate,
   type PageLayout,
   type SeoPage,
@@ -117,7 +118,7 @@ export function fallbackPageLayout(pageKey: SitePageKey): PageLayout {
 
 export async function getFooterCertificates(): Promise<FooterCertificate[]> {
   try {
-    const items = await directus.request(
+    const items = (await directus.request(
       readItems('footer_certificates', {
         fields: [
           'id',
@@ -139,7 +140,7 @@ export async function getFooterCertificates(): Promise<FooterCertificate[]> {
         filter: { status: { _eq: 'published' } },
         sort: ['sort', 'id'],
       }),
-    );
+    )) as unknown as FooterCertificate[];
 
     return items ?? DEFAULT_FOOTER_CERTIFICATES;
   } catch (error) {
@@ -150,7 +151,7 @@ export async function getFooterCertificates(): Promise<FooterCertificate[]> {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const items = await directus.request(
+    const items = (await directus.request(
       readItems('site_settings', {
         fields: [
           'id',
@@ -177,9 +178,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
           'quick_links',
           'certificates',
           'analytics_settings',
-          'logo',
-          'footer_logo',
-          'favicon',
+          directusFileField('logo'),
+          directusFileField('footer_logo'),
+          directusFileField('favicon'),
           {
             translations: [
               'id',
@@ -198,7 +199,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         filter: { status: { _eq: 'published' } },
         limit: 1,
       }),
-    );
+    )) as unknown as SiteSettings[];
 
     return items?.[0] ?? DEFAULT_SITE_SETTINGS;
   } catch (error) {
@@ -209,7 +210,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
 export async function getSeoPage(pageKey: SitePageKey, siteSettings = DEFAULT_SITE_SETTINGS): Promise<SeoPage> {
   try {
-    const items = await directus.request(
+    const items = (await directus.request(
       readItems('seo_pages', {
         fields: [
           'id',
@@ -224,7 +225,7 @@ export async function getSeoPage(pageKey: SitePageKey, siteSettings = DEFAULT_SI
         },
         limit: 1,
       }),
-    );
+    )) as unknown as SeoPage[];
 
     return items?.[0] ?? fallbackSeoPage(pageKey, siteSettings);
   } catch (error) {
@@ -235,7 +236,7 @@ export async function getSeoPage(pageKey: SitePageKey, siteSettings = DEFAULT_SI
 
 export async function getPageLayout(pageKey: SitePageKey): Promise<PageLayout> {
   try {
-    const items = await directus.request(
+    const items = (await directus.request(
       readItems('page_layouts', {
         fields: [
           'id',
@@ -255,7 +256,7 @@ export async function getPageLayout(pageKey: SitePageKey): Promise<PageLayout> {
               'background_color',
               'text_color',
               'settings',
-              'image',
+              directusFileField('image'),
               {
                 translations: [
                   'id',
@@ -286,7 +287,7 @@ export async function getPageLayout(pageKey: SitePageKey): Promise<PageLayout> {
         sort: ['sort'],
         limit: 1,
       }),
-    );
+    )) as unknown as PageLayout[];
 
     return items?.[0] ?? fallbackPageLayout(pageKey);
   } catch (error) {

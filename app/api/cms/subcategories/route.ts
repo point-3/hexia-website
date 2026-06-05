@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { getSubcategories } from "@/lib/api/products";
+import { cmsCacheControlHeader } from "@/lib/cms-cache";
 
 export async function GET() {
   try {
     const subcategories = await getSubcategories();
     return NextResponse.json(subcategories, {
       headers: {
-        "Cache-Control": "s-maxage=60, stale-while-revalidate=300",
+        "Cache-Control": cmsCacheControlHeader(),
       },
     });
   } catch (error) {

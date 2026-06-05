@@ -1,16 +1,16 @@
-import { directus } from '../directus';
+import { directus, directusFileField, type Category, type Product, type Subcategory } from '../directus';
 import { readItems } from '@directus/sdk';
 
 /**
  * 获取所有已发布的产品列表，按 sort 升序排序，并包含分类和子分类详情
  */
-export async function getProducts() {
-  return await directus.request(
+export async function getProducts(): Promise<Product[]> {
+  return (await directus.request(
     readItems('products', {
       fields: [
         'id',
         'slug',
-        'image',
+        directusFileField('image'),
         'sort',
         'status',
         { category_id: ['id', 'name', 'name_cn', 'slug'] },
@@ -22,7 +22,7 @@ export async function getProducts() {
       },
       sort: ['sort']
     })
-  );
+  )) as unknown as Product[];
 }
 
 /**
@@ -30,18 +30,18 @@ export async function getProducts() {
  * 
  * @param slug 产品唯一标识
  */
-export async function getProductBySlug(slug: string) {
+export async function getProductBySlug(slug: string): Promise<Product> {
   if (!slug) {
     // 显式暴露参数缺失错误，禁止默认值或兜底逻辑
     throw new Error('参数错误: slug 必须提供且不能为空！');
   }
 
-  const items = await directus.request(
+  const items = (await directus.request(
     readItems('products', {
       fields: [
         'id',
         'slug',
-        'image',
+        directusFileField('image'),
         'sort',
         'status',
         { category_id: ['id', 'name', 'name_cn', 'slug'] },
@@ -54,7 +54,7 @@ export async function getProductBySlug(slug: string) {
       },
       limit: 1
     })
-  );
+  )) as unknown as Product[];
 
   if (!items || items.length === 0) {
     throw new Error(`找不到 Slug 为 "${slug}" 的已发布产品！`);
@@ -66,26 +66,33 @@ export async function getProductBySlug(slug: string) {
 /**
  * 获取所有已发布的分类列表，按 sort 排序
  */
-export async function getCategories() {
-  return await directus.request(
+export async function getCategories(): Promise<Category[]> {
+  return (await directus.request(
     readItems('categories', {
-      fields: ['id', 'name', 'name_cn', 'slug', 'image', 'sort', 'status'],
+      fields: ['id', 'name', 'name_cn', 'slug', directusFileField('image'), 'sort', 'status'],
       filter: {
         status: { _eq: 'published' }
       },
       sort: ['sort']
     })
-  );
+  )) as unknown as Category[];
 }
 
 /**
  * 获取所有二级分类列表，按 sort 排序
  */
-export async function getSubcategories() {
-  return await directus.request(
+export async function getSubcategories(): Promise<Subcategory[]> {
+  return (await directus.request(
     readItems('subcategories', {
-      fields: ['id', 'name', 'name_cn', 'slug', 'sort', { category_id: ['id', 'name', 'name_cn', 'slug', 'image', 'sort', 'status'] }],
+      fields: [
+        'id',
+        'name',
+        'name_cn',
+        'slug',
+        'sort',
+        { category_id: ['id', 'name', 'name_cn', 'slug', directusFileField('image'), 'sort', 'status'] },
+      ],
       sort: ['sort']
     })
-  );
+  )) as unknown as Subcategory[];
 }

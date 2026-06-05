@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { getFooterCertificates } from "@/lib/api/site-config";
+import { cmsCacheControlHeader } from "@/lib/cms-cache";
 
 export async function GET() {
   try {
     const certificates = await getFooterCertificates();
     return NextResponse.json(certificates, {
       headers: {
-        "Cache-Control": "s-maxage=60, stale-while-revalidate=300",
+        "Cache-Control": cmsCacheControlHeader(),
       },
     });
   } catch (error) {

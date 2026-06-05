@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSiteConfig, type SitePageKey } from '@/lib/api/site-config';
+import { cmsCacheControlHeader } from '@/lib/cms-cache';
 
 const PAGE_KEYS = new Set<SitePageKey>(['home', 'products', 'service', 'about', 'contact', 'news']);
 
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
     const siteConfig = await getSiteConfig(pageKeyFromRequest(request));
     return NextResponse.json(siteConfig, {
       headers: {
-        'Cache-Control': 's-maxage=60, stale-while-revalidate=300',
+        'Cache-Control': cmsCacheControlHeader(),
       },
     });
   } catch (error) {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getProductBySlug } from "@/lib/api/products";
+import { cmsCacheControlHeader } from "@/lib/cms-cache";
 
 type ProductRouteContext = {
   params: Promise<{ slug: string }>;
@@ -12,7 +13,7 @@ export async function GET(_request: Request, { params }: ProductRouteContext) {
     const product = await getProductBySlug(slug);
     return NextResponse.json(product, {
       headers: {
-        "Cache-Control": "s-maxage=60, stale-while-revalidate=300",
+        "Cache-Control": cmsCacheControlHeader(),
       },
     });
   } catch (error) {

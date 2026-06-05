@@ -1,9 +1,10 @@
 import { createDirectus, rest, type DirectusClient, type RestClient } from '@directus/sdk';
+import { CMS_REVALIDATE_TAGS, cmsFetchNextOptions } from '@/lib/cms-cache';
 
 export interface DirectusFile {
   id: string;
-  filename_disk: string;
-  filename_download: string;
+  filename_disk?: string;
+  filename_download?: string;
   title?: string;
   type?: string;
   /** 文件元数据，用于拼接缓存破坏参数（后台换图后强制浏览器重新拉取） */
@@ -228,8 +229,19 @@ export function getDirectusUrl(): string {
   return directusUrl;
 }
 
-/** CMS 内容读取：开发环境不缓存；生产环境 ISR 60 秒，后台更新后较快反映到前台 */
-const cmsFetchRevalidateSeconds = 60;
+export const DIRECTUS_FILE_FIELDS = [
+  'id',
+  'filename_disk',
+  'filename_download',
+  'modified_on',
+  'uploaded_on',
+  'filesize',
+  'type',
+] as const;
+
+export function directusFileField(field: string) {
+  return { [field]: [...DIRECTUS_FILE_FIELDS] } as any;
+}
 
 type DirectusRestClient = DirectusClient<Schema> & RestClient<Schema>;
 
@@ -245,7 +257,11 @@ function getDirectusClient() {
           }
           return {
             ...options,
-            next: { revalidate: cmsFetchRevalidateSeconds },
+            next: cmsFetchNextOptions([
+              CMS_REVALIDATE_TAGS.siteConfig,
+              CMS_REVALIDATE_TAGS.products,
+              CMS_REVALIDATE_TAGS.articles,
+            ]),
           };
         },
       }),

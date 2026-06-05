@@ -5,6 +5,16 @@ import { getDirectusUrl } from '@/lib/directus'
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
+function noStoreAssetHeaders(contentType?: string | null): Headers {
+  const headers = new Headers()
+  if (contentType) {
+    headers.set('Content-Type', contentType)
+  }
+  headers.set('Cache-Control', 'no-store, no-cache, must-revalidate')
+  headers.set('Pragma', 'no-cache')
+  return headers
+}
+
 /**
  * 代理 Directus 静态资源，避免 /assets/{id} 默认 30 天浏览器缓存导致后台换图后前台不更新。
  * 查询参数 `v` 仅用于前台缓存破坏，不会转发给 Directus。
@@ -28,16 +38,13 @@ export async function GET(
     next: { revalidate: 0 },
   })
   if (!upstream.ok) {
-    return new Response(upstream.statusText, { status: upstream.status })
+    return new Response(upstream.statusText, {
+      status: upstream.status,
+      headers: noStoreAssetHeaders('text/plain; charset=utf-8'),
+    })
   }
 
-  const headers = new Headers()
-  const contentType = upstream.headers.get('content-type')
-  if (contentType) {
-    headers.set('Content-Type', contentType)
-  }
-  headers.set('Cache-Control', 'no-store, no-cache, must-revalidate')
-  headers.set('Pragma', 'no-cache')
+  const headers = noStoreAssetHeaders(upstream.headers.get('content-type'))
 
   return new Response(upstream.body, {
     status: upstream.status,
