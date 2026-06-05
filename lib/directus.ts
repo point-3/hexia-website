@@ -231,7 +231,6 @@ export function getDirectusUrl(): string {
 
 export const DIRECTUS_FILE_FIELDS = [
   'id',
-  'filename_disk',
   'filename_download',
   'modified_on',
   'uploaded_on',
