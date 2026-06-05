@@ -1,31 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import type { PageSection } from "@/lib/directus";
+import { getFileUrl } from "@/lib/directus";
+import {
+  getSectionConfig,
+  getSectionTranslation,
+  localizedText,
+} from "@/lib/page-section-content";
 
-export function AboutHeroSection() {
-  const [navbarHeight, setNavbarHeight] = useState(0);
-
-  useEffect(() => {
-    const updateNavbarHeight = () => {
-      const navbar = document.querySelector('header');
-      if (navbar) {
-        setNavbarHeight(navbar.offsetHeight);
-      }
-    };
-
-    updateNavbarHeight();
-    window.addEventListener('resize', updateNavbarHeight);
-
-    return () => window.removeEventListener('resize', updateNavbarHeight);
-  }, []);
+export function AboutHeroSection({ section }: { section?: PageSection | null }) {
+  const searchParams = useSearchParams();
+  const lang = searchParams.get("lang") === "zh" ? "zh" : "en";
+  const translation = getSectionTranslation(section, lang);
+  const config = getSectionConfig(section, lang);
+  const imageSrc = getFileUrl(section?.image || localizedText(config.image, lang), {
+    width: 1920,
+    quality: 85,
+    format: "webp",
+  }) || "/about us banner.png";
+  const backgroundColor = section?.background_color || localizedText(config.background_color, lang) || "#FDFBF7";
+  const imageAlt = translation?.title || localizedText(config.alt || config.title, lang) || "About Hexia";
 
   return (
-    <section className="relative z-10 aspect-[1942/809] w-full overflow-visible">
+    <section className="relative z-10 aspect-[1942/809] w-full overflow-visible" style={{ backgroundColor }}>
       <div className="absolute inset-0">
         <Image
-          src="/about us banner.png"
-          alt="About Hexia"
+          src={imageSrc}
+          alt={imageAlt}
           width={1920}
           height={400}
           className="h-full w-full object-cover object-top"

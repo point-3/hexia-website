@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getPageLayout } from "@/lib/api/site-config";
 import { getPageMetadataFromSearchParams } from "@/lib/seo";
 import ProductsPageClient from "./products-client";
 
@@ -10,6 +11,7 @@ export async function generateMetadata({ searchParams }: ProductsPageProps): Pro
   return getPageMetadataFromSearchParams("products", searchParams);
 }
 
-export default function ProductsPage() {
-  return <ProductsPageClient />;
+export default async function ProductsPage() {
+  const pageLayout = await getPageLayout("products");
+  return <ProductsPageClient pageLayout={pageLayout} />;
 }

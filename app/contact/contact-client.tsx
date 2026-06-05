@@ -2,15 +2,18 @@
 
 import { useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import Link from "next/link"
-import { ChevronRight, Mail, Clock, Building2, Headphones, MapPin, MessageCircle } from "lucide-react"
+import { Mail, Clock, Building2, Headphones, MapPin, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { CustomContentSection } from "@/components/hexia/custom-content-section"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
+import type { PageLayout } from "@/lib/directus"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
-import { t, getHrefWithLang } from "@/lib/i18n"
+import { t } from "@/lib/i18n"
+import { fallbackSection, findSection, hasSection, isCustomSection, sectionsForPage } from "@/lib/page-layout"
+import { asJsonArray, fieldText, getSectionConfig, localizedText } from "@/lib/page-section-content"
 import {
   companyAddress,
   companyName,
@@ -19,12 +22,60 @@ import {
   whatsappHref,
 } from "@/lib/site-profile"
 
-function ContactContent() {
+type ContactInfoCard = {
+  title: string
+  subtitle: string
+  body: string
+  href: string
+  backgroundColor: string
+  textColor: string
+}
+
+function configuredContactCards(pageLayout: PageLayout, lang: "en" | "zh"): ContactInfoCard[] {
+  const contactInfo = findSection(sectionsForPage(pageLayout, []), "contact_info")
+  const config = getSectionConfig(contactInfo, lang)
+  return asJsonArray(config.cards || config.items || config.blocks).flatMap((item) => {
+    const title = fieldText(item, "title", lang)
+    const body = fieldText(item, "body", lang) || fieldText(item, "content", lang) || fieldText(item, "value", lang)
+    if (!title && !body) return []
+    return [{
+      title,
+      subtitle: fieldText(item, "subtitle", lang),
+      body,
+      href: localizedText(item.href, lang),
+      backgroundColor: localizedText(item.background_color, lang) || "#FFFFFF",
+      textColor: localizedText(item.text_color, lang) || "#636E72",
+    }]
+  })
+}
+
+function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
   const siteSettings = useSiteSettings()
   const email = contactEmail(siteSettings)
   const whatsapp = contactWhatsapp(siteSettings)
+  const sections = sectionsForPage(pageLayout, [
+    fallbackSection("contact_info", "contact_cards", 1),
+    fallbackSection("contact_form", "system", 2),
+  ])
+  const showContactInfo = hasSection(sections, "contact_info")
+  const showContactForm = hasSection(sections, "contact_form")
+  const contactInfoSection = findSection(sections, "contact_info")
+  const contactFormSection = findSection(sections, "contact_form")
+  const hasContactPanel = showContactInfo || showContactForm
+  const contactPanelSort = hasContactPanel
+    ? Math.min(contactInfoSection?.sort ?? Number.POSITIVE_INFINITY, contactFormSection?.sort ?? Number.POSITIVE_INFINITY)
+    : Number.POSITIVE_INFINITY
+  const contactPanelBackgroundColor = contactFormSection?.background_color || contactInfoSection?.background_color
+  const customSections = sections.filter(isCustomSection)
+  const customSectionsBeforePanel = hasContactPanel
+    ? customSections.filter((section) => (section.sort ?? 0) < contactPanelSort)
+    : customSections
+  const customSectionsAfterPanel = hasContactPanel
+    ? customSections.filter((section) => (section.sort ?? 0) >= contactPanelSort)
+    : []
+  const configuredCards = configuredContactCards(pageLayout, lang)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -85,10 +136,15 @@ function ContactContent() {
       <Navbar />
 
       <main className="pt-20 lg:pt-24">
-        <section className="py-8 lg:py-12">
+        {customSectionsBeforePanel.map((section) => (
+          <CustomContentSection key={section.id} section={section} />
+        ))}
+        {hasContactPanel ? (
+        <section className="py-8 lg:py-12" style={{ backgroundColor: contactPanelBackgroundColor || undefined }}>
           <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className={`grid gap-6 ${showContactForm && showContactInfo ? "lg:grid-cols-2" : "lg:grid-cols-1"}`}>
               {/* Contact Form */}
+              {showContactForm ? (
               <div className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
                 <h2 className="text-xl font-bold text-[#1B4D3E]">{t("inquiry.title", lang)}</h2>
                 <p className="mt-2 text-sm text-[#636E72]">
@@ -205,9 +261,33 @@ function ContactContent() {
                   <span className="text-sm text-[#2D6A4F] font-medium">{t("inquiry.replyNotice", lang)}</span>
                 </div>
               </div>
+              ) : null}
 
               {/* Contact Info */}
+              {showContactInfo ? (
               <div className="space-y-4">
+                {configuredCards.length > 0 ? (
+                  configuredCards.map((card) => {
+                    const content = (
+                      <div
+                        className="rounded-xl border border-[#A3B18A] p-4 sm:p-6"
+                        style={{ backgroundColor: card.backgroundColor, color: card.textColor }}
+                      >
+                        <h3 className="font-semibold text-[#1B4D3E]">{card.title}</h3>
+                        {card.subtitle ? <p className="mt-1 text-sm opacity-75">{card.subtitle}</p> : null}
+                        {card.body ? <p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{card.body}</p> : null}
+                      </div>
+                    )
+                    return card.href ? (
+                      <a key={`${card.title}-${card.body}`} href={card.href} className="block">
+                        {content}
+                      </a>
+                    ) : (
+                      <div key={`${card.title}-${card.body}`}>{content}</div>
+                    )
+                  })
+                ) : (
+                <>
                 {/* Company Address */}
                 <div className="rounded-xl border border-[#A3B18A] bg-white p-4 sm:p-6">
                   <div className="flex items-center gap-3">
@@ -291,10 +371,17 @@ function ContactContent() {
                       : "Our team is available around the clock to assist you with any inquiries, technical questions, or urgent orders."}
                   </p>
                 </div>
+                </>
+                )}
               </div>
+              ) : null}
             </div>
           </div>
         </section>
+        ) : null}
+        {customSectionsAfterPanel.map((section) => (
+          <CustomContentSection key={section.id} section={section} />
+        ))}
       </main>
 
       <Footer />
@@ -302,14 +389,14 @@ function ContactContent() {
   )
 }
 
-export default function ContactPage() {
+export default function ContactPage({ pageLayout }: { pageLayout: PageLayout }) {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
         <div className="text-[#636E72]">Loading...</div>
       </div>
     }>
-      <ContactContent />
+      <ContactContent pageLayout={pageLayout} />
     </Suspense>
   )
 }

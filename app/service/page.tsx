@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getPageLayout } from "@/lib/api/site-config";
 import { getPageMetadataFromSearchParams } from "@/lib/seo";
 import ServicePageClient from "./service-client";
 
@@ -10,6 +11,7 @@ export async function generateMetadata({ searchParams }: ServicePageProps): Prom
   return getPageMetadataFromSearchParams("service", searchParams);
 }
 
-export default function ServicePage() {
-  return <ServicePageClient />;
+export default async function ServicePage() {
+  const pageLayout = await getPageLayout("service");
+  return <ServicePageClient pageLayout={pageLayout} />;
 }

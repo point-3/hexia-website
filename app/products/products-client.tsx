@@ -8,11 +8,13 @@ import { Search, ChevronDown, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { CustomContentSection } from "@/components/hexia/custom-content-section"
 import { cn } from "@/lib/utils"
-import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
+import { getFileUrl, Product as DirectusProduct, type PageLayout, type PageSection } from "@/lib/directus"
 import { getCategoriesFromCms, getProductsFromCms, getSubcategoriesFromCms } from "@/lib/api/cms-client"
 import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
 import { useLocale } from "@/hooks/use-locale"
+import { fallbackSection, hasSection, isCustomSection, sectionsForPage } from "@/lib/page-layout"
 
 // 对应页面分类菜单的数据结构
 type MenuCategory = {
@@ -29,10 +31,11 @@ type SelectedCategoryType = {
   name: string
 } | null
 
-function ProductsContent() {
+function ProductsContent({ sections }: { sections: PageSection[] }) {
   const searchParams = useSearchParams()
   const lang = useLocale()
   const categoryFromUrl = searchParams.get("category") // 从首页跳转可能会有 category 参数 (如 "Feed Additives")
+  const showCatalog = hasSection(sections, "product_catalog")
 
   const [products, setProducts] = useState<DirectusProduct[]>([])
   const [categories, setCategories] = useState<MenuCategory[]>([])
@@ -46,6 +49,10 @@ function ProductsContent() {
   // 获取产品、分类和二级分类数据并构建类目菜单结构
   useEffect(() => {
     const fetchData = async () => {
+      if (!showCatalog) {
+        setLoading(false)
+        return
+      }
       try {
         setLoading(true)
         const [rawProducts, rawCategories, rawSubcategories] = await Promise.all([
@@ -112,7 +119,7 @@ function ProductsContent() {
     }
 
     fetchData()
-  }, [categoryFromUrl, lang])
+  }, [categoryFromUrl, lang, showCatalog])
 
   // 切换语言时更新已选分类的显示名称
   useEffect(() => {
@@ -189,6 +196,13 @@ function ProductsContent() {
     <div className="min-h-screen bg-[#FDFBF7]">
       <Navbar />
       <main className="pt-20 lg:pt-24">
+        {sections.map((section) => {
+          if (section.section_key === "products_banner" || isCustomSection(section)) {
+            return <CustomContentSection key={section.id} section={section} />
+          }
+          if (section.section_key !== "product_catalog") return null
+          return (
+      <section key={section.id}>
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           {/* Header with Search */}
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
@@ -482,16 +496,23 @@ function ProductsContent() {
             </div>
           </div>
         </div>
+      </section>
+          )
+        })}
       </main>
       <Footer />
     </div>
   )
 }
 
-export default function ProductsPage() {
+export default function ProductsPage({ pageLayout }: { pageLayout: PageLayout }) {
+  const sections = sectionsForPage(pageLayout, [
+    fallbackSection("product_catalog", "system", 1),
+  ])
+
   return (
     <Suspense fallback={<div className="flex items-center justify-center py-20 text-[#636E72]">Loading...</div>}>
-      <ProductsContent />
+      <ProductsContent sections={sections} />
     </Suspense>
   )
 }
