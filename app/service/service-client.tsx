@@ -8,11 +8,13 @@ import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 import { CustomContentSection } from "@/components/hexia/custom-content-section"
+import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import type { PageLayout, PageSection } from "@/lib/directus"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
 import { t, getHrefWithLang } from "@/lib/i18n"
 import { fallbackSection, isCustomSection, sectionsForPage } from "@/lib/page-layout"
+import { trackInquiryConversion } from "@/lib/marketing-analytics"
 import {
   asJsonArray,
   fieldText,
@@ -253,6 +255,7 @@ function ServiceWhyChooseSection({ section, lang }: { section: PageSection; lang
 function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
   const searchParams = useSearchParams()
   const lang: Locale = searchParams.get("lang") === "zh" ? "zh" : "en"
+  const siteSettings = useSiteSettings()
   const sections = sectionsForPage(pageLayout, [
     fallbackSection("service_overview", "services", 1),
     fallbackSection("service_why_choose", "why_choose", 2),
@@ -284,6 +287,7 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
         source_page: `Service Page Quote Section [${lang}]`,
       })
       toast.success(t("inquiry.successToast", lang))
+      trackInquiryConversion(siteSettings, { source: "service_quote_form", language: lang })
       setShowSuccess(true)
       setFormData({
         name: "",

@@ -7,17 +7,20 @@ import { ChevronRight, Headphones } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
 import { getProductBySlugFromCms, getProductsFromCms } from "@/lib/api/cms-client"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
 import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
 import { useLocale } from "@/hooks/use-locale"
+import { trackInquiryConversion } from "@/lib/marketing-analytics"
 
 function ProductDetailContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: rawSlug } = use(params)
   const slug = decodeURIComponent(rawSlug)
   const lang = useLocale()
+  const siteSettings = useSiteSettings()
 
   const [product, setProduct] = useState<DirectusProduct | null>(null)
   const [allProducts, setAllProducts] = useState<DirectusProduct[]>([])
@@ -76,6 +79,11 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
         product_interest: currentTitle
       })
       toast.success(t("inquiry.successToast", lang))
+      trackInquiryConversion(siteSettings, {
+        source: "product_detail_form",
+        productSlug: product?.slug,
+        language: lang,
+      })
       setFormData({ name: "", email: "", message: "" })
     } catch (err: any) {
       console.error(err)

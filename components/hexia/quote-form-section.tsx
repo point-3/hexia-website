@@ -7,10 +7,13 @@ import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
 import { useSearchParams } from "next/navigation"
 import { t } from "@/lib/i18n"
+import { useSiteSettings } from "@/components/hexia/site-config-provider"
+import { trackInquiryConversion } from "@/lib/marketing-analytics"
 
 export function QuoteFormSection() {
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") || "en"
+  const siteSettings = useSiteSettings()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -36,6 +39,7 @@ export function QuoteFormSection() {
         source_page: "Home Page Quote Section",
       })
       toast.success(t("inquiry.successToast", lang))
+      trackInquiryConversion(siteSettings, { source: "home_quote_form", language: lang })
       setShowSuccess(true)
       setFormData({
         name: "",

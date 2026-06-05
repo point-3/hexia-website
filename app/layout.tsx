@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/sonner'
 import { SiteConfigProvider } from '@/components/hexia/site-config-provider'
+import { MarketingAnalytics } from '@/components/hexia/marketing-analytics'
 import { getSiteSettings } from '@/lib/api/site-config'
 import { getRawFileUrl } from '@/lib/directus'
 import { resolveDefaultMetadata } from '@/lib/seo'
@@ -41,6 +42,7 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <SiteConfigProvider siteSettings={siteSettings}>
+          <MarketingAnalytics siteSettings={siteSettings} />
           {children}
           <Toaster />
           {process.env.NODE_ENV === 'production' && <Analytics />}

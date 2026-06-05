@@ -14,6 +14,7 @@ import { toast } from "sonner"
 import { t } from "@/lib/i18n"
 import { fallbackSection, findSection, hasSection, isCustomSection, sectionsForPage } from "@/lib/page-layout"
 import { asJsonArray, fieldText, getSectionConfig, localizedText } from "@/lib/page-section-content"
+import { trackInquiryConversion } from "@/lib/marketing-analytics"
 import {
   companyAddress,
   companyName,
@@ -102,6 +103,7 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
         source_page: `Contact Page [${lang}]`,
       })
       toast.success(t("inquiry.successToast", lang))
+      trackInquiryConversion(siteSettings, { source: "contact_form", language: lang })
       setShowSuccess(true)
       setFormData({
         name: "",
