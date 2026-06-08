@@ -151,7 +151,7 @@ export async function getFooterCertificates(): Promise<FooterCertificate[]> {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const items = (await directus.request(
+    const response = (await directus.request(
       readItems('site_settings', {
         fields: [
           'id',
@@ -197,9 +197,11 @@ export async function getSiteSettings(): Promise<SiteSettings> {
           },
         ],
         filter: { status: { _eq: 'published' } },
+        sort: ['id'],
         limit: 1,
       }),
-    )) as unknown as SiteSettings[];
+    )) as unknown;
+    const items = Array.isArray(response) ? response : response ? [response as SiteSettings] : [];
 
     return items?.[0] ?? DEFAULT_SITE_SETTINGS;
   } catch (error) {
