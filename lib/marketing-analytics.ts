@@ -19,6 +19,18 @@ type TrackingWindow = Window & {
 }
 
 function asObject(value: JsonValue | undefined): Record<string, unknown> {
+  if (Array.isArray(value)) {
+    return value.reduce<Record<string, unknown>>((settings, item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return settings
+      const row = item as Record<string, unknown>
+      if (row.enabled === false) return settings
+      const key = typeof row.key === "string" ? row.key.trim() : ""
+      if (!key) return settings
+      settings[key] = row.value
+      return settings
+    }, {})
+  }
+
   return value && typeof value === "object" && !Array.isArray(value) ? value : {}
 }
 
