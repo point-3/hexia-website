@@ -67,6 +67,10 @@ function jsonObject(value: JsonValue | undefined): Record<string, unknown> {
   return value && typeof value === "object" && !Array.isArray(value) ? value : {}
 }
 
+function stringValue(value: unknown): string {
+  return typeof value === "string" ? value.trim() : ""
+}
+
 function socialLabel(key: string): string {
   const known: Record<string, string> = {
     linkedin: "LinkedIn",
@@ -78,6 +82,23 @@ function socialLabel(key: string): string {
 }
 
 export function socialProfiles(settings: SiteSettings): SocialProfile[] {
+  if (Array.isArray(settings.social_links)) {
+    return settings.social_links.flatMap((item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return []
+      if ("enabled" in item && item.enabled === false) return []
+
+      const key = stringValue(item.platform) || stringValue(item.key)
+      const href = stringValue(item.href) || stringValue(item.url)
+      if (!key || !href) return []
+
+      return [{
+        key,
+        label: stringValue(item.label) || socialLabel(key),
+        href,
+      }]
+    })
+  }
+
   return Object.entries(jsonObject(settings.social_links))
     .filter(([, href]) => typeof href === "string" && href.trim() !== "")
     .map(([key, href]) => ({
