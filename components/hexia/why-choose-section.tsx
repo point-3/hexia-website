@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Building2, Factory, Globe, Package, Shield, Sparkles, Users, Wrench, type LucideIcon } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import type { PageSection } from "@/lib/directus"
+import { getFileUrl } from "@/lib/directus"
 import { t } from "@/lib/i18n"
 import {
   asJsonArray,
@@ -86,15 +87,32 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("home.whyChooseDesc", lang)
   const backgroundColor = section?.background_color || localizedText(config.background_color, lang) || "#FDFBF7"
+  const textColor = section?.text_color || localizedText(config.text_color, lang) || "#1B4D3E"
+  const bodyTextColor = localizedText(config.body_text_color, lang) || textColor
+  const imageSrc = getFileUrl(section?.image || localizedText(config.image, lang), { width: 1600, quality: 82, format: "webp" })
 
   return (
-    <section className="py-16 lg:py-20" style={{ backgroundColor }}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-16 lg:py-20" style={{ backgroundColor, color: textColor }}>
+      {imageSrc ? (
+        <div className="pointer-events-none absolute inset-0">
+          <img
+            src={imageSrc}
+            alt=""
+            width={1600}
+            height={900}
+            loading="lazy"
+            className="h-full w-full object-cover opacity-15"
+          />
+          <div className="absolute inset-0" style={{ backgroundColor, opacity: 0.72 }} />
+        </div>
+      ) : null}
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: textColor }}>
             {title || fallbackTitle(lang)}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
+          <p className="mx-auto mt-4 max-w-2xl text-pretty" style={{ color: bodyTextColor, opacity: 0.78 }}>
             {subtitle}
           </p>
         </div>
@@ -148,7 +166,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                         <h3
                           className="text-base font-semibold text-center mb-3 uppercase tracking-wide"
                           style={{
-                            color: isHovered ? "#ffffff" : "#1B4D3E",
+                            color: isHovered ? "#ffffff" : textColor,
                             transition: "color 0.5s ease-out",
                           }}
                         >
@@ -159,7 +177,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                           className="text-sm text-center leading-relaxed"
                           style={{
                             opacity: isHovered ? 1 : 0,
-                            color: isHovered ? "rgba(255,255,255,0.9)" : "#636E72",
+                            color: isHovered ? "rgba(255,255,255,0.9)" : bodyTextColor,
                             transition: "opacity 0.5s ease-out, color 0.5s ease-out",
                           }}
                         >
@@ -195,14 +213,15 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                   <feature.icon className="w-7 h-7" strokeWidth={1.5} />
                 </div>
 
-                <h3 className="text-base font-semibold text-center text-[#1B4D3E] mb-3 uppercase tracking-wide">
+                <h3 className="text-base font-semibold text-center mb-3 uppercase tracking-wide" style={{ color: textColor }}>
                   {feature.title}
                 </h3>
 
                 <p
-                  className="text-sm text-center text-[#636E72] leading-relaxed"
+                  className="text-sm text-center leading-relaxed"
                   style={{
                     opacity: isHovered ? 1 : 0,
+                    color: bodyTextColor,
                     transition: "opacity 0.5s ease-out",
                   }}
                 >
