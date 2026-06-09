@@ -107,6 +107,14 @@ export interface SiteSettingsTranslation {
   default_meta_description?: string;
 }
 
+export interface SiteBrandAsset {
+  id: number;
+  site_settings_id?: number | SiteSettings;
+  asset_type: 'logo' | 'footer_logo' | 'favicon';
+  file?: string | DirectusFile | null;
+  sort?: number;
+}
+
 export interface SiteSettings {
   id: number;
   status: 'published' | 'draft';
@@ -131,6 +139,9 @@ export interface SiteSettings {
   email?: string;
   phone?: string;
   whatsapp?: string;
+  brand_assets?: SiteBrandAsset[] | null;
+  style_settings?: JsonValue;
+  contact_methods?: JsonValue;
   social_links?: JsonValue;
   quick_links?: JsonValue;
   analytics_settings?: JsonValue;
@@ -202,6 +213,7 @@ export interface Schema {
   banners: Banner[];
   inquiries: Inquiry[];
   site_settings: SiteSettings[];
+  site_brand_assets: SiteBrandAsset[];
   site_settings_translations: SiteSettingsTranslation[];
   seo_pages: SeoPage[];
   seo_pages_translations: SeoPageTranslation[];
