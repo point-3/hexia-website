@@ -19,25 +19,6 @@ type TrackingWindow = Window & {
 }
 
 function asObject(value: JsonValue | undefined): Record<string, unknown> {
-  if (Array.isArray(value)) {
-    return Object.fromEntries(
-      value.flatMap((item) => {
-        if (!item || typeof item !== "object" || Array.isArray(item)) return []
-        if ("enabled" in item && item.enabled === false) return []
-
-        const key = typeof item.key === "string" ? item.key.trim() : ""
-        if (!key) return []
-
-        if (typeof item.value === "boolean") return [[key, item.value]]
-        const rawValue = typeof item.value === "string" ? item.value.trim() : ""
-        if (rawValue === "") return []
-        if (["true", "1", "yes", "on"].includes(rawValue.toLowerCase())) return [[key, true]]
-        if (["false", "0", "no", "off"].includes(rawValue.toLowerCase())) return [[key, false]]
-        return [[key, rawValue]]
-      }),
-    )
-  }
-
   return value && typeof value === "object" && !Array.isArray(value) ? value : {}
 }
 
