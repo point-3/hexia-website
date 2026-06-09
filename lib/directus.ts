@@ -133,18 +133,8 @@ export interface SiteSettings {
   whatsapp?: string;
   social_links?: JsonValue;
   quick_links?: JsonValue;
-  certificates?: JsonValue;
   analytics_settings?: JsonValue;
   translations?: SiteSettingsTranslation[] | null;
-}
-
-export interface FooterCertificate {
-  id: number;
-  label: string;
-  icon?: string | DirectusFile | null;
-  href?: string;
-  sort?: number;
-  status: 'published' | 'draft';
 }
 
 export interface SeoPageTranslation {
@@ -213,7 +203,6 @@ export interface Schema {
   inquiries: Inquiry[];
   site_settings: SiteSettings[];
   site_settings_translations: SiteSettingsTranslation[];
-  footer_certificates: FooterCertificate[];
   seo_pages: SeoPage[];
   seo_pages_translations: SeoPageTranslation[];
   page_layouts: PageLayout[];

@@ -6,8 +6,8 @@ import { t, getHrefWithLang } from "@/lib/i18n"
 import { useLocale } from "@/hooks/use-locale"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { getRawCmsAssetUrl } from "@/lib/cms-assets"
-import { getCategoriesFromCms, getFooterCertificatesFromCms } from "@/lib/api/cms-client"
-import type { Category, DirectusFile, FooterCertificate } from "@/lib/directus"
+import { getCategoriesFromCms } from "@/lib/api/cms-client"
+import type { Category } from "@/lib/directus"
 import {
   companyAddress,
   companyDescription,
@@ -134,41 +134,10 @@ function productLinksFromCategories(categories: Category[], lang: string): Foote
   })
 }
 
-function certificateIcon(value: unknown): string | DirectusFile | null {
-  if (typeof value === "string" && value.trim()) return value.trim()
-  if (isJsonObject(value) && typeof value.id === "string" && value.id.trim()) {
-    return value as unknown as DirectusFile
-  }
-  return null
-}
-
-function legacyCertificatesFromConfig(value: unknown): FooterCertificate[] {
-  if (!Array.isArray(value)) return []
-
-  return value.flatMap((item, index) => {
-    if (!isJsonObject(item)) return []
-    if (item.enabled === false || item.hidden === true || item.status === "draft") return []
-
-    const label = stringValue(item.label) || stringValue(item.title) || stringValue(item.name)
-    const icon = certificateIcon(item.icon) || certificateIcon(item.image) || certificateIcon(item.file)
-    if (!label || !icon) return []
-
-    return [{
-      id: -(index + 1),
-      label,
-      icon,
-      href: stringValue(item.href) || stringValue(item.url),
-      sort: typeof item.sort === "number" ? item.sort : index,
-      status: "published" as const,
-    }]
-  })
-}
-
 export function Footer() {
   const lang = useLocale()
   const siteSettings = useSiteSettings()
   const [cmsCategories, setCmsCategories] = useState<Category[] | null>(null)
-  const [cmsCertificates, setCmsCertificates] = useState<FooterCertificate[]>([])
   const footerLogoSrc = getRawCmsAssetUrl(siteSettings.footer_logo) || getRawCmsAssetUrl(siteSettings.logo)
   const socialLinks = socialProfiles(siteSettings)
   const email = contactEmail(siteSettings)
@@ -192,35 +161,11 @@ export function Footer() {
     }
   }, [])
 
-  useEffect(() => {
-    let active = true
-
-    getFooterCertificatesFromCms()
-      .then((certificates) => {
-        if (active) setCmsCertificates(certificates)
-      })
-      .catch((error) => {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn("[footer] certificates fallback:", error)
-        }
-      })
-
-    return () => {
-      active = false
-    }
-  }, [])
-
   const quickLinks = useMemo(() => quickLinksFromConfig(siteSettings.quick_links, lang), [lang, siteSettings.quick_links])
   const productLinks = useMemo(() => {
     if (cmsCategories === null) return fallbackProductLinks(lang)
     return productLinksFromCategories(cmsCategories, lang)
   }, [cmsCategories, lang])
-  const certificateItems = useMemo(() => {
-    const legacyItems = legacyCertificatesFromConfig(siteSettings.certificates)
-    return (cmsCertificates.length > 0 ? cmsCertificates : legacyItems).filter((item) => {
-      return item.status === "published" && Boolean(item.label) && Boolean(item.icon)
-    })
-  }, [cmsCertificates, siteSettings.certificates])
 
   return (
     <footer id="contact" style={{ backgroundColor: "var(--site-footer-background-color)", color: "var(--site-footer-text-color)" }}>
@@ -260,49 +205,6 @@ export function Footer() {
               </div>
             ) : null}
 
-            {certificateItems.length > 0 ? (
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                {certificateItems.map((certificate) => {
-                  const iconSrc = getRawCmsAssetUrl(certificate.icon)
-                  if (!iconSrc) return null
-                  const content = (
-                    <img
-                      src={iconSrc}
-                      alt={certificate.label}
-                      width={96}
-                      height={40}
-                      loading="lazy"
-                      className="max-h-8 max-w-[88px] object-contain"
-                    />
-                  )
-                  const certificateHref = certificate.href ? applyLocaleToHref(certificate.href, lang) : ""
-
-                  if (!certificateHref) {
-                    return (
-                      <span
-                        key={certificate.id}
-                        className="flex h-11 min-w-11 items-center justify-center rounded border border-white/15 bg-white/10 px-2"
-                      >
-                        {content}
-                      </span>
-                    )
-                  }
-
-                  return (
-                    <a
-                      key={certificate.id}
-                      href={certificateHref}
-                      target={certificateHref.startsWith("http") ? "_blank" : undefined}
-                      rel={certificateHref.startsWith("http") ? "noopener noreferrer" : undefined}
-                      aria-label={certificate.label}
-                      className="flex h-11 min-w-11 items-center justify-center rounded border border-white/15 bg-white/10 px-2 transition-colors hover:border-[var(--site-footer-link-color)]"
-                    >
-                      {content}
-                    </a>
-                  )
-                })}
-              </div>
-            ) : null}
           </div>
 
           {quickLinks.length > 0 ? (

@@ -2,7 +2,6 @@ import { readItems } from '@directus/sdk';
 import {
   directus,
   directusFileField,
-  type FooterCertificate,
   type PageLayout,
   type SeoPage,
   type SiteSettings,
@@ -72,12 +71,9 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     { label: 'About Us', href: '/about', enabled: true },
     { label: 'Contact Us', href: '/contact', enabled: true },
   ],
-  certificates: [],
   analytics_settings: {},
   translations: DEFAULT_SITE_TRANSLATIONS,
 };
-
-export const DEFAULT_FOOTER_CERTIFICATES: FooterCertificate[] = [];
 
 function warnCmsFallback(scope: string, error: unknown): void {
   if (process.env.NODE_ENV === 'production') return;
@@ -116,39 +112,6 @@ export function fallbackPageLayout(pageKey: SitePageKey): PageLayout {
   };
 }
 
-export async function getFooterCertificates(): Promise<FooterCertificate[]> {
-  try {
-    const items = (await directus.request(
-      readItems('footer_certificates', {
-        fields: [
-          'id',
-          'label',
-          'href',
-          'sort',
-          'status',
-          {
-            icon: [
-              'id',
-              'filename_download',
-              'modified_on',
-              'uploaded_on',
-              'filesize',
-              'type',
-            ],
-          },
-        ],
-        filter: { status: { _eq: 'published' } },
-        sort: ['sort', 'id'],
-      }),
-    )) as unknown as FooterCertificate[];
-
-    return items ?? DEFAULT_FOOTER_CERTIFICATES;
-  } catch (error) {
-    warnCmsFallback('footer_certificates', error);
-    return DEFAULT_FOOTER_CERTIFICATES;
-  }
-}
-
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
     const response = (await directus.request(
@@ -176,7 +139,6 @@ export async function getSiteSettings(): Promise<SiteSettings> {
           'whatsapp',
           'social_links',
           'quick_links',
-          'certificates',
           'analytics_settings',
           directusFileField('logo'),
           directusFileField('footer_logo'),
