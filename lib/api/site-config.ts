@@ -112,64 +112,6 @@ export function fallbackPageLayout(pageKey: SitePageKey): PageLayout {
   };
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
-
-function itemString(item: Record<string, unknown>, key: string): string {
-  const value = item[key];
-  return typeof value === 'string' ? value.trim() : '';
-}
-
-function itemEnabled(item: Record<string, unknown>): boolean {
-  return item.enabled !== false;
-}
-
-function parseSettingValue(value: string): string | number | boolean {
-  const normalized = value.trim().toLowerCase();
-  if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
-  if (['false', '0', 'no', 'off'].includes(normalized)) return false;
-  if (/^-?\d+(\.\d+)?$/.test(value.trim())) return Number(value);
-  return value;
-}
-
-function normalizeSiteSettings(settings: SiteSettings): SiteSettings {
-  const normalized: SiteSettings = { ...settings };
-
-  if (Array.isArray(settings.brand_assets)) {
-    for (const asset of settings.brand_assets) {
-      if (!asset?.asset_type || !asset.file) continue;
-      if (asset.asset_type === 'logo') normalized.logo = asset.file;
-      if (asset.asset_type === 'footer_logo') normalized.footer_logo = asset.file;
-      if (asset.asset_type === 'favicon') normalized.favicon = asset.file;
-    }
-  }
-
-  if (Array.isArray(settings.style_settings)) {
-    for (const item of settings.style_settings) {
-      if (!isRecord(item) || !itemEnabled(item)) continue;
-      const key = itemString(item, 'key');
-      const value = itemString(item, 'value');
-      if (!key || !value) continue;
-      (normalized as unknown as Record<string, unknown>)[key] = parseSettingValue(value);
-    }
-  }
-
-  if (Array.isArray(settings.contact_methods)) {
-    for (const item of settings.contact_methods) {
-      if (!isRecord(item) || !itemEnabled(item)) continue;
-      const type = itemString(item, 'type');
-      const value = itemString(item, 'value');
-      if (!type || !value) continue;
-      if (type === 'email') normalized.email = value;
-      if (type === 'phone') normalized.phone = value;
-      if (type === 'whatsapp') normalized.whatsapp = value;
-    }
-  }
-
-  return normalized;
-}
-
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
     const response = (await directus.request(
@@ -195,31 +137,12 @@ export async function getSiteSettings(): Promise<SiteSettings> {
           'email',
           'phone',
           'whatsapp',
-          'style_settings',
-          'contact_methods',
           'social_links',
           'quick_links',
           'analytics_settings',
           directusFileField('logo'),
           directusFileField('footer_logo'),
           directusFileField('favicon'),
-          {
-            brand_assets: [
-              'id',
-              'asset_type',
-              'sort',
-              {
-                file: [
-                  'id',
-                  'filename_download',
-                  'modified_on',
-                  'uploaded_on',
-                  'filesize',
-                  'type',
-                ],
-              },
-            ],
-          },
           {
             translations: [
               'id',
@@ -242,7 +165,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     )) as unknown;
     const items = Array.isArray(response) ? response : response ? [response as SiteSettings] : [];
 
-    return items?.[0] ? normalizeSiteSettings(items[0]) : DEFAULT_SITE_SETTINGS;
+    return items?.[0] ?? DEFAULT_SITE_SETTINGS;
   } catch (error) {
     warnCmsFallback('site_settings', error);
     return DEFAULT_SITE_SETTINGS;
