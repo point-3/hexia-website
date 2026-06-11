@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, PackageOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getFileUrl, Category, Subcategory } from "@/lib/directus"
 import { useSearchParams } from "next/navigation"
@@ -12,6 +12,30 @@ interface ProductsSectionProps {
   subcategories?: Subcategory[]
 }
 
+function ProductPreviewImage({ src, title }: { src?: string; title: string }) {
+  if (src) {
+    return (
+      <Image
+        src={src}
+        alt={title}
+        fill
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+      />
+    )
+  }
+
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center bg-[var(--bg-muted)] px-4 text-center">
+      <div className="flex size-14 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--primary)] shadow-sm">
+        <PackageOpen className="size-7" strokeWidth={1.7} />
+      </div>
+      <span className="mt-3 line-clamp-2 text-xs font-medium leading-relaxed text-[var(--text-body)]">
+        {title}
+      </span>
+    </div>
+  )
+}
+
 export function ProductsSection({ categories, subcategories }: ProductsSectionProps) {
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") || "en"
@@ -20,25 +44,25 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
     {
       id: "1",
       title: lang === "zh" ? "饲料添加剂" : "Feed Additives",
-      image: "/images/feed1.jpg",
+      image: undefined,
       items: lang === "zh" ? ["氨基酸", "维生素", "矿物质"] : ["Amino Acids", "Vitamins", "Minerals"],
     },
     {
       id: "2",
       title: lang === "zh" ? "食品添加剂" : "Food Additives",
-      image: "/images/food1.jpg",
+      image: undefined,
       items: lang === "zh" ? ["甜味剂", "防腐剂", "着色剂"] : ["Sweeteners", "Preservatives", "Colorants"],
     },
     {
       id: "3",
       title: lang === "zh" ? "营养产品" : "Nutritional Products",
-      image: "/images/nutri.jpg",
+      image: undefined,
       items: lang === "zh" ? ["NMN", "L-EGT", "功能成分"] : ["NMN", "L-EGT", "Functional Ingredients"],
     },
     {
       id: "4",
       title: lang === "zh" ? "营养成分" : "Nutri. Ingredients",
-      image: "/images/nutri (2).png",
+      image: undefined,
       items: lang === "zh" ? ["营养保健品成分"] : ["Nutraceutical Ingredients"],
     },
   ]
@@ -90,13 +114,8 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
               className="group relative overflow-hidden p-4 transition-all duration-300 hover:shadow-xl bg-[var(--bg-card)]"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-muted)]">
-                <Image
-                  src={product.image || "/images/nutri.jpg"}
-                  alt={product.title}
-                  fill
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--hexia-forest-dark)]/60 to-transparent" />
+                <ProductPreviewImage src={product.image} title={product.title} />
+                {product.image ? <div className="absolute inset-0 bg-gradient-to-t from-[var(--hexia-forest-dark)]/60 to-transparent" /> : null}
               </div>
               <div className="mt-4">
                 <h3 className="text-base font-semibold text-[var(--hexia-forest-dark)]">
