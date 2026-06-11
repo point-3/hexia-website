@@ -4,25 +4,26 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #FDFBF7;
-  --foreground: #2D3436;
-  --card: #FFFFFF;
-  --card-foreground: #2D3436;
+  --background: var(--bg-page);
+  --foreground: var(--text-body);
+  --card: var(--bg-card);
+  --card-foreground: var(--text-body);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.02 250);
-  --primary: oklch(0.22 0.04 250);
-  --primary-foreground: oklch(0.99 0 0);
+  --primary: var(--primary);
+  --primary-dark: var(--primary-dark);
+  --primary-foreground: var(--bg-card);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.22 0.04 250);
   --muted: oklch(0.96 0.005 250);
   --muted-foreground: oklch(0.5 0.01 250);
-  --accent: oklch(0.72 0.12 75);
-  --accent-foreground: oklch(0.18 0.02 250);
+  --accent: var(--accent);
+  --accent-foreground: var(--primary-dark);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.005 250);
-  --input: oklch(0.92 0.005 250);
-  --ring: oklch(0.72 0.12 75);
+  --border: var(--border);
+  --input: var(--border);
+  --ring: var(--primary);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -31,12 +32,16 @@
   --radius: 0.625rem;
   
   /* Hexia Brand Colors - Organic Nature Theme */
-  --hexia-forest: #2D6A4F;
-  --hexia-forest-dark: #1B4D3E;
-  --hexia-gold: #E9B35F;
-  --hexia-gold-dark: #D4A04A;
-  --hexia-sage: #A3B18A;
-  --hexia-olive: #3A5A40;
+  --hexia-forest: var(--primary);
+  --hexia-forest-dark: var(--primary-dark);
+  --hexia-gold: var(--accent);
+  --hexia-gold-dark: var(--accent);
+  --hexia-sage: var(--border);
+  --hexia-olive: var(--primary);
+  --bg-page: var(--bg-page);
+  --bg-card: var(--bg-card);
+  --text-body: var(--text-body);
+  --bg-muted: var(--bg-muted);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -142,5 +147,5 @@
 
 /* Force white background for View All Products card */
 .force-white-bg {
-  background-color: #ffffff !important;
+  background-color: var(--bg-card) !important;
 }

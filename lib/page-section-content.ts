@@ -8,6 +8,20 @@ const LANGUAGE_BY_LOCALE: Record<SupportedLocale, string> = {
   zh: "zh-CN",
 }
 
+const LEGACY_THEME_COLOR_MAP: Record<string, string> = {
+  "#2D6A4F": "var(--primary)",
+  "#1B4D3E": "var(--primary-dark)",
+  "#E9B35F": "var(--accent)",
+  "#FDFBF7": "var(--bg-page)",
+  "#FFFFFF": "var(--bg-card)",
+  "#636E72": "var(--text-body)",
+  "#2D3436": "var(--text-body)",
+  "#A3B18A": "var(--border)",
+  "#F5F3EF": "var(--bg-muted)",
+  "#D4A04A": "var(--accent)",
+  "#3A5A40": "var(--primary)",
+}
+
 export function isJsonObject(value: unknown): value is JsonObject {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value)
 }
@@ -32,6 +46,12 @@ export function localizedText(value: unknown, locale: SupportedLocale, fallback 
     if (typeof candidate === "string" && candidate.trim()) return candidate.trim()
   }
   return fallback
+}
+
+export function themeColor(value: string | null | undefined, fallback = ""): string {
+  const trimmed = value?.trim()
+  if (!trimmed) return fallback
+  return LEGACY_THEME_COLOR_MAP[trimmed.toUpperCase()] ?? trimmed
 }
 
 export function fieldText(item: JsonObject, field: string, locale: SupportedLocale, fallback = ""): string {

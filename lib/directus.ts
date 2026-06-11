@@ -97,6 +97,10 @@ export interface SiteSettingsTranslation {
   id: number;
   site_settings_id?: number | SiteSettings;
   languages_code: string;
+  site_name?: string;
+  browser_title_prefix?: string;
+  brand_highlight_name?: string;
+  why_choose_title_suffix?: string;
   company_name: string;
   company_short_description?: string;
   company_address?: string;
@@ -110,9 +114,18 @@ export interface SiteSettingsTranslation {
 export interface SiteSettings {
   id: number;
   status: 'published' | 'draft';
+  site_title?: string;
   logo?: string | DirectusFile | null;
   footer_logo?: string | DirectusFile | null;
   favicon?: string | DirectusFile | null;
+  theme_primary?: string;
+  theme_primary_dark?: string;
+  theme_accent?: string;
+  theme_bg_page?: string;
+  theme_bg_card?: string;
+  theme_text_body?: string;
+  theme_border?: string;
+  theme_bg_muted?: string;
   primary_color?: string;
   cta_color?: string;
   body_background?: string;

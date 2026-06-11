@@ -8,6 +8,7 @@ import {
   getSectionConfig,
   getSectionTranslation,
   localizedText,
+  themeColor,
 } from "@/lib/page-section-content"
 
 function hrefWithLocale(href: string, lang: "en" | "zh"): string {
@@ -41,8 +42,8 @@ export function CustomContentSection({ section }: { section: PageSection }) {
   const content = rawContent ? sanitizeRichText(rawContent) : ""
   const ctaLabel = translation?.cta_label || localizedText(config.cta_label || config.button_label, lang)
   const ctaHref = translation?.cta_href || localizedText(config.cta_href || config.button_href, lang)
-  const backgroundColor = section.background_color || localizedText(config.background_color, lang) || "#FDFBF7"
-  const textColor = section.text_color || localizedText(config.text_color, lang) || "#2D3436"
+  const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
+  const textColor = themeColor(section.text_color || localizedText(config.text_color, lang), "var(--text-body)")
   const imageSrc = getFileUrl(section.image || localizedText(config.image, lang), { width: 1000, quality: 82, format: "webp" })
   const imagePosition = localizedText(config.image_position, lang).toLowerCase()
   const imageFirst = imagePosition === "left" || imagePosition === "top"
@@ -52,12 +53,12 @@ export function CustomContentSection({ section }: { section: PageSection }) {
   const copy = (
     <div>
       {title ? (
-        <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
+        <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
           {title}
         </h2>
       ) : null}
       {subtitle ? (
-        <p className="mt-4 text-lg font-medium text-[#2D6A4F]">
+        <p className="mt-4 text-lg font-medium text-[var(--primary)]">
           {subtitle}
         </p>
       ) : null}
@@ -73,7 +74,7 @@ export function CustomContentSection({ section }: { section: PageSection }) {
           href={hrefWithLocale(ctaHref, lang)}
           target={/^https?:/i.test(ctaHref) ? "_blank" : undefined}
           rel={/^https?:/i.test(ctaHref) ? "noopener noreferrer" : undefined}
-          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#E9B35F] px-5 py-3 text-sm font-semibold text-[#1B4D3E] transition-colors hover:bg-[#2D6A4F] hover:text-white"
+          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--primary-dark)] transition-colors hover:bg-[var(--primary)] hover:text-white"
         >
           {ctaLabel}
           <ArrowRight className="size-4" />

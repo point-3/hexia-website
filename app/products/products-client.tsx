@@ -193,7 +193,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
   })
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[var(--bg-page)]">
       <Navbar />
       <main className="pt-20 lg:pt-24">
         {sections.map((section) => {
@@ -209,19 +209,19 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="flex items-center gap-2 rounded-lg border border-[#A3B18A] px-4 py-2 text-sm font-medium text-[#2D6A4F] lg:hidden"
+                className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--primary)] lg:hidden"
               >
                 <Menu className="size-4" />
                 {t("products.categories", lang)}
               </button>
               <div className="relative flex-1 sm:w-64">
-                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#636E72]" />
+                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--text-body)]" />
                 <input
                   type="text"
                   placeholder={t("products.search", lang)}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-[#A3B18A] bg-white py-2 pl-10 pr-4 text-sm text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20"
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] py-2 pl-10 pr-4 text-sm text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20"
                 />
               </div>
             </div>
@@ -243,20 +243,20 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
           <div className="flex gap-8">
             {/* Sidebar - Desktop */}
             <aside className="hidden w-64 shrink-0 lg:block">
-              <div className="sticky top-28 rounded-xl border border-[#A3B18A] bg-white p-4">
-                <h2 className="mb-4 font-semibold text-[#1B4D3E]">{t("products.categories", lang)}</h2>
+              <div className="sticky top-28 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
+                <h2 className="mb-4 font-semibold text-[var(--primary-dark)]">{t("products.categories", lang)}</h2>
                 <button
                   onClick={() => setSelectedCategory(null)}
                   className={cn(
                     "mb-2 w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors",
-                    !selectedCategory ? "bg-[#2D6A4F] text-white" : "text-[#636E72] hover:bg-[#2D6A4F]/10"
+                    !selectedCategory ? "bg-[var(--primary)] text-white" : "text-[var(--text-body)] hover:bg-[var(--primary)]/10"
                   )}
                 >
                   {t("products.all", lang)} ({products.length})
                 </button>
 
                 {categories.length === 0 && !loading && (
-                  <p className="text-sm text-[#636E72]">{t("products.noCategories", lang)}</p>
+                  <p className="text-sm text-[var(--text-body)]">{t("products.noCategories", lang)}</p>
                 )}
 
                 {categories.map((category) => {
@@ -270,7 +270,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                         onClick={() => toggleCategory(category)}
                         className={cn(
                           "mb-2 w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors",
-                          isCat1Selected ? "bg-[#2D6A4F] text-white" : "text-[#2D3436] hover:bg-[#2D6A4F]/10"
+                          isCat1Selected ? "bg-[var(--primary)] text-white" : "text-[var(--text-body)] hover:bg-[var(--primary)]/10"
                         )}
                       >
                         {categoryName}
@@ -284,7 +284,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                         onClick={() => toggleCategory(category)}
                         className={cn(
                           "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                          isCat1Selected ? "bg-[#2D6A4F] text-white" : "text-[#2D3436] hover:bg-[#2D6A4F]/10"
+                          isCat1Selected ? "bg-[var(--primary)] text-white" : "text-[var(--text-body)] hover:bg-[var(--primary)]/10"
                         )}
                       >
                         {categoryName}
@@ -297,7 +297,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                       </button>
 
                       {expandedCategories.includes(String(category.id)) && category.subcategories.length > 0 && (
-                        <div className="ml-3 mt-1 space-y-1 border-l-2 border-[#A3B18A] pl-3">
+                        <div className="ml-3 mt-1 space-y-1 border-l-2 border-[var(--border)] pl-3">
                           {category.subcategories.map((sub) => {
                             const isSubSelected = selectedCategory?.type === "subcategory" && selectedCategory.id === sub.id
                             const subName = lang === "zh" ? sub.name_cn : sub.name
@@ -309,8 +309,8 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                                 className={cn(
                                   "w-full rounded px-2 py-1.5 text-left text-sm transition-colors",
                                   isSubSelected
-                                    ? "bg-[#E9B35F]/20 text-[#2D6A4F] font-medium"
-                                    : "text-[#636E72] hover:text-[#2D6A4F]"
+                                    ? "bg-[var(--accent)]/20 text-[var(--primary)] font-medium"
+                                    : "text-[var(--text-body)] hover:text-[var(--primary)]"
                                 )}
                               >
                                 {subName} ({sub.count})
@@ -329,11 +329,11 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
             {isSidebarOpen && (
               <div className="fixed inset-0 z-50 lg:hidden">
                 <div className="absolute inset-0 bg-black/50" onClick={() => setIsSidebarOpen(false)} />
-                <div className="absolute left-0 top-0 h-full w-72 bg-white p-4 shadow-xl">
+                <div className="absolute left-0 top-0 h-full w-72 bg-[var(--bg-card)] p-4 shadow-xl">
                   <div className="mb-4 flex items-center justify-between">
-                    <h2 className="font-semibold text-[#1B4D3E]">{t("products.categories", lang)}</h2>
+                    <h2 className="font-semibold text-[var(--primary-dark)]">{t("products.categories", lang)}</h2>
                     <button onClick={() => setIsSidebarOpen(false)}>
-                      <X className="size-5 text-[#636E72]" />
+                      <X className="size-5 text-[var(--text-body)]" />
                     </button>
                   </div>
                   <button
@@ -343,7 +343,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                     }}
                     className={cn(
                       "mb-2 w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors",
-                      !selectedCategory ? "bg-[#2D6A4F] text-white" : "text-[#636E72] hover:bg-[#2D6A4F]/10"
+                      !selectedCategory ? "bg-[var(--primary)] text-white" : "text-[var(--text-body)] hover:bg-[var(--primary)]/10"
                     )}
                   >
                     {t("products.all", lang)} ({products.length})
@@ -362,7 +362,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                           }}
                           className={cn(
                             "mb-2 w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors",
-                            isCat1Selected ? "bg-[#2D6A4F] text-white" : "text-[#2D3436] hover:bg-[#2D6A4F]/10"
+                            isCat1Selected ? "bg-[var(--primary)] text-white" : "text-[var(--text-body)] hover:bg-[var(--primary)]/10"
                           )}
                         >
                           {categoryName}
@@ -376,7 +376,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                           onClick={() => toggleCategory(category)}
                           className={cn(
                             "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                            isCat1Selected ? "bg-[#2D6A4F] text-white" : "text-[#2D3436] hover:bg-[#2D6A4F]/10"
+                            isCat1Selected ? "bg-[var(--primary)] text-white" : "text-[var(--text-body)] hover:bg-[var(--primary)]/10"
                           )}
                         >
                           {categoryName}
@@ -388,7 +388,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                           />
                         </button>
                         {expandedCategories.includes(String(category.id)) && category.subcategories.length > 0 && (
-                          <div className="ml-3 mt-1 space-y-1 border-l-2 border-[#A3B18A] pl-3">
+                          <div className="ml-3 mt-1 space-y-1 border-l-2 border-[var(--border)] pl-3">
                             {category.subcategories.map((sub) => {
                               const isSubSelected = selectedCategory?.type === "subcategory" && selectedCategory.id === sub.id
                               const subName = lang === "zh" ? sub.name_cn : sub.name
@@ -403,8 +403,8 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                                   className={cn(
                                     "w-full rounded px-2 py-1.5 text-left text-sm transition-colors",
                                     isSubSelected
-                                      ? "bg-[#E9B35F]/20 text-[#2D6A4F] font-medium"
-                                      : "text-[#636E72] hover:text-[#2D6A4F]"
+                                      ? "bg-[var(--accent)]/20 text-[var(--primary)] font-medium"
+                                      : "text-[var(--text-body)] hover:text-[var(--primary)]"
                                   )}
                                 >
                                   {subName} ({sub.count})
@@ -424,13 +424,13 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
             <div className="flex-1">
               {selectedCategory && (
                 <div className="mb-4 flex items-center gap-2">
-                  <span className="text-sm text-[#636E72]">{t("products.filterBy", lang)}:</span>
-                  <span className="rounded-full bg-[#2D6A4F]/10 px-3 py-1 text-sm font-medium text-[#2D6A4F]">
+                  <span className="text-sm text-[var(--text-body)]">{t("products.filterBy", lang)}:</span>
+                  <span className="rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm font-medium text-[var(--primary)]">
                     {selectedCategory.name}
                   </span>
                   <button
                     onClick={() => setSelectedCategory(null)}
-                    className="ml-1 text-xs text-[#636E72] hover:text-[#2D6A4F]"
+                    className="ml-1 text-xs text-[var(--text-body)] hover:text-[var(--primary)]"
                   >
                     {t("products.clear", lang)}
                   </button>
@@ -439,12 +439,12 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
 
               {loading ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="text-[#636E72]">{t("products.loading", lang)}</div>
+                  <div className="text-[var(--text-body)]">{t("products.loading", lang)}</div>
                 </div>
               ) : filteredProducts.length === 0 ? (
-                <div className="rounded-xl border border-[#A3B18A] bg-white p-12 text-center">
-                  <p className="text-[#636E72]">{t("products.noProducts", lang)}</p>
-                  <p className="mt-2 text-sm text-[#636E72]">{t("products.totalProducts", lang)}: {products.length}</p>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
+                  <p className="text-[var(--text-body)]">{t("products.noProducts", lang)}</p>
+                  <p className="mt-2 text-sm text-[var(--text-body)]">{t("products.totalProducts", lang)}: {products.length}</p>
                 </div>
               ) : (
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -457,10 +457,10 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                       <Link
                         key={product.id}
                         href={getHrefWithLang(`/products/${product.slug}`, lang)}
-                        className="group overflow-hidden rounded-xl border border-[#A3B18A] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between"
+                        className="group overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between"
                       >
                         <div>
-                          <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
+                          <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-muted)]">
                             <Image
                               src={getFileUrl(product.image) || "/images/feed-additives.jpg"}
                               alt={productTitle}
@@ -469,13 +469,13 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                             />
                           </div>
                           <div className="p-4">
-                            <span className="text-xs font-medium text-[#2D6A4F]">
+                            <span className="text-xs font-medium text-[var(--primary)]">
                               {subName || catName || (lang === "zh" ? "其他" : "Others")}
                             </span>
-                            <h3 className="mt-1 font-semibold text-[#1B4D3E] group-hover:text-[#2D6A4F] line-clamp-2">
+                            <h3 className="mt-1 font-semibold text-[var(--primary-dark)] group-hover:text-[var(--primary)] line-clamp-2">
                               {productTitle}
                             </h3>
-                            <p className="mt-1 text-sm text-[#636E72] line-clamp-2">
+                            <p className="mt-1 text-sm text-[var(--text-body)] line-clamp-2">
                               {productDesc}
                             </p>
                           </div>
@@ -483,7 +483,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                         <div className="p-4 pt-0">
                           <Button
                             size="sm"
-                            className="w-full bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white"
+                            className="w-full bg-[var(--accent)] text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-white"
                           >
                             {t("products.inquiryButton", lang)}
                           </Button>
@@ -511,7 +511,7 @@ export default function ProductsPage({ pageLayout }: { pageLayout: PageLayout })
   ])
 
   return (
-    <Suspense fallback={<div className="flex items-center justify-center py-20 text-[#636E72]">Loading...</div>}>
+    <Suspense fallback={<div className="flex items-center justify-center py-20 text-[var(--text-body)]">Loading...</div>}>
       <ProductsContent sections={sections} />
     </Suspense>
   )

@@ -103,11 +103,11 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDFBF7]">
+      <div className="min-h-screen bg-[var(--bg-page)]">
         <Navbar />
         <main className="pt-32 lg:pt-36">
           <div className="mx-auto max-w-7xl px-4 py-12 text-center">
-            <div className="text-[#636E72]">{t("products.loading", lang)}</div>
+            <div className="text-[var(--text-body)]">{t("products.loading", lang)}</div>
           </div>
         </main>
         <Footer />
@@ -117,17 +117,17 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-[#FDFBF7]">
+      <div className="min-h-screen bg-[var(--bg-page)]">
         <Navbar />
         <main className="pt-32 lg:pt-36">
           <div className="mx-auto max-w-7xl px-4 py-12 text-center">
-            <h1 className="text-2xl font-bold text-[#1B4D3E]">
+            <h1 className="text-2xl font-bold text-[var(--primary-dark)]">
               {lang === "zh" ? "找不到该产品" : "Product not found"}
             </h1>
             <p className="mt-2 text-sm text-red-500">
               {error || (lang === "zh" ? "请求的产品不存在。" : "The requested product does not exist.")}
             </p>
-            <Link href={getHrefWithLang("/products", lang)} className="mt-4 inline-block text-[#2D6A4F] hover:underline">
+            <Link href={getHrefWithLang("/products", lang)} className="mt-4 inline-block text-[var(--primary)] hover:underline">
               {lang === "zh" ? "返回产品列表" : "Back to products"}
             </Link>
           </div>
@@ -143,28 +143,28 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
   const { product_title: productTitle, product_description: productDesc } = getProductTranslation(product, lang)
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[var(--bg-page)]">
       <Navbar />
       <main className="pt-20 lg:pt-24">
         <div className="mx-auto max-w-7xl px-3 py-6 sm:px-4 lg:px-6 lg:py-10">
           {/* Breadcrumb */}
           <nav className="mb-8 flex items-center gap-2 text-sm">
-            <Link href={getHrefWithLang("/", lang)} className="text-[#636E72] hover:text-[#2D6A4F]">
+            <Link href={getHrefWithLang("/", lang)} className="text-[var(--text-body)] hover:text-[var(--primary)]">
               {t("nav.home", lang)}
             </Link>
-            <ChevronRight className="size-4 text-[#636E72]" />
-            <Link href={getHrefWithLang("/products", lang)} className="text-[#636E72] hover:text-[#2D6A4F]">
+            <ChevronRight className="size-4 text-[var(--text-body)]" />
+            <Link href={getHrefWithLang("/products", lang)} className="text-[var(--text-body)] hover:text-[var(--primary)]">
               {t("nav.products", lang)}
             </Link>
-            <ChevronRight className="size-4 text-[#636E72]" />
-            <span className="font-medium text-[#2D6A4F]">{productTitle}</span>
+            <ChevronRight className="size-4 text-[var(--text-body)]" />
+            <span className="font-medium text-[var(--primary)]">{productTitle}</span>
           </nav>
 
           {/* Product Header */}
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
             {/* Image */}
             <div>
-              <div className="relative aspect-square overflow-hidden rounded-xl border border-[#A3B18A] bg-white">
+              <div className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)]">
                 <Image
                   src={getFileUrl(product.image) || "/images/feed-additives.jpg"}
                   alt={productTitle}
@@ -177,10 +177,10 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
             {/* Product Info */}
             <div className="flex flex-col justify-center">
               <div>
-                <span className="inline-block rounded-full bg-[#2D6A4F]/10 px-3 py-1 text-sm font-medium text-[#2D6A4F]">
+                <span className="inline-block rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm font-medium text-[var(--primary)]">
                   {subcategoryName || categoryName || (lang === "zh" ? "其他" : "Others")}
                 </span>
-                <h1 className="mt-3 text-3xl font-bold text-[#1B4D3E] lg:text-4xl">
+                <h1 className="mt-3 text-3xl font-bold text-[var(--primary-dark)] lg:text-4xl">
                   {productTitle}
                 </h1>
               </div>
@@ -189,7 +189,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                 <Button
                   onClick={handleRequestQuote}
                   size="lg"
-                  className="w-full bg-[#E9B35F] py-6 text-lg font-semibold text-[#1B4D3E] transition-all hover:bg-[#2D6A4F] hover:text-white sm:w-auto sm:px-12"
+                  className="w-full bg-[var(--accent)] py-6 text-lg font-semibold text-[var(--primary-dark)] transition-all hover:bg-[var(--primary)] hover:text-white sm:w-auto sm:px-12"
                 >
                   {t("inquiry.formTitle", lang)}
                 </Button>
@@ -198,23 +198,23 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
           </div>
 
           {/* Full Description */}
-          <div className="mt-12 rounded-2xl border border-[#A3B18A] bg-white p-6 lg:p-8">
-            <h2 className="mb-4 text-xl font-bold text-[#1B4D3E]">
+          <div className="mt-12 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 lg:p-8">
+            <h2 className="mb-4 text-xl font-bold text-[var(--primary-dark)]">
               {lang === "zh" ? "产品描述" : "Product Description"}
             </h2>
-            <div className="prose prose-sm max-w-none text-[#636E72]">
+            <div className="prose prose-sm max-w-none text-[var(--text-body)]">
               <p className="leading-relaxed whitespace-pre-line">{productDesc}</p>
             </div>
           </div>
 
           {/* Inquiry Form */}
-          <div id="inquiry-form" className="mt-12 rounded-2xl border border-[#A3B18A] bg-white p-6 lg:p-8">
-            <h2 className="mb-2 text-xl font-bold text-[#1B4D3E]">{t("inquiry.title", lang)}</h2>
-            <p className="mb-6 text-sm text-[#636E72]">{t("inquiry.subtitle", lang)}</p>
+          <div id="inquiry-form" className="mt-12 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 lg:p-8">
+            <h2 className="mb-2 text-xl font-bold text-[var(--primary-dark)]">{t("inquiry.title", lang)}</h2>
+            <p className="mb-6 text-sm text-[var(--text-body)]">{t("inquiry.subtitle", lang)}</p>
 
             <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-[#2D3436]">{t("inquiry.name", lang)}</label>
+                <label htmlFor="name" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.name", lang)}</label>
                 <input
                   type="text"
                   id="name"
@@ -222,11 +222,11 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-1 w-full rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#2D3436]">{t("inquiry.email", lang)}</label>
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.email", lang)}</label>
                 <input
                   type="email"
                   id="email"
@@ -234,11 +234,11 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-1 w-full rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 />
               </div>
               <div className="sm:col-span-2">
-                <label htmlFor="message" className="block text-sm font-medium text-[#2D3436]">{t("inquiry.message", lang)}</label>
+                <label htmlFor="message" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.message", lang)}</label>
                 <textarea
                   id="message"
                   rows={3}
@@ -246,7 +246,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-1 w-full resize-none rounded-lg border border-[#A3B18A] bg-[#FDFBF7] px-4 py-2.5 text-[#2D3436] focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-1 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                   placeholder={t("home.placeholderMessage", lang)}
                 />
               </div>
@@ -254,15 +254,15 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white disabled:opacity-50"
+                  className="bg-[var(--accent)] text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-white disabled:opacity-50"
                 >
                   {isSubmitting ? t("inquiry.submitting", lang) : t("inquiry.submit", lang)}
                 </Button>
               </div>
             </form>
 
-            <div className="mt-4 flex items-center gap-2 text-sm text-[#636E72]">
-              <Headphones className="size-4 text-[#2D6A4F]" />
+            <div className="mt-4 flex items-center gap-2 text-sm text-[var(--text-body)]">
+              <Headphones className="size-4 text-[var(--primary)]" />
               <span>{t("home.onlineSupport", lang)}</span>
             </div>
           </div>
@@ -270,7 +270,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
           {/* Related Products */}
           {relatedProducts.length > 0 && (
             <div className="mt-12">
-              <h2 className="mb-6 text-xl font-bold text-[#1B4D3E]">{t("products.relatedProducts", lang)}</h2>
+              <h2 className="mb-6 text-xl font-bold text-[var(--primary-dark)]">{t("products.relatedProducts", lang)}</h2>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {relatedProducts.map((item) => {
                   const itemSubName = typeof item.subcategory_id === "object" ? (lang === "zh" ? item.subcategory_id?.name_cn : item.subcategory_id?.name) : ""
@@ -281,10 +281,10 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                     <Link
                       key={item.id}
                       href={getHrefWithLang(`/products/${item.slug}`, lang)}
-                      className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#A3B18A] bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg justify-between"
+                      className="group flex h-full flex-col overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg justify-between"
                     >
                       <div>
-                        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F5F3EF]">
+                        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--bg-muted)]">
                           <Image
                             src={getFileUrl(item.image) || "/images/feed-additives.jpg"}
                             alt={itemTitle}
@@ -293,13 +293,13 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                           />
                         </div>
                         <div className="flex flex-1 flex-col p-4">
-                          <span className="text-xs font-medium text-[#2D6A4F]">
+                          <span className="text-xs font-medium text-[var(--primary)]">
                             {itemSubName || itemCatName || (lang === "zh" ? "其他" : "Others")}
                           </span>
-                          <h3 className="mt-1 flex-1 font-semibold text-[#1B4D3E] group-hover:text-[#2D6A4F] line-clamp-2">
+                          <h3 className="mt-1 flex-1 font-semibold text-[var(--primary-dark)] group-hover:text-[var(--primary)] line-clamp-2">
                             {itemTitle}
                           </h3>
-                          <p className="mt-2 text-sm text-[#636E72] line-clamp-2">
+                          <p className="mt-2 text-sm text-[var(--text-body)] line-clamp-2">
                             {itemDesc}
                           </p>
                         </div>
@@ -307,7 +307,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                       <div className="p-4 pt-0">
                         <Button
                           size="sm"
-                          className="w-full bg-[#E9B35F] text-[#1B4D3E] hover:bg-[#2D6A4F] hover:text-white"
+                          className="w-full bg-[var(--accent)] text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-white"
                         >
                           {t("products.inquiryButton", lang)}
                         </Button>
@@ -328,8 +328,8 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
 export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <div className="text-[#636E72]">Loading...</div>
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center">
+        <div className="text-[var(--text-body)]">Loading...</div>
       </div>
     }>
       <ProductDetailContent params={params} />

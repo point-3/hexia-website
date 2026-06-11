@@ -9,7 +9,7 @@ import { useLocale, useToggleLocale } from "@/hooks/use-locale"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { getRawCmsAssetUrl } from "@/lib/cms-assets"
 import { hexToRgba } from "@/lib/site-theme"
-import { quoteButtonText } from "@/lib/site-profile"
+import { quoteButtonText, siteName } from "@/lib/site-profile"
 
 interface NavbarProps {
   variant?: "transparent" | "solid"
@@ -19,14 +19,15 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
   const lang = useLocale()
   const toggleLocale = useToggleLocale()
   const siteSettings = useSiteSettings()
-  const primaryColor = siteSettings.primary_color || "#2D6A4F"
-  const ctaColor = siteSettings.cta_color || "#E9B35F"
-  const headerBackgroundColor = siteSettings.header_background_color || primaryColor
+  const primaryColor = siteSettings.theme_primary || siteSettings.header_background_color || "#2D6A4F"
+  const ctaColor = siteSettings.theme_accent || siteSettings.cta_color || "#E9B35F"
+  const headerBackgroundColor = primaryColor
   const headerOpacity = Math.max(0, Math.min(1, (siteSettings.header_background_opacity ?? 100) / 100))
   const quoteEnabled = siteSettings.quote_button_enabled !== false
   const languageSwitchEnabled = siteSettings.language_switch_enabled !== false
   const logoSrc = getRawCmsAssetUrl(siteSettings.logo) || "/images/金logo-03.svg"
   const quoteText = quoteButtonText(siteSettings, lang)
+  const displayName = siteName(siteSettings, lang)
 
   const navItems = [
     { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
@@ -93,16 +94,16 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
     >
       <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
         <div className={`flex items-center justify-between transition-all duration-300 ${isSticky ? "h-[56px]" : "h-14 lg:h-20"}`}>
-          <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label="Hexia homepage">
+          <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label={`${displayName} homepage`}>
             <img
               src={logoSrc}
-              alt="Hexia Logo"
+              alt={`${displayName} Logo`}
               width={28}
               height={28}
               className="h-auto w-auto sm:w-8"
             />
-            <span className="text-lg font-bold leading-tight sm:text-xl lg:text-2xl" style={{ color: ctaColor }}>
-              HEXIA
+            <span className="text-lg font-bold uppercase leading-tight sm:text-xl lg:text-2xl" style={{ color: ctaColor }}>
+              {displayName}
             </span>
           </a>
 

@@ -13,7 +13,7 @@ import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
 import { t } from "@/lib/i18n"
 import { fallbackSection, findSection, hasSection, isCustomSection, sectionsForPage } from "@/lib/page-layout"
-import { asJsonArray, fieldText, getSectionConfig, localizedText } from "@/lib/page-section-content"
+import { asJsonArray, fieldText, getSectionConfig, localizedText, themeColor } from "@/lib/page-section-content"
 import { trackInquiryConversion } from "@/lib/marketing-analytics"
 import {
   companyAddress,
@@ -44,8 +44,8 @@ function configuredContactCards(pageLayout: PageLayout, lang: "en" | "zh"): Cont
       subtitle: fieldText(item, "subtitle", lang),
       body,
       href: localizedText(item.href, lang),
-      backgroundColor: localizedText(item.background_color, lang) || "#FFFFFF",
-      textColor: localizedText(item.text_color, lang) || "#636E72",
+      backgroundColor: themeColor(localizedText(item.background_color, lang), "var(--bg-card)"),
+      textColor: themeColor(localizedText(item.text_color, lang), "var(--text-body)"),
     }]
   })
 }
@@ -68,7 +68,7 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
   const contactPanelSort = hasContactPanel
     ? Math.min(contactInfoSection?.sort ?? Number.POSITIVE_INFINITY, contactFormSection?.sort ?? Number.POSITIVE_INFINITY)
     : Number.POSITIVE_INFINITY
-  const contactPanelBackgroundColor = contactFormSection?.background_color || contactInfoSection?.background_color
+  const contactPanelBackgroundColor = themeColor(contactFormSection?.background_color || contactInfoSection?.background_color)
   const customSections = sections.filter(isCustomSection)
   const customSectionsBeforePanel = hasContactPanel
     ? customSections.filter((section) => (section.sort ?? 0) < contactPanelSort)
@@ -123,12 +123,12 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[var(--bg-page)]">
       {/* Success Message Modal */}
       {showSuccess && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
-          <div className="max-w-sm w-full rounded-xl bg-[#2D6A4F]/20 px-6 py-5 text-center backdrop-blur-sm">
-            <p className="text-base font-medium text-[#2D6A4F]">
+          <div className="max-w-sm w-full rounded-xl bg-[var(--primary)]/20 px-6 py-5 text-center backdrop-blur-sm">
+            <p className="text-base font-medium text-[var(--primary)]">
               {t("inquiry.successToast", lang)}
             </p>
           </div>
@@ -147,15 +147,15 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
             <div className={`grid gap-6 ${showContactForm && showContactInfo ? "lg:grid-cols-2" : "lg:grid-cols-1"}`}>
               {/* Contact Form */}
               {showContactForm ? (
-              <div className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
-                <h2 className="text-xl font-bold text-[#1B4D3E]">{t("inquiry.title", lang)}</h2>
-                <p className="mt-2 text-sm text-[#636E72]">
+              <div className="rounded-2xl bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
+                <h2 className="text-xl font-bold text-[var(--primary-dark)]">{t("inquiry.title", lang)}</h2>
+                <p className="mt-2 text-sm text-[var(--text-body)]">
                   {t("inquiry.subtitle", lang)}
                 </p>
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-[#2D3436]">
+                    <label htmlFor="name" className="block text-sm font-medium text-[var(--text-body)]">
                       {t("inquiry.name", lang)} <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -165,13 +165,13 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
                       disabled={isSubmitting}
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                       placeholder={t("home.placeholderName", lang)}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-[#2D3436]">
+                    <label htmlFor="email" className="block text-sm font-medium text-[var(--text-body)]">
                       {t("inquiry.email", lang)} <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -181,13 +181,13 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
                       disabled={isSubmitting}
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                       placeholder={t("home.placeholderEmail", lang)}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="country" className="block text-sm font-medium text-[#2D3436]">
+                    <label htmlFor="country" className="block text-sm font-medium text-[var(--text-body)]">
                       {t("inquiry.country", lang)}
                     </label>
                     <input
@@ -196,13 +196,13 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                       value={formData.country}
                       onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                       disabled={isSubmitting}
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                       placeholder={t("home.placeholderCountry", lang)}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="productInterest" className="block text-sm font-medium text-[#2D3436]">
+                    <label htmlFor="productInterest" className="block text-sm font-medium text-[var(--text-body)]">
                       {t("inquiry.product", lang)}
                     </label>
                     <input
@@ -211,13 +211,13 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                       value={formData.productInterest}
                       onChange={(e) => setFormData({ ...formData, productInterest: e.target.value })}
                       disabled={isSubmitting}
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                       placeholder={t("home.placeholderProduct", lang)}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="quantity" className="block text-sm font-medium text-[#2D3436]">
+                    <label htmlFor="quantity" className="block text-sm font-medium text-[var(--text-body)]">
                       {t("inquiry.quantity", lang)}
                     </label>
                     <input
@@ -226,13 +226,13 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                       value={formData.quantity}
                       onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
                       disabled={isSubmitting}
-                      className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                       placeholder={t("home.placeholderQuantity", lang)}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-[#2D3436]">
+                    <label htmlFor="message" className="block text-sm font-medium text-[var(--text-body)]">
                       {t("inquiry.message", lang)} <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -242,7 +242,7 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
                       disabled={isSubmitting}
-                      className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                      className="mt-2 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                       placeholder={t("home.placeholderMessage", lang)}
                     />
                   </div>
@@ -251,16 +251,16 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                     type="submit"
                     size="lg"
                     disabled={isSubmitting}
-                    className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white disabled:opacity-50"
+                    className="w-full bg-[var(--accent)] py-6 text-base font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:bg-[var(--primary)] hover:text-white disabled:opacity-50"
                   >
                     {isSubmitting ? t("inquiry.submitting", lang) : t("inquiry.submit", lang)}
                   </Button>
                 </form>
 
                 {/* Response time notice */}
-                <div className="mt-6 flex items-center justify-center gap-2 rounded-xl bg-[#2D6A4F]/5 p-4">
-                  <Clock className="size-5 text-[#2D6A4F]" />
-                  <span className="text-sm text-[#2D6A4F] font-medium">{t("inquiry.replyNotice", lang)}</span>
+                <div className="mt-6 flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)]/5 p-4">
+                  <Clock className="size-5 text-[var(--primary)]" />
+                  <span className="text-sm text-[var(--primary)] font-medium">{t("inquiry.replyNotice", lang)}</span>
                 </div>
               </div>
               ) : null}
@@ -272,10 +272,10 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                   configuredCards.map((card) => {
                     const content = (
                       <div
-                        className="rounded-xl border border-[#A3B18A] p-4 sm:p-6"
+                        className="rounded-xl border border-[var(--border)] p-4 sm:p-6"
                         style={{ backgroundColor: card.backgroundColor, color: card.textColor }}
                       >
-                        <h3 className="font-semibold text-[#1B4D3E]">{card.title}</h3>
+                        <h3 className="font-semibold text-[var(--primary-dark)]">{card.title}</h3>
                         {card.subtitle ? <p className="mt-1 text-sm opacity-75">{card.subtitle}</p> : null}
                         {card.body ? <p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{card.body}</p> : null}
                       </div>
@@ -291,21 +291,21 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                 ) : (
                 <>
                 {/* Company Address */}
-                <div className="rounded-xl border border-[#A3B18A] bg-white p-4 sm:p-6">
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-6">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-11 items-center justify-center rounded-full bg-[#2D6A4F]">
+                    <div className="flex size-11 items-center justify-center rounded-full bg-[var(--primary)]">
                       <Building2 className="size-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-[#1B4D3E]">
+                      <h3 className="font-semibold text-[var(--primary-dark)]">
                         {companyName(siteSettings, lang)}
                       </h3>
-                      <p className="text-sm text-[#636E72]">{lang === "zh" ? "公司地址" : "Company Address"}</p>
+                      <p className="text-sm text-[var(--text-body)]">{lang === "zh" ? "公司地址" : "Company Address"}</p>
                     </div>
                   </div>
                   <div className="mt-4 flex items-start gap-3">
-                    <MapPin className="mt-0.5 size-5 shrink-0 text-[#A3B18A]" />
-                    <p className="text-[#636E72]">
+                    <MapPin className="mt-0.5 size-5 shrink-0 text-[var(--border)]" />
+                    <p className="text-[var(--text-body)]">
                       {companyAddress(siteSettings, lang).split("\n").map((line, index, lines) => (
                         <span key={line}>
                           {line}
@@ -317,17 +317,17 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                 </div>
 
                 {/* Email */}
-                <div className="rounded-xl border border-[#A3B18A] bg-white p-4 sm:p-6">
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-6">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-11 items-center justify-center rounded-full bg-[#E9B35F]">
-                      <Mail className="size-5 text-[#1B4D3E]" />
+                    <div className="flex size-11 items-center justify-center rounded-full bg-[var(--accent)]">
+                      <Mail className="size-5 text-[var(--primary-dark)]" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-[#1B4D3E]">{lang === "zh" ? "电子邮箱" : "Email"}</h3>
+                      <h3 className="font-semibold text-[var(--primary-dark)]">{lang === "zh" ? "电子邮箱" : "Email"}</h3>
                       <div className="mt-1 space-y-1">
                         <a
                           href={`mailto:${email}`}
-                          className="block text-xs text-[#2D6A4F] hover:text-[#E9B35F] transition-colors sm:text-sm"
+                          className="block text-xs text-[var(--primary)] hover:text-[var(--accent)] transition-colors sm:text-sm"
                         >
                           {email}
                         </a>
@@ -337,18 +337,18 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                 </div>
 
                 {/* WeChat/WhatsApp */}
-                <div className="rounded-xl border border-[#A3B18A] bg-white p-4 sm:p-6">
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-6">
                   <div className="flex items-center gap-3">
                     <div className="flex size-11 items-center justify-center rounded-full bg-[#25D366]">
                       <MessageCircle className="size-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-[#1B4D3E]">{lang === "zh" ? "微信 / WhatsApp" : "WeChat/WhatsApp"}</h3>
+                      <h3 className="font-semibold text-[var(--primary-dark)]">{lang === "zh" ? "微信 / WhatsApp" : "WeChat/WhatsApp"}</h3>
                       <a
                         href={whatsappHref(whatsapp)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
+                        className="text-[var(--primary)] transition-colors hover:text-[var(--accent)]"
                       >
                         {whatsapp}
                       </a>
@@ -357,7 +357,7 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                 </div>
 
                 {/* Support */}
-                <div className="rounded-xl bg-gradient-to-br from-[#2D6A4F] to-[#1B4D3E] p-4 sm:p-6 text-white">
+                <div className="rounded-xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] p-4 sm:p-6 text-white">
                   <div className="flex items-center gap-3">
                     <div className="flex size-11 items-center justify-center rounded-full bg-white/20">
                       <Headphones className="size-5" />
@@ -394,8 +394,8 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
 export default function ContactPage({ pageLayout }: { pageLayout: PageLayout }) {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <div className="text-[#636E72]">Loading...</div>
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center">
+        <div className="text-[var(--text-body)]">Loading...</div>
       </div>
     }>
       <ContactContent pageLayout={pageLayout} />

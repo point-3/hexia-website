@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getSeoPage, getSiteSettings, type SitePageKey } from "@/lib/api/site-config";
 import type { SeoPage, SeoPageTranslation, SiteSettings, SiteSettingsTranslation } from "@/lib/directus";
+import { browserTitlePrefix } from "@/lib/site-profile";
 
 type SeoLocale = "en" | "zh";
 
@@ -44,14 +45,33 @@ function toMetadata(values: { title: string; description: string; keywords: stri
   };
 }
 
+function withBrowserTitlePrefix(title: string, prefix: string): string {
+  const cleanTitle = cleanText(title) || GENERIC_DEFAULT_SEO.title;
+  const cleanPrefix = cleanText(prefix);
+  if (!cleanPrefix) return cleanTitle;
+
+  const normalizedTitle = cleanTitle.toLowerCase();
+  const normalizedPrefix = cleanPrefix.toLowerCase();
+  if (
+    normalizedTitle === normalizedPrefix ||
+    normalizedTitle.startsWith(`${normalizedPrefix} |`) ||
+    normalizedTitle.startsWith(`${normalizedPrefix} -`)
+  ) {
+    return cleanTitle;
+  }
+
+  return `${cleanPrefix} | ${cleanTitle}`;
+}
+
 export function resolveDefaultMetadata(settings: SiteSettings, localeValue: string | null | undefined = "en"): Metadata {
   const locale = parseSeoLocale(localeValue);
   const translation = settings.id === 0
     ? undefined
     : pickTranslation<SiteSettingsTranslation>(settings.translations, locale);
+  const titlePrefix = browserTitlePrefix(settings, locale);
 
   return toMetadata({
-    title: cleanText(translation?.default_meta_title) || GENERIC_DEFAULT_SEO.title,
+    title: withBrowserTitlePrefix(cleanText(translation?.default_meta_title) || GENERIC_DEFAULT_SEO.title, titlePrefix),
     description: cleanText(translation?.default_meta_description) || GENERIC_DEFAULT_SEO.description,
     keywords: cleanText(translation?.default_meta_keywords) || GENERIC_DEFAULT_SEO.keywords,
   });
@@ -67,9 +87,10 @@ export function resolvePageMetadata(
   const pageTranslation = seoPage.id === 0
     ? undefined
     : pickTranslation<SeoPageTranslation>(seoPage.translations, locale);
+  const titlePrefix = browserTitlePrefix(settings, locale);
 
   return toMetadata({
-    title: cleanText(pageTranslation?.title) || String(siteDefaults.title || GENERIC_DEFAULT_SEO.title),
+    title: withBrowserTitlePrefix(cleanText(pageTranslation?.title) || String(siteDefaults.title || GENERIC_DEFAULT_SEO.title), titlePrefix),
     description: cleanText(pageTranslation?.description) || siteDefaults.description || GENERIC_DEFAULT_SEO.description,
     keywords: cleanText(pageTranslation?.keywords) || (Array.isArray(siteDefaults.keywords) ? siteDefaults.keywords.join(", ") : cleanText(siteDefaults.keywords as string | undefined)),
   });

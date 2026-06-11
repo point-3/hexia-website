@@ -18,6 +18,7 @@ import {
   getSectionConfig,
   getSectionTranslation,
   localizedText,
+  themeColor,
 } from "@/lib/page-section-content"
 import { companyAddress, companyName } from "@/lib/site-profile"
 
@@ -69,12 +70,12 @@ function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Loc
       ? "总部位于苏州自贸区，并在香港和英国设有独立子公司。我们专注于动物营养和人类食品原料领域，致力于为全球客户提供全面的一站式解决方案。"
       : "Headquartered in Suzhou Free Trade Zone, the company has established subsidiaries in Hong Kong and the United Kingdom. Dedicated to the fields of animal nutrition and food nutrition, we strive to deliver comprehensive one-stop solutions for global clients.",
   )
-  const backgroundColor = section.background_color || localizedText(config.background_color, lang)
-  const textColor = section.text_color || localizedText(config.text_color, lang) || "#FFFFFF"
+  const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang))
+  const textColor = themeColor(section.text_color || localizedText(config.text_color, lang), "var(--bg-card)")
 
   return (
     <section
-      className={`relative z-0 py-16 lg:py-20 ${backgroundColor ? "" : "bg-gradient-to-br from-[#2D6A4F] to-[#1B4D3E]"}`}
+      className={`relative z-0 py-16 lg:py-20 ${backgroundColor ? "" : "bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)]"}`}
       style={{ backgroundColor: backgroundColor || undefined, color: textColor }}
     >
       <div className="absolute inset-0 opacity-10">
@@ -114,17 +115,17 @@ function MissionSection({ section, lang }: { section: PageSection; lang: Locale 
       ? "成为您在动物和人类营养领域需求的一站式解决方案，提供可靠的采购、高效的物流和卓越的客户服务。"
       : "To become a one-stop solution for your demand in animal and human nutrition, providing reliable sourcing, efficient logistics, and outstanding customer service.",
   )
-  const backgroundColor = section.background_color || localizedText(config.background_color, lang) || "#F5F3EF"
-  const textColor = section.text_color || localizedText(config.text_color, lang) || "#636E72"
+  const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang), "var(--bg-muted)")
+  const textColor = themeColor(section.text_color || localizedText(config.text_color, lang), "var(--text-body)")
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#2D6A4F]">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[var(--primary)]">
             <Target className="size-8 text-white" />
           </div>
-          <h2 className="mt-6 text-2xl font-bold text-[#1B4D3E] sm:text-3xl">{title}</h2>
+          <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
           {content ? (
             <div
               className="mx-auto mt-4 max-w-2xl text-lg"
@@ -168,7 +169,7 @@ function GlobalPresenceSection({ section, lang }: { section: PageSection; lang: 
       ? "总部位于苏州，并在香港和英国设有子公司，服务全球市场"
       : "Headquartered in Suzhou with subsidiaries in Hong Kong and the UK, serving global markets",
   )
-  const backgroundColor = section.background_color || localizedText(config.background_color, lang) || "#FDFBF7"
+  const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
   const cards = configuredInfoCards(section, lang)
   const displayCards = cards.length > 0 ? cards : [
     {
@@ -187,24 +188,24 @@ function GlobalPresenceSection({ section, lang }: { section: PageSection; lang: 
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#2D6A4F]">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[var(--primary)]">
             <MapPin className="size-8 text-white" />
           </div>
-          <h2 className="mt-6 text-2xl font-bold text-[#1B4D3E] sm:text-3xl">{title}</h2>
-          {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[#636E72]">{subtitle}</p> : null}
+          <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
+          {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
           {displayCards.map((card) => (
-            <div key={card.title} className="rounded-2xl border border-[#A3B18A] bg-white p-6 lg:p-8">
-              <h3 className="font-semibold text-[#1B4D3E]">{card.title}</h3>
+            <div key={card.title} className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 lg:p-8">
+              <h3 className="font-semibold text-[var(--primary-dark)]">{card.title}</h3>
               {card.body ? (
-                <p className="mt-2 whitespace-pre-line text-[#636E72]">{card.body}</p>
+                <p className="mt-2 whitespace-pre-line text-[var(--text-body)]">{card.body}</p>
               ) : null}
               {card.tags.length > 0 ? (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {card.tags.map((tag) => (
-                    <span key={tag} className="rounded-full bg-[#2D6A4F]/10 px-4 py-2 text-sm font-medium text-[#2D6A4F]">
+                    <span key={tag} className="rounded-full bg-[var(--primary)]/10 px-4 py-2 text-sm font-medium text-[var(--primary)]">
                       {tag}
                     </span>
                   ))}
@@ -231,7 +232,7 @@ function AboutContent({ pageLayout }: { pageLayout: PageLayout }) {
   ])
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[var(--bg-page)]">
       <Navbar variant="transparent" />
 
       <main>
@@ -255,8 +256,8 @@ function AboutContent({ pageLayout }: { pageLayout: PageLayout }) {
 export default function AboutPage({ pageLayout }: { pageLayout: PageLayout }) {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <div className="text-[#636E72]">Loading...</div>
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center">
+        <div className="text-[var(--text-body)]">Loading...</div>
       </div>
     }>
       <AboutContent pageLayout={pageLayout} />

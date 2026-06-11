@@ -15,6 +15,7 @@ import {
   contactEmail,
   contactWhatsapp,
   footerCopyright,
+  siteName,
   socialProfiles,
   whatsappHref,
 } from "@/lib/site-profile"
@@ -142,6 +143,7 @@ export function Footer() {
   const socialLinks = socialProfiles(siteSettings)
   const email = contactEmail(siteSettings)
   const whatsapp = contactWhatsapp(siteSettings)
+  const displayName = siteName(siteSettings, lang)
 
   useEffect(() => {
     let active = true
@@ -172,12 +174,12 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-3 py-8 sm:px-4 lg:px-6 lg:py-12">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
-            <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label="Hexia homepage">
+            <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label={`${displayName} homepage`}>
               {footerLogoSrc ? (
-                <img src={footerLogoSrc} alt="Hexia Logo" width={32} height={32} className="h-8 w-auto" />
+                <img src={footerLogoSrc} alt={`${displayName} Logo`} width={32} height={32} className="h-8 w-auto" />
               ) : null}
-              <span className="text-lg font-bold text-[var(--site-footer-text-color)]">
-                HEXIA
+              <span className="text-lg font-bold uppercase text-[var(--site-footer-text-color)]">
+                {displayName}
               </span>
             </a>
             <p className="mt-3 text-sm leading-relaxed text-[var(--site-footer-text-color)] opacity-80">

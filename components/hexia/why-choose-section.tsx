@@ -5,13 +5,16 @@ import { Building2, Factory, Globe, Package, Shield, Sparkles, Users, Wrench, ty
 import { useSearchParams } from "next/navigation"
 import type { PageSection } from "@/lib/directus"
 import { getFileUrl } from "@/lib/directus"
+import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { t } from "@/lib/i18n"
+import { whyChooseTitleSuffix } from "@/lib/site-profile"
 import {
   asJsonArray,
   fieldText,
   getSectionConfig,
   getSectionTranslation,
   localizedText,
+  themeColor,
 } from "@/lib/page-section-content"
 
 type WhyChooseFeature = {
@@ -63,14 +66,34 @@ function configuredFeatures(section: PageSection | null | undefined, lang: "en" 
   })
 }
 
-function fallbackTitle(lang: "en" | "zh") {
+function fallbackTitle(lang: "en" | "zh", displayName: string) {
   return lang === "zh" ? (
     <>
-      为什么选择 <span className="text-[var(--hexia-gold)]">和夏</span>
+      为什么选择 <span className="text-[var(--accent)]">{displayName}</span>
     </>
   ) : (
     <>
-      Why Choose <span className="text-[var(--hexia-gold)]">Hexia</span>
+      Why Choose <span className="text-[var(--accent)]">{displayName}</span>
+    </>
+  )
+}
+
+function titleWithHighlightedSuffix(title: string, suffix: string) {
+  const cleanTitle = title.trim()
+  const cleanSuffix = suffix.trim()
+  if (!cleanTitle || !cleanSuffix) return cleanTitle
+
+  const titleLower = cleanTitle.toLowerCase()
+  const suffixLower = cleanSuffix.toLowerCase()
+  if (!titleLower.endsWith(suffixLower)) return cleanTitle
+
+  const prefix = cleanTitle.slice(0, cleanTitle.length - cleanSuffix.length).trimEnd()
+  const matchedSuffix = cleanTitle.slice(cleanTitle.length - cleanSuffix.length)
+
+  return (
+    <>
+      {prefix ? `${prefix} ` : ""}
+      <span className="text-[var(--accent)]">{matchedSuffix}</span>
     </>
   )
 }
@@ -79,16 +102,19 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
+  const siteSettings = useSiteSettings()
   const translation = getSectionTranslation(section, lang)
   const config = getSectionConfig(section, lang)
   const configured = configuredFeatures(section, lang)
   const features = configured.length > 0 ? configured : fallbackFeatures(lang)
   const rows = features.length <= 4 ? [features] : [features.slice(0, 4), features.slice(4)]
   const title = translation?.title || localizedText(config.title, lang)
+  const configuredSuffix = localizedText(config.title_suffix || config.brand_suffix || config.highlight_suffix, lang)
+  const titleSuffix = configuredSuffix || whyChooseTitleSuffix(siteSettings, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("home.whyChooseDesc", lang)
-  const backgroundColor = section?.background_color || localizedText(config.background_color, lang) || "#FDFBF7"
-  const textColor = section?.text_color || localizedText(config.text_color, lang) || "#1B4D3E"
-  const bodyTextColor = localizedText(config.body_text_color, lang) || textColor
+  const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
+  const textColor = themeColor(section?.text_color || localizedText(config.text_color, lang), "var(--primary-dark)")
+  const bodyTextColor = themeColor(localizedText(config.body_text_color, lang), textColor)
   const imageSrc = getFileUrl(section?.image || localizedText(config.image, lang), { width: 1600, quality: 82, format: "webp" })
 
   return (
@@ -110,7 +136,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: textColor }}>
-            {title || fallbackTitle(lang)}
+            {title ? titleWithHighlightedSuffix(title, titleSuffix) : fallbackTitle(lang, titleSuffix)}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty" style={{ color: bodyTextColor, opacity: 0.78 }}>
             {subtitle}
@@ -146,7 +172,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                       <div
                         className="absolute top-0 left-0 right-0 bottom-0 rounded-none shadow-xl"
                         style={{
-                          backgroundColor: "#2D6A4F",
+                          backgroundColor: "var(--primary)",
                           opacity: isHovered ? 1 : 0,
                           zIndex: 0,
                           transition: "opacity 0.5s ease-out, margin 0.5s ease-out",
@@ -165,8 +191,8 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                         <div
                           className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
                           style={{
-                            backgroundColor: isHovered ? "#E9B35F" : "rgba(45, 106, 79, 0.1)",
-                            color: isHovered ? "#ffffff" : "#2D6A4F",
+                            backgroundColor: isHovered ? "var(--accent)" : "color-mix(in srgb, var(--primary) 10%, transparent)",
+                            color: isHovered ? "#ffffff" : "var(--primary)",
                           }}
                         >
                           <feature.icon className="w-7 h-7" strokeWidth={1.5} />
@@ -217,8 +243,8 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                 <div
                   className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
                   style={{
-                    backgroundColor: isHovered ? "#E9B35F" : "rgba(45, 106, 79, 0.1)",
-                    color: isHovered ? "#ffffff" : "#2D6A4F",
+                    backgroundColor: isHovered ? "var(--accent)" : "color-mix(in srgb, var(--primary) 10%, transparent)",
+                    color: isHovered ? "#ffffff" : "var(--primary)",
                   }}
                 >
                   <feature.icon className="w-7 h-7" strokeWidth={1.5} />

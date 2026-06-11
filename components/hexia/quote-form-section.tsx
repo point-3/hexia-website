@@ -68,23 +68,23 @@ export function QuoteFormSection() {
   }
 
   return (
-    <section id="quote" className="bg-[#FDFBF7] py-20 lg:py-28">
+    <section id="quote" className="bg-[var(--bg-page)] py-20 lg:py-28">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-white p-8 shadow-lg sm:p-12">
+        <div className="rounded-3xl bg-[var(--bg-card)] p-8 shadow-lg sm:p-12">
           {/* Header */}
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
               {lang === "zh" ? (
                 <>
-                  获取专属 <span className="text-[#E9B35F]">报价询盘</span>
+                  获取专属 <span className="text-[var(--accent)]">报价询盘</span>
                 </>
               ) : (
                 <>
-                  Request a <span className="text-[#E9B35F]">Quote</span>
+                  Request a <span className="text-[var(--accent)]">Quote</span>
                 </>
               )}
             </h2>
-            <p className="mt-4 text-[#636E72]">
+            <p className="mt-4 text-[var(--text-body)]">
               {t("home.quoteDesc", lang)}
             </p>
           </div>
@@ -95,7 +95,7 @@ export function QuoteFormSection() {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-[#2D3436]"
+                className="block text-sm font-medium text-[var(--text-body)]"
               >
                 {t("home.formName", lang)} <span className="text-red-500">*</span>
               </label>
@@ -107,7 +107,7 @@ export function QuoteFormSection() {
                 onChange={handleChange}
                 required
                 disabled={isSubmitting}
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 placeholder={t("home.placeholderName", lang)}
               />
             </div>
@@ -116,7 +116,7 @@ export function QuoteFormSection() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-[#2D3436]"
+                className="block text-sm font-medium text-[var(--text-body)]"
               >
                 {t("home.formEmail", lang)} <span className="text-red-500">*</span>
               </label>
@@ -128,7 +128,7 @@ export function QuoteFormSection() {
                 onChange={handleChange}
                 required
                 disabled={isSubmitting}
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 placeholder={t("home.placeholderEmail", lang)}
               />
             </div>
@@ -137,7 +137,7 @@ export function QuoteFormSection() {
             <div>
               <label
                 htmlFor="country"
-                className="block text-sm font-medium text-[#2D3436]"
+                className="block text-sm font-medium text-[var(--text-body)]"
               >
                 {t("home.formCountry", lang)}
               </label>
@@ -148,7 +148,7 @@ export function QuoteFormSection() {
                 value={formData.country}
                 onChange={handleChange}
                 disabled={isSubmitting}
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 placeholder={t("home.placeholderCountry", lang)}
               />
             </div>
@@ -157,7 +157,7 @@ export function QuoteFormSection() {
             <div>
               <label
                 htmlFor="productInterest"
-                className="block text-sm font-medium text-[#2D3436]"
+                className="block text-sm font-medium text-[var(--text-body)]"
               >
                 {t("home.formProduct", lang)}
               </label>
@@ -168,7 +168,7 @@ export function QuoteFormSection() {
                 value={formData.productInterest}
                 onChange={handleChange}
                 disabled={isSubmitting}
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 placeholder={t("home.placeholderProduct", lang)}
               />
             </div>
@@ -177,7 +177,7 @@ export function QuoteFormSection() {
             <div>
               <label
                 htmlFor="quantity"
-                className="block text-sm font-medium text-[#2D3436]"
+                className="block text-sm font-medium text-[var(--text-body)]"
               >
                 {t("home.formQuantity", lang)}
               </label>
@@ -188,7 +188,7 @@ export function QuoteFormSection() {
                 value={formData.quantity}
                 onChange={handleChange}
                 disabled={isSubmitting}
-                className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 placeholder={t("home.placeholderQuantity", lang)}
               />
             </div>
@@ -197,7 +197,7 @@ export function QuoteFormSection() {
             <div>
               <label
                 htmlFor="message"
-                className="block text-sm font-medium text-[#2D3436]"
+                className="block text-sm font-medium text-[var(--text-body)]"
               >
                 {t("home.formMessage", lang)} <span className="text-red-500">*</span>
               </label>
@@ -209,7 +209,7 @@ export function QuoteFormSection() {
                 rows={5}
                 required
                 disabled={isSubmitting}
-                className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                className="mt-2 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 placeholder={t("home.placeholderMessage", lang)}
               />
             </div>
@@ -219,7 +219,7 @@ export function QuoteFormSection() {
               type="submit"
               size="lg"
               disabled={isSubmitting}
-              className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white disabled:opacity-50"
+              className="w-full bg-[var(--accent)] py-6 text-base font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:bg-[var(--primary)] hover:text-white disabled:opacity-50"
             >
               {isSubmitting ? t("inquiry.submitting", lang) : t("home.formSubmit", lang)}
             </Button>
@@ -227,16 +227,16 @@ export function QuoteFormSection() {
 
           {/* Success Message */}
           {showSuccess && (
-            <div className="mt-4 rounded-xl bg-[#2D6A4F]/20 p-4 text-center">
-              <p className="text-sm font-medium text-[#2D6A4F]">
+            <div className="mt-4 rounded-xl bg-[var(--primary)]/20 p-4 text-center">
+              <p className="text-sm font-medium text-[var(--primary)]">
                 {t("home.formSuccess", lang)}
               </p>
             </div>
           )}
 
           {/* Support Note */}
-          <div className="mt-8 flex items-center justify-center gap-2 text-sm text-[#636E72]">
-            <Headphones className="size-5 text-[#2D6A4F]" />
+          <div className="mt-8 flex items-center justify-center gap-2 text-sm text-[var(--text-body)]">
+            <Headphones className="size-5 text-[var(--primary)]" />
             <span>{t("home.onlineSupport", lang)}</span>
           </div>
         </div>

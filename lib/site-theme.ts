@@ -10,7 +10,7 @@ function colorValue(value: string | null | undefined, fallback: string): string 
 }
 
 export function hexToRgba(hex: string, opacity: number): string {
-  const normalized = colorValue(hex, "#1B4D3E").replace("#", "")
+  const normalized = colorValue(hex, "#2D6A4F").replace("#", "")
   const full = normalized.length === 3
     ? normalized.split("").map((char) => `${char}${char}`).join("")
     : normalized
@@ -30,32 +30,55 @@ export function siteFontFamily(fontFamily: string | null | undefined): string {
 }
 
 export function createSiteThemeStyle(settings: SiteSettings): CSSProperties {
-  const primary = colorValue(settings.primary_color, "#1B4D3E")
-  const cta = colorValue(settings.cta_color, "#E9B35F")
-  const background = colorValue(settings.body_background, "#FDFBF7")
-  const headingText = colorValue(settings.heading_text_color, primary)
-  const bodyText = colorValue(settings.body_text_color, "#2D3436")
+  const primary = colorValue(settings.theme_primary, colorValue(settings.header_background_color, "#2D6A4F"))
+  const primaryDark = colorValue(
+    settings.theme_primary_dark,
+    colorValue(settings.heading_text_color, colorValue(settings.primary_color, "#1B4D3E")),
+  )
+  const accent = colorValue(settings.theme_accent, colorValue(settings.cta_color, "#E9B35F"))
+  const background = colorValue(settings.theme_bg_page, colorValue(settings.body_background, "#FDFBF7"))
+  const cardBackground = colorValue(settings.theme_bg_card, "#FFFFFF")
+  const bodyText = colorValue(settings.theme_text_body, colorValue(settings.body_text_color, "#636E72"))
+  const border = colorValue(settings.theme_border, "#A3B18A")
+  const mutedBackground = colorValue(settings.theme_bg_muted, "#F5F3EF")
   const fontFamily = siteFontFamily(settings.font_family)
-  const headerText = colorValue(settings.header_text_color, "#FFFFFF")
-  const headerHoverText = colorValue(settings.header_hover_text_color, cta)
-  const footerBackground = colorValue(settings.footer_background_color, primary)
-  const footerText = colorValue(settings.footer_text_color, "#FFFFFF")
-  const footerLink = colorValue(settings.footer_link_color, cta)
+  const headerText = "#FFFFFF"
+  const headerHoverText = accent
+  const footerBackground = primary
+  const footerText = "#FFFFFF"
+  const footerLink = accent
 
   return {
     "--background": background,
     "--foreground": bodyText,
+    "--card": cardBackground,
+    "--card-foreground": bodyText,
     "--primary": primary,
-    "--accent": cta,
+    "--primary-dark": primaryDark,
+    "--primary-foreground": "#FFFFFF",
+    "--accent": accent,
+    "--accent-foreground": primaryDark,
+    "--border": border,
+    "--input": border,
+    "--ring": primary,
+    "--bg-page": background,
+    "--bg-card": cardBackground,
+    "--text-body": bodyText,
+    "--bg-muted": mutedBackground,
     "--hexia-forest": primary,
-    "--hexia-forest-dark": primary,
-    "--hexia-gold": cta,
-    "--hexia-gold-dark": cta,
+    "--hexia-forest-dark": primaryDark,
+    "--hexia-gold": accent,
+    "--hexia-gold-dark": accent,
+    "--hexia-sage": border,
     "--site-primary-color": primary,
-    "--site-cta-color": cta,
+    "--site-primary-dark-color": primaryDark,
+    "--site-cta-color": accent,
     "--site-body-background": background,
-    "--site-heading-color": headingText,
+    "--site-heading-color": primaryDark,
     "--site-body-text-color": bodyText,
+    "--site-card-background": cardBackground,
+    "--site-border-color": border,
+    "--site-muted-background": mutedBackground,
     "--site-header-text-color": headerText,
     "--site-header-hover-text-color": headerHoverText,
     "--site-footer-background-color": footerBackground,

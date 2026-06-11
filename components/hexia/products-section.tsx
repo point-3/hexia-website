@@ -63,7 +63,7 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
     : fallbackProducts
 
   return (
-    <section id="products" className="bg-[#FDFBF7] py-20 lg:py-28">
+    <section id="products" className="bg-[var(--bg-page)] py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
@@ -77,7 +77,7 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
               </>
             )}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
+          <p className="mx-auto mt-4 max-w-2xl text-pretty text-[var(--text-body)]">
             {t("home.coreDesc", lang)}
           </p>
         </div>
@@ -87,9 +87,9 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
             <a
               key={product.id}
               href={getHrefWithLang("/products", lang)}
-              className="group relative overflow-hidden p-4 transition-all duration-300 hover:shadow-xl bg-white"
+              className="group relative overflow-hidden p-4 transition-all duration-300 hover:shadow-xl bg-[var(--bg-card)]"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
+              <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-muted)]">
                 <Image
                   src={product.image || "/images/nutri.jpg"}
                   alt={product.title}
@@ -104,13 +104,13 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
                 </h3>
                 <div className="mt-3 space-y-2">
                   {product.items.map((item) => (
-                    <div key={item} className="flex items-center text-sm text-[#636E72]">
-                      <span className="mr-2 w-1.5 h-1.5 rounded-full bg-[#E9B35F]"></span>
+                    <div key={item} className="flex items-center text-sm text-[var(--text-body)]">
+                      <span className="mr-2 w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
                       {item}
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 flex items-center text-sm font-medium text-[#2D6A4F] group-hover:text-[var(--hexia-forest)] transition-colors">
+                <div className="mt-4 flex items-center text-sm font-medium text-[var(--primary)] group-hover:text-[var(--hexia-forest)] transition-colors">
                   {t("home.learnMore", lang)}
                   <ArrowRight className="ml-1 size-4" />
                 </div>
@@ -124,7 +124,7 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
             asChild
             variant="outline"
             size="lg"
-            className="border-2 border-[var(--hexia-forest)] bg-white text-[var(--hexia-forest)] transition-all duration-300 hover:bg-[var(--hexia-forest)] hover:text-white"
+            className="border-2 border-[var(--hexia-forest)] bg-[var(--bg-card)] text-[var(--hexia-forest)] transition-all duration-300 hover:bg-[var(--hexia-forest)] hover:text-white"
           >
             <a href={getHrefWithLang("/products", lang)}>
               {t("home.viewAll", lang)}

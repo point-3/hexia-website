@@ -52,29 +52,29 @@ export function ArticleDetailClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[var(--bg-page)]">
       <Navbar />
 
       <main className="pt-20 lg:pt-24">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
           <nav className="mb-8 flex items-center gap-2 text-sm">
-            <Link href={getHrefWithLang("/", lang)} className="text-[#636E72] hover:text-[#2D6A4F]">
+            <Link href={getHrefWithLang("/", lang)} className="text-[var(--text-body)] hover:text-[var(--primary)]">
               {t("nav.home", lang)}
             </Link>
-            <ChevronRight className="size-4 text-[#636E72]" />
-            <Link href={getHrefWithLang("/news", lang)} className="text-[#636E72] hover:text-[#2D6A4F]">
+            <ChevronRight className="size-4 text-[var(--text-body)]" />
+            <Link href={getHrefWithLang("/news", lang)} className="text-[var(--text-body)] hover:text-[var(--primary)]">
               {t("nav.news", lang)}
             </Link>
-            <ChevronRight className="size-4 text-[#636E72]" />
-            <span className="max-w-xs truncate font-medium text-[#2D6A4F] md:max-w-md">{copy.title}</span>
+            <ChevronRight className="size-4 text-[var(--text-body)]" />
+            <span className="max-w-xs truncate font-medium text-[var(--primary)] md:max-w-md">{copy.title}</span>
           </nav>
 
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <article className="rounded-2xl border border-[#A3B18A] bg-white p-6 lg:p-10">
-                <div className="flex flex-wrap items-center gap-4 text-sm text-[#636E72]">
+              <article className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 lg:p-10">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-body)]">
                   {copy.category ? (
-                    <span className="rounded-full bg-[#2D6A4F]/10 px-3 py-1 font-medium text-[#2D6A4F]">
+                    <span className="rounded-full bg-[var(--primary)]/10 px-3 py-1 font-medium text-[var(--primary)]">
                       {copy.category}
                     </span>
                   ) : null}
@@ -84,13 +84,13 @@ export function ArticleDetailClient({
                   </span>
                 </div>
 
-                <h1 className="mt-4 text-3xl font-bold leading-tight text-[#1B4D3E] lg:text-4xl">{copy.title}</h1>
+                <h1 className="mt-4 text-3xl font-bold leading-tight text-[var(--primary-dark)] lg:text-4xl">{copy.title}</h1>
 
-                <div className="mt-4 flex justify-end border-b border-[#A3B18A]/30 pb-4">
+                <div className="mt-4 flex justify-end border-b border-[var(--border)]/30 pb-4">
                   <button
                     type="button"
                     onClick={handleShare}
-                    className="flex items-center gap-2 text-sm text-[#636E72] transition-colors hover:text-[#2D6A4F]"
+                    className="flex items-center gap-2 text-sm text-[var(--text-body)] transition-colors hover:text-[var(--primary)]"
                   >
                     <Share2 className="size-4" />
                     {lang === "zh" ? "分享" : "Share"}
@@ -98,7 +98,7 @@ export function ArticleDetailClient({
                 </div>
 
                 {article.image ? (
-                  <div className="relative mt-6 aspect-[21/9] overflow-hidden rounded-xl bg-[#F5F3EF]">
+                  <div className="relative mt-6 aspect-[21/9] overflow-hidden rounded-xl bg-[var(--bg-muted)]">
                     <Image
                       src={getFileUrl(article.image)}
                       alt={copy.title}
@@ -109,14 +109,14 @@ export function ArticleDetailClient({
                 ) : null}
 
                 <div
-                  className="prose prose-sm mt-8 max-w-none leading-relaxed text-[#2D3436]"
+                  className="prose prose-sm mt-8 max-w-none leading-relaxed text-[var(--text-body)]"
                   dangerouslySetInnerHTML={{ __html: copy.content || "" }}
                 />
 
-                <div className="mt-10 border-t border-[#A3B18A]/30 pt-6">
+                <div className="mt-10 border-t border-[var(--border)]/30 pt-6">
                   <Link
                     href={getHrefWithLang("/news", lang)}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] transition-colors hover:text-[var(--accent)]"
                   >
                     <ArrowLeft className="size-4" />
                     {lang === "zh" ? "返回新闻中心" : "Back to News"}
@@ -127,19 +127,19 @@ export function ArticleDetailClient({
 
             <div className="space-y-6">
               {recentArticles.length > 0 ? (
-                <div className="rounded-xl border border-[#A3B18A] bg-white p-6">
-                  <h3 className="font-semibold text-[#1B4D3E]">
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
+                  <h3 className="font-semibold text-[var(--primary-dark)]">
                     {lang === "zh" ? "最新动态" : "Recent Articles"}
                   </h3>
                   <ul className="mt-4 space-y-4">
                     {recentArticles.map(({ article: item, copy: itemCopy }) => (
-                      <li key={item.id} className="border-b border-[#A3B18A]/20 pb-3 last:border-0 last:pb-0">
+                      <li key={item.id} className="border-b border-[var(--border)]/20 pb-3 last:border-0 last:pb-0">
                         <Link
                           href={getHrefWithLang(`/news/${item.slug}`, lang)}
                           className="group block"
                         >
-                          <span className="text-xs text-[#636E72]">{formatDate(item.date_published)}</span>
-                          <h4 className="mt-1 line-clamp-2 text-sm font-medium text-[#1B4D3E] transition-colors group-hover:text-[#2D6A4F]">
+                          <span className="text-xs text-[var(--text-body)]">{formatDate(item.date_published)}</span>
+                          <h4 className="mt-1 line-clamp-2 text-sm font-medium text-[var(--primary-dark)] transition-colors group-hover:text-[var(--primary)]">
                             {itemCopy.title}
                           </h4>
                         </Link>
@@ -149,7 +149,7 @@ export function ArticleDetailClient({
                 </div>
               ) : null}
 
-              <div className="rounded-xl border border-[#A3B18A] bg-[#2D6A4F] p-6 text-white">
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--primary)] p-6 text-white">
                 <h3 className="text-lg font-bold">{lang === "zh" ? "需要帮助？" : "Need Help?"}</h3>
                 <p className="mt-2 text-sm text-white/80">
                   {lang === "zh"
@@ -157,7 +157,7 @@ export function ArticleDetailClient({
                     : "Contact our sales and technical support teams for assistance with documentation, samples, or quotes."}
                 </p>
                 <Link href={getHrefWithLang("/contact", lang)} className="mt-4 inline-block">
-                  <Button className="bg-[#E9B35F] text-[#1B4D3E] hover:bg-white hover:text-[#2D6A4F]">
+                  <Button className="bg-[var(--accent)] text-[var(--primary-dark)] hover:bg-white hover:text-[var(--primary)]">
                     {t("nav.contact", lang)}
                   </Button>
                 </Link>

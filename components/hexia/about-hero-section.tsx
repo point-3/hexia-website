@@ -8,6 +8,7 @@ import {
   getSectionConfig,
   getSectionTranslation,
   localizedText,
+  themeColor,
 } from "@/lib/page-section-content";
 
 export function AboutHeroSection({ section }: { section?: PageSection | null }) {
@@ -24,8 +25,8 @@ export function AboutHeroSection({ section }: { section?: PageSection | null }) 
     format: "webp",
   });
   const displayImageSrc = imageSrc || (title || subtitle ? "" : "/about us banner.png");
-  const backgroundColor = section?.background_color || localizedText(config.background_color, lang) || "#FDFBF7";
-  const textColor = section?.text_color || localizedText(config.text_color, lang) || "#1B4D3E";
+  const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)");
+  const textColor = themeColor(section?.text_color || localizedText(config.text_color, lang), "var(--primary-dark)");
   const imageAlt = title || localizedText(config.alt, lang) || "About Us";
 
   return (
@@ -57,7 +58,7 @@ export function AboutHeroSection({ section }: { section?: PageSection | null }) 
           preserveAspectRatio="none"
           className="h-[60px] w-full"
         >
-          <path d="M0 60V30C240 10 480 0 720 0C960 0 1200 10 1440 30V60H0Z" fill="#FDFBF7" />
+          <path d="M0 60V30C240 10 480 0 720 0C960 0 1200 10 1440 30V60H0Z" fill="var(--bg-page)" />
         </svg>
       </div>
     </section>

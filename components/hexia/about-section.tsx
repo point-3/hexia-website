@@ -12,9 +12,10 @@ import {
   getSectionConfig,
   getSectionTranslation,
   localizedText,
+  themeColor,
 } from "@/lib/page-section-content"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
-import { companyName } from "@/lib/site-profile"
+import { brandHighlightName, companyName } from "@/lib/site-profile"
 
 type HomeStat = {
   value: number
@@ -127,8 +128,8 @@ export function AboutSection({ section }: { section?: PageSection | null }) {
   const paragraphs = configuredParagraphs(config.paragraphs, lang)
   const ctaLabel = translation?.cta_label || localizedText(config.cta_label || config.button_label, lang) || t("news.readMore", lang)
   const ctaHref = translation?.cta_href || localizedText(config.cta_href || config.button_href, lang) || "/about"
-  const backgroundColor = section?.background_color || localizedText(config.background_color, lang) || "#FDFBF7"
-  const statBackgroundColor = localizedText(config.stat_background_color, lang) || "#1B4D3E"
+  const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
+  const statBackgroundColor = themeColor(localizedText(config.stat_background_color, lang), "var(--primary-dark)")
   const imageSrc = getFileUrl(section?.image || localizedText(config.image, lang), { width: 900, quality: 82, format: "webp" })
 
   return (
@@ -136,19 +137,19 @@ export function AboutSection({ section }: { section?: PageSection | null }) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
               {title || (
                 <>
                   {lang === "zh" ? "关于 " : "About "}
-                  <span className="text-[#E9B35F]">{companyName(siteSettings, lang)}</span>
+                  <span className="text-[var(--accent)]">{brandHighlightName(siteSettings, lang)}</span>
                 </>
               )}
             </h2>
             {subtitle ? (
-              <p className="mt-4 text-lg font-medium text-[#2D6A4F]">{subtitle}</p>
+              <p className="mt-4 text-lg font-medium text-[var(--primary)]">{subtitle}</p>
             ) : null}
 
-            <div className="mt-6 space-y-4 text-pretty text-[#636E72] leading-relaxed">
+            <div className="mt-6 space-y-4 text-pretty text-[var(--text-body)] leading-relaxed">
               {content ? (
                 <div className="space-y-4" dangerouslySetInnerHTML={{ __html: content }} />
               ) : paragraphs.length > 0 ? (
@@ -163,7 +164,7 @@ export function AboutSection({ section }: { section?: PageSection | null }) {
 
             <a
               href={hrefWithLocale(ctaHref, lang)}
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] transition-colors hover:text-[var(--accent)]"
             >
               {ctaLabel}
               <ArrowRight className="size-4" />

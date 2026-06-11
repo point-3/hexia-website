@@ -10,6 +10,7 @@ import {
   getSectionConfig,
   getSectionTranslation,
   localizedText,
+  themeColor,
 } from "@/lib/page-section-content"
 
 type HomeService = {
@@ -57,11 +58,11 @@ function configuredServices(section: PageSection | null | undefined, lang: "en" 
 function fallbackTitle(lang: "en" | "zh") {
   return lang === "zh" ? (
     <>
-      我们的 <span className="text-[#E9B35F]">专属服务</span>
+      我们的 <span className="text-[var(--accent)]">专属服务</span>
     </>
   ) : (
     <>
-      Our <span className="text-[#E9B35F]">Services</span>
+      Our <span className="text-[var(--accent)]">Services</span>
     </>
   )
 }
@@ -75,16 +76,16 @@ export function ServicesSection({ section }: { section?: PageSection | null }) {
   const displayServices = services.length > 0 ? services : fallbackServices(lang)
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("home.servicesDesc", lang)
-  const backgroundColor = section?.background_color || localizedText(config.background_color, lang) || "#FDFBF7"
+  const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
 
   return (
     <section id="service" className="py-20 lg:py-28" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-[#1B4D3E] sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
             {title || fallbackTitle(lang)}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
+          <p className="mx-auto mt-4 max-w-2xl text-pretty text-[var(--text-body)]">
             {subtitle}
           </p>
         </div>
@@ -93,16 +94,16 @@ export function ServicesSection({ section }: { section?: PageSection | null }) {
           {displayServices.map((service) => (
             <div
               key={service.title}
-              className="group relative rounded-lg border-l-4 border-[#A3B18A] bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#2D6A4F] hover:shadow-lg"
+              className="group relative rounded-lg border-l-4 border-[var(--border)] bg-[var(--bg-card)] p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[var(--primary)] hover:shadow-lg"
             >
-              <div className="mb-6 inline-flex rounded-lg bg-[#2D6A4F]/10 p-4 text-[#2D6A4F] transition-colors group-hover:bg-[#2D6A4F] group-hover:text-white">
+              <div className="mb-6 inline-flex rounded-lg bg-[var(--primary)]/10 p-4 text-[var(--primary)] transition-colors group-hover:bg-[var(--primary)] group-hover:text-white">
                 <service.icon className="size-6" />
               </div>
 
-              <h3 className="text-xl font-semibold text-[#1B4D3E]">
+              <h3 className="text-xl font-semibold text-[var(--primary-dark)]">
                 {service.title}
               </h3>
-              <p className="mt-3 text-pretty text-[#636E72] leading-relaxed">
+              <p className="mt-3 text-pretty text-[var(--text-body)] leading-relaxed">
                 {service.description}
               </p>
             </div>

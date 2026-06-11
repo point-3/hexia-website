@@ -8,6 +8,7 @@ import {
   getSectionConfig,
   getSectionTranslation,
   localizedText,
+  themeColor,
 } from "@/lib/page-section-content"
 
 const fallbackPartners = [
@@ -44,7 +45,7 @@ function configuredPartners(section: PageSection | null | undefined, lang: "en" 
 function fallbackTitle() {
   return (
     <>
-      Trusted by <span className="text-[#E9B35F]">Industry Leaders</span>
+      Trusted by <span className="text-[var(--accent)]">Industry Leaders</span>
     </>
   )
 }
@@ -58,17 +59,17 @@ export function PartnersSection({ section }: { section?: PageSection | null }) {
   const displayPartners = partners.length > 0 ? partners : fallbackPartners
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
-  const backgroundColor = section?.background_color || localizedText(config.background_color, lang) || "#FDFBF7"
+  const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-[#1B4D3E] sm:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-3xl">
             {title || fallbackTitle()}
           </h2>
           {subtitle ? (
-            <p className="mx-auto mt-4 max-w-2xl text-pretty text-[#636E72]">
+            <p className="mx-auto mt-4 max-w-2xl text-pretty text-[var(--text-body)]">
               {subtitle}
             </p>
           ) : null}
@@ -78,9 +79,9 @@ export function PartnersSection({ section }: { section?: PageSection | null }) {
           {displayPartners.map((partner) => (
             <div
               key={partner}
-              className="flex h-20 w-36 items-center justify-center rounded-lg border border-[#A3B18A] bg-white px-6 py-4 opacity-70 transition-all duration-300 hover:border-[#2D6A4F] hover:opacity-100 hover:shadow-md sm:h-24 sm:w-40"
+              className="flex h-20 w-36 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-6 py-4 opacity-70 transition-all duration-300 hover:border-[var(--primary)] hover:opacity-100 hover:shadow-md sm:h-24 sm:w-40"
             >
-              <span className="text-center text-sm font-semibold text-[#636E72]">
+              <span className="text-center text-sm font-semibold text-[var(--text-body)]">
                 {partner}
               </span>
             </div>

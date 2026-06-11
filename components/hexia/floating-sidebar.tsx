@@ -58,10 +58,10 @@ export function FloatingSidebar() {
       <div
         className="flex items-center gap-0"
         style={{
-          "--sidebar-bg": "rgba(45, 106, 79, 0.1)",
+          "--sidebar-bg": "color-mix(in srgb, var(--primary) 10%, transparent)",
           "--text-bg": "rgba(51, 51, 51, 0.85)",
-          "--icon-color": "#2D6A4F",
-          "--icon-hover-color": "#1B4D3E",
+          "--icon-color": "var(--primary)",
+          "--icon-hover-color": "var(--primary-dark)",
           "--text-color": "#ffffff",
           "--border-radius": "12px 0 0 12px",
           "--shadow": "0 4px 20px rgba(0, 0, 0, 0.1)",
@@ -142,7 +142,7 @@ export function FloatingSidebar() {
             WebkitBackdropFilter: "blur(10px)",
             borderRadius: "var(--border-radius)",
             boxShadow: "var(--shadow)",
-            borderLeft: "1px solid rgba(45, 106, 79, 0.1)",
+            borderLeft: "1px solid color-mix(in srgb, var(--primary) 10%, transparent)",
           }}
           onMouseEnter={() => handleMouseEnter(hoveredIcon)}
           onMouseLeave={handleMouseLeave}

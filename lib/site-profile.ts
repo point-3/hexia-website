@@ -29,6 +29,22 @@ export function companyName(settings: SiteSettings, locale: LocaleCode): string 
   return getSiteTranslation(settings, locale)?.company_name || "Hexia (Suzhou) Biotechnology Co., Ltd."
 }
 
+export function siteName(settings: SiteSettings, locale: LocaleCode): string {
+  return getSiteTranslation(settings, locale)?.site_name || settings.site_title?.trim() || (locale === "zh" ? "和夏" : "Hexia")
+}
+
+export function browserTitlePrefix(settings: SiteSettings, locale: LocaleCode): string {
+  return getSiteTranslation(settings, locale)?.browser_title_prefix || (locale === "zh" ? "和夏生物" : "HexiaBio")
+}
+
+export function brandHighlightName(settings: SiteSettings, locale: LocaleCode): string {
+  return getSiteTranslation(settings, locale)?.brand_highlight_name || siteName(settings, locale)
+}
+
+export function whyChooseTitleSuffix(settings: SiteSettings, locale: LocaleCode): string {
+  return getSiteTranslation(settings, locale)?.why_choose_title_suffix || brandHighlightName(settings, locale)
+}
+
 export function companyDescription(settings: SiteSettings, locale: LocaleCode): string {
   return (
     getSiteTranslation(settings, locale)?.company_short_description ||

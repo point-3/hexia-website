@@ -21,6 +21,7 @@ import {
   getSectionConfig,
   getSectionTranslation,
   localizedText,
+  themeColor,
 } from "@/lib/page-section-content"
 
 type Locale = "en" | "zh"
@@ -159,15 +160,15 @@ function ServiceOverviewSection({ section, lang }: { section: PageSection; lang:
   const displayServices = services.length > 0 ? services : fallbackServices(lang)
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
-  const backgroundColor = section.background_color || localizedText(config.background_color, lang)
+  const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang))
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor: backgroundColor || undefined }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {title || subtitle ? (
           <div className="mb-12 text-center">
-            {title ? <h2 className="text-2xl font-bold text-[#1B4D3E] sm:text-3xl">{title}</h2> : null}
-            {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[#636E72]">{subtitle}</p> : null}
+            {title ? <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2> : null}
+            {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
           </div>
         ) : null}
 
@@ -178,20 +179,20 @@ function ServiceOverviewSection({ section, lang }: { section: PageSection; lang:
             return (
               <div
                 key={service.title}
-                className="group rounded-2xl border-l-4 border-[#A3B18A] bg-white p-6 shadow-sm transition-all duration-300 hover:border-[#2D6A4F] hover:shadow-lg lg:p-8"
+                className="group rounded-2xl border-l-4 border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm transition-all duration-300 hover:border-[var(--primary)] hover:shadow-lg lg:p-8"
               >
-                <div className="flex size-14 items-center justify-center rounded-full bg-[#2D6A4F]">
+                <div className="flex size-14 items-center justify-center rounded-full bg-[var(--primary)]">
                   <service.icon className="size-7 text-white" />
                 </div>
 
-                <h3 className="mt-6 text-xl font-bold text-[#1B4D3E]">{service.title}</h3>
-                {service.description ? <p className="mt-2 text-[#636E72]">{service.description}</p> : null}
+                <h3 className="mt-6 text-xl font-bold text-[var(--primary-dark)]">{service.title}</h3>
+                {service.description ? <p className="mt-2 text-[var(--text-body)]">{service.description}</p> : null}
 
                 {service.details.length > 0 ? (
                   <ul className="mt-6 space-y-3">
                     {service.details.map((detail) => (
-                      <li key={detail} className="flex items-start gap-3 text-sm text-[#636E72]">
-                        <span className="mt-1.5 size-2 shrink-0 rounded-full bg-[#E9B35F]" />
+                      <li key={detail} className="flex items-start gap-3 text-sm text-[var(--text-body)]">
+                        <span className="mt-1.5 size-2 shrink-0 rounded-full bg-[var(--accent)]" />
                         {detail}
                       </li>
                     ))}
@@ -200,7 +201,7 @@ function ServiceOverviewSection({ section, lang }: { section: PageSection; lang:
 
                 <Link
                   href={hrefWithLocale(ctaHref, lang)}
-                  className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#2D6A4F] transition-colors hover:text-[#E9B35F]"
+                  className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] transition-colors hover:text-[var(--accent)]"
                 >
                   {ctaLabel}
                   <ChevronRight className="size-4" />
@@ -226,24 +227,24 @@ function ServiceWhyChooseSection({ section, lang }: { section: PageSection; lang
   ]
   const title = translation?.title || localizedText(config.title, lang) || (lang === "zh" ? "为什么选择我们的服务" : "Why Choose Our Services")
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("service.whyChooseDesc", lang)
-  const backgroundColor = section.background_color || localizedText(config.background_color, lang) || "#F5F3EF"
+  const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang), "var(--bg-muted)")
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-[#1B4D3E] sm:text-3xl">{title}</h2>
-          {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[#636E72]">{subtitle}</p> : null}
+          <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
+          {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
         </div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {displayStats.map((stat) => (
             <div
               key={stat.label}
-              className="rounded-2xl bg-white p-6 text-center shadow-sm transition-all hover:shadow-lg"
+              className="rounded-2xl bg-[var(--bg-card)] p-6 text-center shadow-sm transition-all hover:shadow-lg"
             >
-              <div className="text-3xl font-bold text-[#2D6A4F]">{stat.value}</div>
-              <div className="mt-2 text-sm text-[#636E72]">{stat.label}</div>
+              <div className="text-3xl font-bold text-[var(--primary)]">{stat.value}</div>
+              <div className="mt-2 text-sm text-[var(--text-body)]">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -311,20 +312,20 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
     const config = getSectionConfig(section, lang)
     const title = translation?.title || localizedText(config.title, lang) || t("inquiry.formTitle", lang)
     const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("inquiry.formSubtitle", lang)
-    const backgroundColor = section.background_color || localizedText(config.background_color, lang)
+    const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang))
 
     return (
       <section key={section.id} className="py-16 lg:py-24" style={{ backgroundColor: backgroundColor || undefined }}>
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-white p-8 shadow-lg sm:p-12">
+          <div className="rounded-3xl bg-[var(--bg-card)] p-8 shadow-lg sm:p-12">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-[#1B4D3E] sm:text-3xl">{title}</h2>
-              {subtitle ? <p className="mt-4 text-[#636E72]">{subtitle}</p> : null}
+              <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
+              {subtitle ? <p className="mt-4 text-[var(--text-body)]">{subtitle}</p> : null}
             </div>
 
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-[#2D3436]">
+                <label htmlFor="name" className="block text-sm font-medium text-[var(--text-body)]">
                   {t("inquiry.name", lang)} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -334,13 +335,13 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                   placeholder={t("home.placeholderName", lang)}
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#2D3436]">
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--text-body)]">
                   {t("inquiry.email", lang)} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -350,13 +351,13 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                   placeholder={t("home.placeholderEmail", lang)}
                 />
               </div>
 
               <div>
-                <label htmlFor="country" className="block text-sm font-medium text-[#2D3436]">
+                <label htmlFor="country" className="block text-sm font-medium text-[var(--text-body)]">
                   {t("inquiry.country", lang)}
                 </label>
                 <input
@@ -365,13 +366,13 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
                   value={formData.country}
                   onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                   disabled={isSubmitting}
-                  className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                   placeholder={t("home.placeholderCountry", lang)}
                 />
               </div>
 
               <div>
-                <label htmlFor="productInterest" className="block text-sm font-medium text-[#2D3436]">
+                <label htmlFor="productInterest" className="block text-sm font-medium text-[var(--text-body)]">
                   {t("inquiry.product", lang)}
                 </label>
                 <input
@@ -380,13 +381,13 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
                   value={formData.productInterest}
                   onChange={(e) => setFormData({ ...formData, productInterest: e.target.value })}
                   disabled={isSubmitting}
-                  className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                   placeholder={t("home.placeholderProduct", lang)}
                 />
               </div>
 
               <div>
-                <label htmlFor="quantity" className="block text-sm font-medium text-[#2D3436]">
+                <label htmlFor="quantity" className="block text-sm font-medium text-[var(--text-body)]">
                   {t("inquiry.quantity", lang)}
                 </label>
                 <input
@@ -395,13 +396,13 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
                   value={formData.quantity}
                   onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
                   disabled={isSubmitting}
-                  className="mt-2 w-full rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                   placeholder={t("home.placeholderQuantity", lang)}
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-[#2D3436]">
+                <label htmlFor="message" className="block text-sm font-medium text-[var(--text-body)]">
                   {t("inquiry.message", lang)} <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -411,7 +412,7 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-2 w-full resize-none rounded-xl border border-[#A3B18A] bg-[#FDFBF7] px-4 py-3 text-[#2D3436] placeholder:text-[#636E72]/60 focus:border-[#2D6A4F] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 disabled:opacity-50"
+                  className="mt-2 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                   placeholder={t("home.placeholderMessage", lang)}
                 />
               </div>
@@ -420,22 +421,22 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full bg-[#E9B35F] py-6 text-base font-semibold text-[#1B4D3E] transition-all duration-300 hover:bg-[#2D6A4F] hover:text-white disabled:opacity-50"
+                className="w-full bg-[var(--accent)] py-6 text-base font-semibold text-[var(--primary-dark)] transition-all duration-300 hover:bg-[var(--primary)] hover:text-white disabled:opacity-50"
               >
                 {isSubmitting ? t("inquiry.submitting", lang) : t("inquiry.submit", lang)}
               </Button>
             </form>
 
             {showSuccess ? (
-              <div className="mt-4 rounded-xl bg-[#2D6A4F]/20 p-4 text-center">
-                <p className="text-sm font-medium text-[#2D6A4F]">
+              <div className="mt-4 rounded-xl bg-[var(--primary)]/20 p-4 text-center">
+                <p className="text-sm font-medium text-[var(--primary)]">
                   {t("inquiry.successToast", lang)}
                 </p>
               </div>
             ) : null}
 
-            <div className="mt-8 flex items-center justify-center gap-2 text-sm text-[#636E72]">
-              <Headphones className="size-5 text-[#2D6A4F]" />
+            <div className="mt-8 flex items-center justify-center gap-2 text-sm text-[var(--text-body)]">
+              <Headphones className="size-5 text-[var(--primary)]" />
               <span>{t("home.onlineSupport", lang)}</span>
             </div>
           </div>
@@ -445,7 +446,7 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[var(--bg-page)]">
       <Navbar />
 
       <main className="pt-20 lg:pt-24">
@@ -466,8 +467,8 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
 export default function ServicePage({ pageLayout }: { pageLayout: PageLayout }) {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <div className="text-[#636E72]">Loading...</div>
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center">
+        <div className="text-[var(--text-body)]">Loading...</div>
       </div>
     }>
       <ServiceContent pageLayout={pageLayout} />

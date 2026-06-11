@@ -67,8 +67,8 @@ export default async function HomePage() {
 
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <div className="text-[#636E72]">Loading...</div>
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center">
+        <div className="text-[var(--text-body)]">Loading...</div>
       </div>
     }>
       <main className="min-h-screen home">

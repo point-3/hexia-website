@@ -102,7 +102,7 @@ export function HeroSection({ banners }: HeroSectionProps) {
                 onClick={() => goToSlide(index)}
                 className={`h-3 w-3 rounded-full transition-all duration-300 ${
                   index === currentSlide
-                    ? "bg-[#2D6A4F] scale-125"
+                    ? "bg-[var(--primary)] scale-125"
                     : "bg-white/90 hover:bg-white"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
@@ -123,7 +123,7 @@ export function HeroSection({ banners }: HeroSectionProps) {
         >
           <path
             d="M0 60V30C240 10 480 0 720 0C960 0 1200 10 1440 30V60H0Z"
-            fill="#FDFBF7"
+            fill="var(--bg-page)"
           />
         </svg>
       </div>
