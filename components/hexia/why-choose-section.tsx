@@ -55,8 +55,10 @@ function fallbackFeatures(lang: "en" | "zh"): WhyChooseFeature[] {
 }
 
 function configuredFeatures(section: PageSection | null | undefined, lang: "en" | "zh"): WhyChooseFeature[] {
+  const translation = getSectionTranslation(section, lang)
+  const translatedCards = asJsonArray(translation?.feature_cards)
   const config = getSectionConfig(section, lang)
-  const items = asJsonArray(config.features || config.items || config.cards)
+  const items = translatedCards.length > 0 ? translatedCards : asJsonArray(config.features || config.items || config.cards)
 
   return items.flatMap((item) => {
     const title = fieldText(item, "title", lang)
@@ -66,33 +68,55 @@ function configuredFeatures(section: PageSection | null | undefined, lang: "en" 
   })
 }
 
-function fallbackTitle(lang: "en" | "zh", displayName: string) {
-  return lang === "zh" ? (
+function titleSuffixSeparator(lang: "en" | "zh") {
+  return lang === "zh" ? "" : " "
+}
+
+function titleWithSuffix(prefix: string, suffix: string, lang: "en" | "zh") {
+  const cleanPrefix = prefix.trim()
+  const cleanSuffix = suffix.trim()
+  if (!cleanPrefix || !cleanSuffix) return cleanPrefix || cleanSuffix
+
+  return (
     <>
-      为什么选择 <span className="text-[var(--accent)]">{displayName}</span>
-    </>
-  ) : (
-    <>
-      Why Choose <span className="text-[var(--accent)]">{displayName}</span>
+      {cleanPrefix}
+      {titleSuffixSeparator(lang)}
+      <span className="text-[var(--accent)]">{cleanSuffix}</span>
     </>
   )
 }
 
-function titleWithHighlightedSuffix(title: string, suffix: string) {
+function fallbackTitle(lang: "en" | "zh", displayName: string) {
+  return titleWithSuffix(lang === "zh" ? "为什么选择" : "Why Choose", displayName, lang)
+}
+
+function whyChooseTitlePrefix(title: string, lang: "en" | "zh") {
+  if (lang === "zh") {
+    const match = title.match(/^为什么选择\s*/i)
+    return match ? match[0].trim() : title
+  }
+
+  const match = title.match(/^why\s+choose\b/i)
+  return match ? title.slice(0, match[0].length).trim() : title
+}
+
+function titleWithHighlightedSuffix(title: string, suffix: string, lang: "en" | "zh") {
   const cleanTitle = title.trim()
   const cleanSuffix = suffix.trim()
   if (!cleanTitle || !cleanSuffix) return cleanTitle
 
   const titleLower = cleanTitle.toLowerCase()
   const suffixLower = cleanSuffix.toLowerCase()
-  if (!titleLower.endsWith(suffixLower)) return cleanTitle
+  if (!titleLower.endsWith(suffixLower)) {
+    return titleWithSuffix(whyChooseTitlePrefix(cleanTitle, lang), cleanSuffix, lang)
+  }
 
   const prefix = cleanTitle.slice(0, cleanTitle.length - cleanSuffix.length).trimEnd()
   const matchedSuffix = cleanTitle.slice(cleanTitle.length - cleanSuffix.length)
 
   return (
     <>
-      {prefix ? `${prefix} ` : ""}
+      {prefix ? `${prefix}${titleSuffixSeparator(lang)}` : ""}
       <span className="text-[var(--accent)]">{matchedSuffix}</span>
     </>
   )
@@ -110,7 +134,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const rows = features.length <= 4 ? [features] : [features.slice(0, 4), features.slice(4)]
   const title = translation?.title || localizedText(config.title, lang)
   const configuredSuffix = localizedText(config.title_suffix || config.brand_suffix || config.highlight_suffix, lang)
-  const titleSuffix = configuredSuffix || whyChooseTitleSuffix(siteSettings, lang)
+  const titleSuffix = whyChooseTitleSuffix(siteSettings, lang) || configuredSuffix
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("home.whyChooseDesc", lang)
   const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
   const textColor = themeColor(section?.text_color || localizedText(config.text_color, lang), "var(--primary-dark)")
@@ -136,7 +160,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: textColor }}>
-            {title ? titleWithHighlightedSuffix(title, titleSuffix) : fallbackTitle(lang, titleSuffix)}
+            {title ? titleWithHighlightedSuffix(title, titleSuffix, lang) : fallbackTitle(lang, titleSuffix)}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty" style={{ color: bodyTextColor, opacity: 0.78 }}>
             {subtitle}

@@ -177,6 +177,7 @@ export interface PageSectionTranslation {
   content?: string;
   cta_label?: string;
   cta_href?: string;
+  feature_cards?: JsonValue;
   content_json?: JsonValue;
 }
 

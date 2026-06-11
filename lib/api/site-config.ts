@@ -261,6 +261,7 @@ export async function getPageLayout(pageKey: SitePageKey): Promise<PageLayout> {
                   'content',
                   'cta_label',
                   'cta_href',
+                  'feature_cards',
                   'content_json',
                 ],
               },
