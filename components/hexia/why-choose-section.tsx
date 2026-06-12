@@ -23,6 +23,11 @@ type WhyChooseFeature = {
   description: string
 }
 
+type ConfiguredFeatureResult = {
+  features: WhyChooseFeature[]
+  hasExplicitCards: boolean
+}
+
 const iconMap: Record<string, LucideIcon> = {
   users: Users,
   team: Users,
@@ -54,18 +59,36 @@ function fallbackFeatures(lang: "en" | "zh"): WhyChooseFeature[] {
   ]
 }
 
-function configuredFeatures(section: PageSection | null | undefined, lang: "en" | "zh"): WhyChooseFeature[] {
+function hasJsonArray(value: unknown): boolean {
+  if (Array.isArray(value)) return true
+  if (typeof value !== "string" || !value.trim()) return false
+  try {
+    return Array.isArray(JSON.parse(value))
+  } catch {
+    return false
+  }
+}
+
+function configuredFeatures(section: PageSection | null | undefined, lang: "en" | "zh"): ConfiguredFeatureResult {
   const translation = getSectionTranslation(section, lang)
   const translatedCards = asJsonArray(translation?.feature_cards)
   const config = getSectionConfig(section, lang)
-  const items = translatedCards.length > 0 ? translatedCards : asJsonArray(config.features || config.items || config.cards)
+  const hasTranslatedCards = hasJsonArray(translation?.feature_cards)
+  const configuredCards = asJsonArray(config.features || config.items || config.cards)
+  const hasConfiguredCards = hasJsonArray(config.features) || hasJsonArray(config.items) || hasJsonArray(config.cards)
+  const items = hasTranslatedCards ? translatedCards : configuredCards
 
-  return items.flatMap((item) => {
+  const features = items.flatMap((item) => {
     const title = fieldText(item, "title", lang)
     const description = fieldText(item, "description", lang) || fieldText(item, "desc", lang)
     if (!title && !description) return []
     return [{ icon: iconByName(item.icon), title, description }]
   })
+
+  return {
+    features,
+    hasExplicitCards: hasTranslatedCards || hasConfiguredCards,
+  }
 }
 
 function titleSuffixSeparator(lang: "en" | "zh") {
@@ -130,8 +153,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const translation = getSectionTranslation(section, lang)
   const config = getSectionConfig(section, lang)
   const configured = configuredFeatures(section, lang)
-  const features = configured.length > 0 ? configured : fallbackFeatures(lang)
-  const rows = features.length <= 4 ? [features] : [features.slice(0, 4), features.slice(4)]
+  const features = configured.hasExplicitCards ? configured.features : fallbackFeatures(lang)
   const title = translation?.title || localizedText(config.title, lang)
   const configuredSuffix = localizedText(config.title_suffix || config.brand_suffix || config.highlight_suffix, lang)
   const titleSuffix = whyChooseTitleSuffix(siteSettings, lang) || configuredSuffix
@@ -167,102 +189,19 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
           </p>
         </div>
 
-        <div className="hidden lg:block">
-          {rows.map((row, rowIndex) => {
-            const rowStart = rowIndex * 4
-
-            return (
-              <div key={rowIndex} className={rowIndex === 0 && rows.length > 1 ? "flex gap-8 mb-8" : "flex gap-8"}>
-                {row.map((feature, index) => {
-                  const actualIndex = rowStart + index
-                  const isHovered = hoveredIndex === actualIndex
-                  const isFirstInRow = index === 0
-                  const isLastInRow = index === row.length - 1
-                  const hoverMarginLeft = isFirstInRow ? "0" : isLastInRow ? "-80px" : "-40px"
-                  const hoverMarginRight = isFirstInRow ? "-80px" : isLastInRow ? "0" : "-40px"
-                  const contentTranslateX = isFirstInRow ? "40px" : isLastInRow ? "-40px" : "0"
-
-                  return (
-                    <div
-                      key={actualIndex}
-                      className="relative"
-                      style={{
-                        flex: "1 1 0",
-                        zIndex: isHovered ? 20 : 1,
-                      }}
-                      onMouseEnter={() => setHoveredIndex(actualIndex)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                    >
-                      <div
-                        className="absolute top-0 left-0 right-0 bottom-0 rounded-none shadow-xl"
-                        style={{
-                          backgroundColor: "var(--primary)",
-                          opacity: isHovered ? 1 : 0,
-                          zIndex: 0,
-                          transition: "opacity 0.5s ease-out, margin 0.5s ease-out",
-                          marginLeft: isHovered ? hoverMarginLeft : "0",
-                          marginRight: isHovered ? hoverMarginRight : "0",
-                        }}
-                      />
-
-                      <div
-                        className="relative min-h-[260px] p-6 lg:p-8 flex flex-col items-center justify-center z-10"
-                        style={{
-                          transform: isHovered ? `translateX(${contentTranslateX})` : "translateX(0)",
-                          transition: "transform 0.5s ease-out",
-                        }}
-                      >
-                        <div
-                          className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
-                          style={{
-                            backgroundColor: isHovered ? "var(--accent)" : "color-mix(in srgb, var(--primary) 10%, transparent)",
-                            color: isHovered ? "#ffffff" : "var(--primary)",
-                          }}
-                        >
-                          <feature.icon className="w-7 h-7" strokeWidth={1.5} />
-                        </div>
-
-                        <div className="flex w-56 max-w-full flex-col items-center">
-                          <h3
-                            className="mb-3 flex min-h-12 w-full items-center justify-center text-center text-base font-semibold uppercase leading-snug tracking-wide"
-                            style={{
-                              color: isHovered ? "#ffffff" : textColor,
-                              transition: "color 0.5s ease-out",
-                            }}
-                          >
-                            {feature.title}
-                          </h3>
-
-                          <p
-                            className="min-h-[4.5rem] w-full text-center text-sm leading-relaxed"
-                            style={{
-                              opacity: isHovered ? 1 : 0,
-                              color: isHovered ? "rgba(255,255,255,0.9)" : bodyTextColor,
-                              transition: "opacity 0.5s ease-out, color 0.5s ease-out",
-                            }}
-                          >
-                            {feature.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )
-          })}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => {
             const isHovered = hoveredIndex === index
 
             return (
               <div
                 key={index}
-                className="relative min-h-[260px] p-6 lg:p-8 flex flex-col items-center justify-center"
+                className="relative flex min-h-[260px] flex-col items-center justify-center rounded-lg p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl lg:p-8"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                style={{
+                  backgroundColor: isHovered ? "var(--primary)" : "color-mix(in srgb, var(--primary) 5%, var(--bg-card))",
+                }}
               >
                 <div
                   className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
@@ -277,7 +216,10 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                 <div className="flex w-56 max-w-full flex-col items-center">
                   <h3
                     className="mb-3 flex min-h-12 w-full items-center justify-center text-center text-base font-semibold uppercase leading-snug tracking-wide"
-                    style={{ color: textColor }}
+                    style={{
+                      color: isHovered ? "#ffffff" : textColor,
+                      transition: "color 0.3s ease-out",
+                    }}
                   >
                     {feature.title}
                   </h3>
@@ -285,9 +227,9 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                   <p
                     className="min-h-[4.5rem] w-full text-center text-sm leading-relaxed"
                     style={{
-                      opacity: isHovered ? 1 : 0,
-                      color: bodyTextColor,
-                      transition: "opacity 0.5s ease-out",
+                      color: isHovered ? "rgba(255,255,255,0.9)" : bodyTextColor,
+                      opacity: isHovered ? 1 : 0.78,
+                      transition: "opacity 0.3s ease-out, color 0.3s ease-out",
                     }}
                   >
                     {feature.description}

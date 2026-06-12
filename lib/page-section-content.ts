@@ -31,6 +31,13 @@ export function asJsonObject(value: JsonValue | unknown): JsonObject {
 }
 
 export function asJsonArray(value: unknown): JsonObject[] {
+  if (typeof value === "string" && value.trim()) {
+    try {
+      return asJsonArray(JSON.parse(value))
+    } catch {
+      return []
+    }
+  }
   return Array.isArray(value) ? value.filter(isJsonObject) : []
 }
 
