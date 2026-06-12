@@ -250,6 +250,8 @@ export async function getPageLayout(pageKey: SitePageKey): Promise<PageLayout> {
               'background_color',
               'text_color',
               'stat_card_background_color',
+              'feature_cards_en',
+              'feature_cards_zh',
               'settings',
               directusFileField('image'),
               {

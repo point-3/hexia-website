@@ -193,6 +193,8 @@ export interface PageSection {
   background_color?: string;
   text_color?: string;
   stat_card_background_color?: string;
+  feature_cards_en?: JsonValue;
+  feature_cards_zh?: JsonValue;
   image?: string | DirectusFile | null;
   settings?: JsonValue;
   translations?: PageSectionTranslation[] | null;

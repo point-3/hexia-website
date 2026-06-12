@@ -71,12 +71,15 @@ function hasJsonArray(value: unknown): boolean {
 
 function configuredFeatures(section: PageSection | null | undefined, lang: "en" | "zh"): ConfiguredFeatureResult {
   const translation = getSectionTranslation(section, lang)
+  const moduleCardsValue = lang === "zh" ? section?.feature_cards_zh : section?.feature_cards_en
+  const moduleCards = asJsonArray(moduleCardsValue)
+  const hasModuleCards = hasJsonArray(moduleCardsValue)
   const translatedCards = asJsonArray(translation?.feature_cards)
   const config = getSectionConfig(section, lang)
   const hasTranslatedCards = hasJsonArray(translation?.feature_cards)
   const configuredCards = asJsonArray(config.features || config.items || config.cards)
   const hasConfiguredCards = hasJsonArray(config.features) || hasJsonArray(config.items) || hasJsonArray(config.cards)
-  const items = hasTranslatedCards ? translatedCards : configuredCards
+  const items = hasModuleCards ? moduleCards : hasTranslatedCards ? translatedCards : configuredCards
 
   const features = items.flatMap((item) => {
     const title = fieldText(item, "title", lang)
@@ -87,7 +90,7 @@ function configuredFeatures(section: PageSection | null | undefined, lang: "en" 
 
   return {
     features,
-    hasExplicitCards: hasTranslatedCards || hasConfiguredCards,
+    hasExplicitCards: hasModuleCards || hasTranslatedCards || hasConfiguredCards,
   }
 }
 
