@@ -81,8 +81,10 @@ function fallbackStats(lang: "en" | "zh"): HomeStat[] {
 }
 
 function configuredStats(section: PageSection | null | undefined, lang: "en" | "zh"): HomeStat[] {
+  const translation = getSectionTranslation(section, lang)
+  const translatedStats = asJsonArray(translation?.stat_cards)
   const config = getSectionConfig(section, lang)
-  const items = asJsonArray(config.stats || config.items || config.cards)
+  const items = translatedStats.length > 0 ? translatedStats : asJsonArray(config.stats || config.items || config.cards)
 
   return items
     .slice()
