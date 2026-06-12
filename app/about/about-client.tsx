@@ -17,6 +17,7 @@ import {
   fieldText,
   getSectionConfig,
   getSectionTranslation,
+  localizedSectionContent,
   localizedText,
   themeColor,
 } from "@/lib/page-section-content"
@@ -55,13 +56,14 @@ function sectionText(
   const config = getSectionConfig(section, lang)
   if (key === "title") return translation?.title || localizedText(config.title, lang) || fallback
   if (key === "subtitle") return translation?.subtitle || localizedText(config.subtitle || config.description, lang) || fallback
-  return translation?.content || localizedText(config.content || config.body || config.description, lang) || fallback
+  return localizedSectionContent(section, lang, config) || fallback
 }
 
 function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Locale }) {
   const siteSettings = useSiteSettings()
   const config = getSectionConfig(section, lang)
   const title = sectionText(section, lang, "title", companyName(siteSettings, lang))
+  const subtitle = sectionText(section, lang, "subtitle")
   const content = sectionText(
     section,
     lang,
@@ -92,6 +94,7 @@ function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Loc
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">{title}</h2>
+          {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-lg opacity-80">{subtitle}</p> : null}
           {content ? (
             <div
               className="mx-auto mt-4 max-w-3xl text-pretty text-lg opacity-80"
@@ -107,6 +110,7 @@ function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Loc
 function MissionSection({ section, lang }: { section: PageSection; lang: Locale }) {
   const config = getSectionConfig(section, lang)
   const title = sectionText(section, lang, "title", lang === "zh" ? "我们的使命" : "Our Mission")
+  const subtitle = sectionText(section, lang, "subtitle")
   const content = sectionText(
     section,
     lang,
@@ -126,6 +130,7 @@ function MissionSection({ section, lang }: { section: PageSection; lang: Locale 
             <Target className="size-8 text-white" />
           </div>
           <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
+          {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
           {content ? (
             <div
               className="mx-auto mt-4 max-w-2xl text-lg"

@@ -9,6 +9,7 @@ import {
   fieldText,
   getSectionConfig,
   getSectionTranslation,
+  localizedSectionContent,
   localizedText,
   themeColor,
 } from "@/lib/page-section-content"
@@ -82,9 +83,14 @@ function fallbackStats(lang: "en" | "zh"): HomeStat[] {
 
 function configuredStats(section: PageSection | null | undefined, lang: "en" | "zh"): HomeStat[] {
   const translation = getSectionTranslation(section, lang)
+  const sectionStats = asJsonArray(lang === "zh" ? section?.stat_cards_zh : section?.stat_cards_en)
   const translatedStats = asJsonArray(translation?.stat_cards)
   const config = getSectionConfig(section, lang)
-  const items = translatedStats.length > 0 ? translatedStats : asJsonArray(config.stats || config.items || config.cards)
+  const items = sectionStats.length > 0
+    ? sectionStats
+    : translatedStats.length > 0
+      ? translatedStats
+      : asJsonArray(config.stats || config.items || config.cards)
 
   return items
     .slice()
@@ -117,7 +123,7 @@ export function AboutSection({ section }: { section?: PageSection | null }) {
   const displayStats = stats.length > 0 ? stats : fallbackStats(lang)
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle, lang)
-  const content = translation?.content || localizedText(config.content, lang)
+  const content = localizedSectionContent(section, lang, config)
   const paragraphs = configuredParagraphs(config.paragraphs, lang)
   const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
   const statBackgroundColor = themeColor(

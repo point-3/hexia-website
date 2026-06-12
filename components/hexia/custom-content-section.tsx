@@ -7,6 +7,7 @@ import { getFileUrl } from "@/lib/directus"
 import {
   getSectionConfig,
   getSectionTranslation,
+  localizedSectionContent,
   localizedText,
   themeColor,
 } from "@/lib/page-section-content"
@@ -38,10 +39,12 @@ export function CustomContentSection({ section }: { section: PageSection }) {
   const config = getSectionConfig(section, lang)
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
-  const rawContent = translation?.content || localizedText(config.content || config.html, lang)
+  const rawContent = localizedSectionContent(section, lang, config)
   const content = rawContent ? sanitizeRichText(rawContent) : ""
-  const ctaLabel = translation?.cta_label || localizedText(config.cta_label || config.button_label, lang)
-  const ctaHref = translation?.cta_href || localizedText(config.cta_href || config.button_href, lang)
+  const sectionCtaLabel = lang === "zh" ? section.cta_label_zh : section.cta_label_en
+  const sectionCtaHref = lang === "zh" ? section.cta_href_zh : section.cta_href_en
+  const ctaLabel = sectionCtaLabel || translation?.cta_label || localizedText(config.cta_label || config.button_label, lang)
+  const ctaHref = sectionCtaHref || translation?.cta_href || localizedText(config.cta_href || config.button_href, lang)
   const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
   const textColor = themeColor(section.text_color || localizedText(config.text_color, lang), "var(--text-body)")
   const imageSrc = getFileUrl(section.image || localizedText(config.image, lang), { width: 1000, quality: 82, format: "webp" })

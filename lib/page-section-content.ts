@@ -91,3 +91,13 @@ export function getSectionConfig(section: PageSection | null | undefined, locale
     ...asJsonObject(translation?.content_json),
   }
 }
+
+export function localizedSectionContent(
+  section: PageSection | null | undefined,
+  locale: SupportedLocale,
+  config: JsonObject = getSectionConfig(section, locale),
+): string {
+  const translation = getSectionTranslation(section, locale)
+  const sectionContent = locale === "zh" ? section?.content_zh : section?.content_en
+  return sectionContent || translation?.content || localizedText(config.content || config.body || config.html, locale)
+}

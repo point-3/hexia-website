@@ -146,7 +146,9 @@ function configuredServices(section: PageSection, lang: Locale): ServiceCard[] {
 
 function configuredStats(section: PageSection, lang: Locale): ServiceStat[] {
   const config = getSectionConfig(section, lang)
-  return asJsonArray(config.stats || config.items || config.cards).flatMap((item) => {
+  const sectionStats = asJsonArray(lang === "zh" ? section.stat_cards_zh : section.stat_cards_en)
+  const items = sectionStats.length > 0 ? sectionStats : asJsonArray(config.stats || config.items || config.cards)
+  return items.flatMap((item) => {
     const value = textValue(item.value ?? item.number, lang)
     const label = fieldText(item, "label", lang) || fieldText(item, "title", lang)
     return value && label ? [{ value, label }] : []
