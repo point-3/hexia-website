@@ -1,6 +1,6 @@
 "use client"
 
-import { Headphones, Package, Shield, TrendingUp, Truck, type LucideIcon } from "lucide-react"
+import { BarChart3, GraduationCap, Headphones, Package, Shield, TrendingUp, Truck, type LucideIcon } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import type { PageSection } from "@/lib/directus"
 import { t } from "@/lib/i18n"
@@ -26,8 +26,10 @@ const iconMap: Record<string, LucideIcon> = {
   quality: Shield,
   trendingup: TrendingUp,
   market: TrendingUp,
+  chart: BarChart3,
   package: Package,
   service: Headphones,
+  academy: GraduationCap,
 }
 
 function iconByName(value: unknown): LucideIcon {
@@ -45,7 +47,8 @@ function fallbackServices(lang: "en" | "zh"): HomeService[] {
 
 function configuredServices(section: PageSection | null | undefined, lang: "en" | "zh"): HomeService[] {
   const config = getSectionConfig(section, lang)
-  const items = asJsonArray(config.services || config.items || config.cards)
+  const sectionItems = asJsonArray(lang === "zh" ? section?.home_service_cards_zh : section?.home_service_cards_en)
+  const items = sectionItems.length > 0 ? sectionItems : asJsonArray(config.services || config.items || config.cards)
 
   return items.flatMap((item) => {
     const title = fieldText(item, "title", lang)

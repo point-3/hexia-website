@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { BarChart3, ChevronRight, GraduationCap, Headphones, Package, type LucideIcon } from "lucide-react"
+import { BarChart3, ChevronRight, GraduationCap, Headphones, Package, Shield, Truck, type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
@@ -44,9 +44,14 @@ const serviceIconMap: Record<string, LucideIcon> = {
   package: Package,
   supply: Package,
   logistics: Package,
+  truck: Truck,
+  shield: Shield,
+  quality: Shield,
   market: BarChart3,
   chart: BarChart3,
+  trendingup: BarChart3,
   intelligence: BarChart3,
+  service: Headphones,
   academy: GraduationCap,
   education: GraduationCap,
   training: GraduationCap,
@@ -70,6 +75,12 @@ function hrefWithLocale(href: string, lang: Locale): string {
 }
 
 function localizedStringList(value: unknown, lang: Locale): string[] {
+  if (typeof value === "string") {
+    return value
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean)
+  }
   if (!Array.isArray(value)) return []
   return value.flatMap((item) => {
     if (typeof item === "string" && item.trim()) return [item.trim()]
@@ -128,7 +139,9 @@ function fallbackServices(lang: Locale): ServiceCard[] {
 
 function configuredServices(section: PageSection, lang: Locale): ServiceCard[] {
   const config = getSectionConfig(section, lang)
-  return asJsonArray(config.services || config.items || config.cards).flatMap((item) => {
+  const sectionItems = asJsonArray(lang === "zh" ? section.service_overview_cards_zh : section.service_overview_cards_en)
+  const items = sectionItems.length > 0 ? sectionItems : asJsonArray(config.services || config.items || config.cards)
+  return items.flatMap((item) => {
     const title = fieldText(item, "title", lang)
     const description = fieldText(item, "description", lang) || fieldText(item, "desc", lang)
     const details = localizedStringList(item.details || item.list || item.bullets, lang)

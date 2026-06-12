@@ -8,7 +8,7 @@ import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 import { CustomContentSection } from "@/components/hexia/custom-content-section"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
-import type { PageLayout } from "@/lib/directus"
+import type { PageLayout, PageSection } from "@/lib/directus"
 import { createInquiry } from "@/lib/api/inquiries"
 import { toast } from "sonner"
 import { t } from "@/lib/i18n"
@@ -32,10 +32,12 @@ type ContactInfoCard = {
   textColor: string
 }
 
-function configuredContactCards(pageLayout: PageLayout, lang: "en" | "zh"): ContactInfoCard[] {
-  const contactInfo = findSection(sectionsForPage(pageLayout, []), "contact_info")
+function configuredContactCards(section: PageSection | null | undefined, lang: "en" | "zh"): ContactInfoCard[] {
+  const contactInfo = section
   const config = getSectionConfig(contactInfo, lang)
-  return asJsonArray(config.cards || config.items || config.blocks).flatMap((item) => {
+  const sectionItems = asJsonArray(lang === "zh" ? contactInfo?.contact_cards_zh : contactInfo?.contact_cards_en)
+  const items = sectionItems.length > 0 ? sectionItems : asJsonArray(config.cards || config.items || config.blocks)
+  return items.flatMap((item) => {
     const title = fieldText(item, "title", lang)
     const body = fieldText(item, "body", lang) || fieldText(item, "content", lang) || fieldText(item, "value", lang)
     if (!title && !body) return []
@@ -76,7 +78,7 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
   const customSectionsAfterPanel = hasContactPanel
     ? customSections.filter((section) => (section.sort ?? 0) >= contactPanelSort)
     : []
-  const configuredCards = configuredContactCards(pageLayout, lang)
+  const configuredCards = configuredContactCards(contactInfoSection, lang)
 
   const [formData, setFormData] = useState({
     name: "",

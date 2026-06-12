@@ -22,6 +22,14 @@ const fallbackPartners = [
 
 function configuredPartners(section: PageSection | null | undefined, lang: "en" | "zh"): string[] {
   const config = getSectionConfig(section, lang)
+  const sectionItems = asJsonArray(lang === "zh" ? section?.partner_items_zh : section?.partner_items_en)
+  if (sectionItems.length > 0) {
+    return sectionItems.flatMap((item) => {
+      const partner = fieldText(item, "name", lang) || fieldText(item, "title", lang)
+      return partner ? [partner] : []
+    })
+  }
+
   const rawItems = config.partners || config.items || config.logos
 
   if (Array.isArray(rawItems)) {

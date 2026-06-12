@@ -32,6 +32,12 @@ type InfoCard = {
 }
 
 function localizedStringList(value: unknown, lang: Locale): string[] {
+  if (typeof value === "string") {
+    return value
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean)
+  }
   if (!Array.isArray(value)) return []
   return value.flatMap((item) => {
     if (typeof item === "string" && item.trim()) return [item.trim()]
@@ -146,7 +152,9 @@ function MissionSection({ section, lang }: { section: PageSection; lang: Locale 
 
 function configuredInfoCards(section: PageSection, lang: Locale): InfoCard[] {
   const config = getSectionConfig(section, lang)
-  return asJsonArray(config.cards || config.items || config.locations).flatMap((item) => {
+  const sectionItems = asJsonArray(lang === "zh" ? section.presence_cards_zh : section.presence_cards_en)
+  const items = sectionItems.length > 0 ? sectionItems : asJsonArray(config.cards || config.items || config.locations)
+  return items.flatMap((item) => {
     const title = fieldText(item, "title", lang) || fieldText(item, "name", lang)
     const body =
       fieldText(item, "body", lang) ||

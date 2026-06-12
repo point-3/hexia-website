@@ -203,6 +203,16 @@ export interface PageSection {
   feature_cards_zh?: JsonValue;
   stat_cards_en?: JsonValue;
   stat_cards_zh?: JsonValue;
+  home_service_cards_en?: JsonValue;
+  home_service_cards_zh?: JsonValue;
+  service_overview_cards_en?: JsonValue;
+  service_overview_cards_zh?: JsonValue;
+  partner_items_en?: JsonValue;
+  partner_items_zh?: JsonValue;
+  presence_cards_en?: JsonValue;
+  presence_cards_zh?: JsonValue;
+  contact_cards_en?: JsonValue;
+  contact_cards_zh?: JsonValue;
   image?: string | DirectusFile | null;
   settings?: JsonValue;
   translations?: PageSectionTranslation[] | null;
