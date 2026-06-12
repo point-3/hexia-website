@@ -192,6 +192,7 @@ export interface PageSection {
   is_system?: boolean;
   background_color?: string;
   text_color?: string;
+  stat_card_background_color?: string;
   image?: string | DirectusFile | null;
   settings?: JsonValue;
   translations?: PageSectionTranslation[] | null;

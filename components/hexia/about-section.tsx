@@ -120,7 +120,10 @@ export function AboutSection({ section }: { section?: PageSection | null }) {
   const content = translation?.content || localizedText(config.content, lang)
   const paragraphs = configuredParagraphs(config.paragraphs, lang)
   const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
-  const statBackgroundColor = themeColor(localizedText(config.stat_background_color, lang), "var(--primary-dark)")
+  const statBackgroundColor = themeColor(
+    section?.stat_card_background_color || localizedText(config.stat_card_background_color || config.stat_background_color, lang),
+    "var(--primary-dark)",
+  )
 
   return (
     <section id="about" className="py-20 lg:py-28" style={{ backgroundColor }}>

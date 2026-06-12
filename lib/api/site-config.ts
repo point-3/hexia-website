@@ -249,6 +249,7 @@ export async function getPageLayout(pageKey: SitePageKey): Promise<PageLayout> {
               'is_system',
               'background_color',
               'text_color',
+              'stat_card_background_color',
               'settings',
               directusFileField('image'),
               {
