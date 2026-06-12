@@ -8,6 +8,7 @@ import { getFileUrl } from "@/lib/directus"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { t } from "@/lib/i18n"
 import { whyChooseTitleSuffix } from "@/lib/site-profile"
+import { sectionTitleWithSuffix, titleWithHighlightedSuffix } from "@/lib/section-title"
 import {
   asJsonArray,
   fieldText,
@@ -94,58 +95,8 @@ function configuredFeatures(section: PageSection | null | undefined, lang: "en" 
   }
 }
 
-function titleSuffixSeparator(lang: "en" | "zh") {
-  return lang === "zh" ? "" : " "
-}
-
-function titleWithSuffix(prefix: string, suffix: string, lang: "en" | "zh") {
-  const cleanPrefix = prefix.trim()
-  const cleanSuffix = suffix.trim()
-  if (!cleanPrefix || !cleanSuffix) return cleanPrefix || cleanSuffix
-
-  return (
-    <>
-      {cleanPrefix}
-      {titleSuffixSeparator(lang)}
-      <span className="text-[var(--accent)]">{cleanSuffix}</span>
-    </>
-  )
-}
-
 function fallbackTitle(lang: "en" | "zh", displayName: string) {
-  return titleWithSuffix(lang === "zh" ? "为什么选择" : "Why Choose", displayName, lang)
-}
-
-function whyChooseTitlePrefix(title: string, lang: "en" | "zh") {
-  if (lang === "zh") {
-    const match = title.match(/^为什么选择\s*/i)
-    return match ? match[0].trim() : title
-  }
-
-  const match = title.match(/^why\s+choose\b/i)
-  return match ? title.slice(0, match[0].length).trim() : title
-}
-
-function titleWithHighlightedSuffix(title: string, suffix: string, lang: "en" | "zh") {
-  const cleanTitle = title.trim()
-  const cleanSuffix = suffix.trim()
-  if (!cleanTitle || !cleanSuffix) return cleanTitle
-
-  const titleLower = cleanTitle.toLowerCase()
-  const suffixLower = cleanSuffix.toLowerCase()
-  if (!titleLower.endsWith(suffixLower)) {
-    return titleWithSuffix(whyChooseTitlePrefix(cleanTitle, lang), cleanSuffix, lang)
-  }
-
-  const prefix = cleanTitle.slice(0, cleanTitle.length - cleanSuffix.length).trimEnd()
-  const matchedSuffix = cleanTitle.slice(cleanTitle.length - cleanSuffix.length)
-
-  return (
-    <>
-      {prefix ? `${prefix}${titleSuffixSeparator(lang)}` : ""}
-      <span className="text-[var(--accent)]">{matchedSuffix}</span>
-    </>
-  )
+  return titleWithHighlightedSuffix(lang === "zh" ? "为什么选择" : "Why Choose", displayName, lang)
 }
 
 export function WhyChooseSection({ section }: { section?: PageSection | null }) {
@@ -158,8 +109,8 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const configured = configuredFeatures(section, lang)
   const features = configured.hasExplicitCards ? configured.features : fallbackFeatures(lang)
   const title = translation?.title || localizedText(config.title, lang)
-  const configuredSuffix = localizedText(config.title_suffix || config.brand_suffix || config.highlight_suffix, lang)
-  const titleSuffix = whyChooseTitleSuffix(siteSettings, lang) || configuredSuffix
+  const legacyConfiguredSuffix = localizedText(config.title_suffix || config.brand_suffix || config.highlight_suffix, lang)
+  const titleSuffix = legacyConfiguredSuffix || whyChooseTitleSuffix(siteSettings, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("home.whyChooseDesc", lang)
   const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
   const textColor = themeColor(section?.text_color || localizedText(config.text_color, lang), "var(--primary-dark)")
@@ -185,7 +136,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: textColor }}>
-            {title ? titleWithHighlightedSuffix(title, titleSuffix, lang) : fallbackTitle(lang, titleSuffix)}
+            {title ? sectionTitleWithSuffix(section, title, lang, titleSuffix) : fallbackTitle(lang, titleSuffix)}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty" style={{ color: bodyTextColor, opacity: 0.78 }}>
             {subtitle}

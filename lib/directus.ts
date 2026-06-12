@@ -190,6 +190,8 @@ export interface PageSection {
   status: 'published' | 'draft';
   sort?: number;
   is_system?: boolean;
+  title_suffix_en?: string;
+  title_suffix_zh?: string;
   background_color?: string;
   text_color?: string;
   stat_card_background_color?: string;

@@ -11,6 +11,7 @@ import {
   localizedText,
   themeColor,
 } from "@/lib/page-section-content"
+import { sectionTitleWithSuffix } from "@/lib/section-title"
 
 function hrefWithLocale(href: string, lang: "en" | "zh"): string {
   const trimmed = href.trim()
@@ -57,7 +58,7 @@ export function CustomContentSection({ section }: { section: PageSection }) {
     <div>
       {title ? (
         <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
-          {title}
+          {sectionTitleWithSuffix(section, title, lang)}
         </h2>
       ) : null}
       {subtitle ? (

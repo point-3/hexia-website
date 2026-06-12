@@ -23,6 +23,7 @@ import {
   localizedText,
   themeColor,
 } from "@/lib/page-section-content"
+import { sectionTitleWithSuffix } from "@/lib/section-title"
 
 type Locale = "en" | "zh"
 
@@ -182,7 +183,7 @@ function ServiceOverviewSection({ section, lang }: { section: PageSection; lang:
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {title || subtitle ? (
           <div className="mb-12 text-center">
-            {title ? <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2> : null}
+            {title ? <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2> : null}
             {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
           </div>
         ) : null}
@@ -248,7 +249,7 @@ function ServiceWhyChooseSection({ section, lang }: { section: PageSection; lang
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
+          <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
           {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
         </div>
 
@@ -334,7 +335,7 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-3xl bg-[var(--bg-card)] p-8 shadow-lg sm:p-12">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
+              <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
               {subtitle ? <p className="mt-4 text-[var(--text-body)]">{subtitle}</p> : null}
             </div>
 

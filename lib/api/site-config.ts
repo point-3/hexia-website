@@ -247,6 +247,8 @@ export async function getPageLayout(pageKey: SitePageKey): Promise<PageLayout> {
               'status',
               'sort',
               'is_system',
+              'title_suffix_en',
+              'title_suffix_zh',
               'background_color',
               'text_color',
               'stat_card_background_color',

@@ -10,6 +10,7 @@ import {
   localizedText,
   themeColor,
 } from "@/lib/page-section-content";
+import { sectionTitleWithSuffix } from "@/lib/section-title";
 
 export function AboutHeroSection({ section }: { section?: PageSection | null }) {
   const searchParams = useSearchParams();
@@ -45,7 +46,7 @@ export function AboutHeroSection({ section }: { section?: PageSection | null }) 
       ) : (
         <div className="relative z-10 flex h-full items-center justify-center px-4 text-center" style={{ color: textColor }}>
           <div className="mx-auto max-w-3xl">
-            {title ? <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{title}</h1> : null}
+            {title ? <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{sectionTitleWithSuffix(section, title, lang)}</h1> : null}
             {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed opacity-80 sm:text-lg">{subtitle}</p> : null}
           </div>
         </div>

@@ -15,6 +15,7 @@ import {
 } from "@/lib/page-section-content"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { brandHighlightName } from "@/lib/site-profile"
+import { sectionTitleWithSuffix, titleWithHighlightedSuffix } from "@/lib/section-title"
 
 type HomeStat = {
   value: number
@@ -137,10 +138,9 @@ export function AboutSection({ section }: { section?: PageSection | null }) {
         <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)] lg:gap-12">
           <div className="max-w-3xl">
             <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
-              {title || (
+              {title ? sectionTitleWithSuffix(section, title, lang) : (
                 <>
-                  {lang === "zh" ? "关于 " : "About "}
-                  <span className="text-[var(--accent)]">{brandHighlightName(siteSettings, lang)}</span>
+                  {titleWithHighlightedSuffix(lang === "zh" ? "关于" : "About", brandHighlightName(siteSettings, lang), lang)}
                 </>
               )}
             </h2>

@@ -22,6 +22,7 @@ import {
   themeColor,
 } from "@/lib/page-section-content"
 import { companyAddress, companyName } from "@/lib/site-profile"
+import { sectionTitleWithSuffix } from "@/lib/section-title"
 
 type Locale = "en" | "zh"
 
@@ -99,7 +100,7 @@ function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Loc
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">{title}</h2>
+          <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
           {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-lg opacity-80">{subtitle}</p> : null}
           {content ? (
             <div
@@ -135,7 +136,7 @@ function MissionSection({ section, lang }: { section: PageSection; lang: Locale 
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[var(--primary)]">
             <Target className="size-8 text-white" />
           </div>
-          <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
+          <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
           {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
           {content ? (
             <div
@@ -204,7 +205,7 @@ function GlobalPresenceSection({ section, lang }: { section: PageSection; lang: 
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[var(--primary)]">
             <MapPin className="size-8 text-white" />
           </div>
-          <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{title}</h2>
+          <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
           {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
         </div>
 

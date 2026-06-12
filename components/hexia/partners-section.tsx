@@ -10,6 +10,7 @@ import {
   localizedText,
   themeColor,
 } from "@/lib/page-section-content"
+import { sectionTitleWithSuffix } from "@/lib/section-title"
 
 const fallbackPartners = [
   "Dongxiao",
@@ -74,7 +75,7 @@ export function PartnersSection({ section }: { section?: PageSection | null }) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-3xl">
-            {title || fallbackTitle()}
+            {title ? sectionTitleWithSuffix(section, title, lang) : fallbackTitle()}
           </h2>
           {subtitle ? (
             <p className="mx-auto mt-4 max-w-2xl text-pretty text-[var(--text-body)]">
