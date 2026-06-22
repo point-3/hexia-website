@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from "react"
 import type { SiteSettings } from "@/lib/directus"
-import { DEFAULT_SITE_SETTINGS } from "@/lib/api/site-config"
+import { DEFAULT_SITE_SETTINGS } from "@/lib/site-defaults"
 
 const SiteSettingsContext = createContext<SiteSettings>(DEFAULT_SITE_SETTINGS)
 

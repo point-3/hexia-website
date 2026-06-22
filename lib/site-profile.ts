@@ -1,4 +1,13 @@
 import type { JsonValue, SiteSettings, SiteSettingsTranslation } from "@/lib/directus"
+import {
+  DEFAULT_BROWSER_TITLE_PREFIX,
+  DEFAULT_COMPANY_ADDRESS,
+  DEFAULT_COMPANY_DESCRIPTION,
+  DEFAULT_COMPANY_NAME,
+  DEFAULT_CONTACT_EMAIL,
+  DEFAULT_CONTACT_PHONE,
+  DEFAULT_SITE_NAME,
+} from "@/lib/site-defaults"
 
 type LocaleCode = "en" | "zh"
 
@@ -26,15 +35,15 @@ export function getSiteTranslation(
 }
 
 export function companyName(settings: SiteSettings, locale: LocaleCode): string {
-  return getSiteTranslation(settings, locale)?.company_name || "Hexia (Suzhou) Biotechnology Co., Ltd."
+  return getSiteTranslation(settings, locale)?.company_name || DEFAULT_COMPANY_NAME
 }
 
 export function siteName(settings: SiteSettings, locale: LocaleCode): string {
-  return getSiteTranslation(settings, locale)?.site_name || settings.site_title?.trim() || (locale === "zh" ? "和夏" : "Hexia")
+  return getSiteTranslation(settings, locale)?.site_name || settings.site_title?.trim() || DEFAULT_SITE_NAME
 }
 
 export function browserTitlePrefix(settings: SiteSettings, locale: LocaleCode): string {
-  return getSiteTranslation(settings, locale)?.browser_title_prefix || (locale === "zh" ? "和夏生物" : "HexiaBio")
+  return getSiteTranslation(settings, locale)?.browser_title_prefix || DEFAULT_BROWSER_TITLE_PREFIX
 }
 
 export function brandHighlightName(settings: SiteSettings, locale: LocaleCode): string {
@@ -42,18 +51,18 @@ export function brandHighlightName(settings: SiteSettings, locale: LocaleCode): 
 }
 
 export function whyChooseTitleSuffix(settings: SiteSettings, locale: LocaleCode): string {
-  return getSiteTranslation(settings, locale)?.why_choose_title_suffix || brandHighlightName(settings, locale)
+  return getSiteTranslation(settings, locale)?.why_choose_title_suffix || ""
 }
 
 export function companyDescription(settings: SiteSettings, locale: LocaleCode): string {
   return (
     getSiteTranslation(settings, locale)?.company_short_description ||
-    "Professional supplier of feed additives, food additives, vitamins, amino acids and nutritional raw materials."
+    DEFAULT_COMPANY_DESCRIPTION
   )
 }
 
 export function companyAddress(settings: SiteSettings, locale: LocaleCode): string {
-  return getSiteTranslation(settings, locale)?.company_address || (locale === "zh" ? "中国苏州" : "Suzhou, China")
+  return getSiteTranslation(settings, locale)?.company_address || DEFAULT_COMPANY_ADDRESS
 }
 
 export function footerCopyright(settings: SiteSettings, locale: LocaleCode): string {
@@ -68,15 +77,15 @@ export function quoteButtonText(settings: SiteSettings, locale: LocaleCode): str
 }
 
 export function contactEmail(settings: SiteSettings): string {
-  return settings.email?.trim() || "justin@hexiabio.com"
+  return settings.email?.trim() || DEFAULT_CONTACT_EMAIL
 }
 
 export function contactPhone(settings: SiteSettings): string {
-  return settings.phone?.trim() || settings.whatsapp?.trim() || "+86 138 6232 0011"
+  return settings.phone?.trim() || settings.whatsapp?.trim() || DEFAULT_CONTACT_PHONE
 }
 
 export function contactWhatsapp(settings: SiteSettings): string {
-  return settings.whatsapp?.trim() || settings.phone?.trim() || "+86 138 6232 0011"
+  return settings.whatsapp?.trim() || settings.phone?.trim() || DEFAULT_CONTACT_PHONE
 }
 
 function jsonObject(value: JsonValue | undefined): Record<string, unknown> {
