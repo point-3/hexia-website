@@ -66,15 +66,24 @@ function sectionText(
   return localizedSectionContent(section, lang, config) || fallback
 }
 
+function sectionTranslationContent(section: PageSection, lang: Locale, fallback = ""): string {
+  const translation = getSectionTranslation(section, lang)
+  const config = getSectionConfig(section, lang)
+  return (
+    translation?.content ||
+    localizedSectionContent(section, lang, config) ||
+    fallback
+  )
+}
+
 function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Locale }) {
   const siteSettings = useSiteSettings()
   const config = getSectionConfig(section, lang)
   const title = sectionText(section, lang, "title", companyName(siteSettings, lang))
   const subtitle = sectionText(section, lang, "subtitle")
-  const content = sectionText(
+  const content = sectionTranslationContent(
     section,
     lang,
-    "content",
     lang === "zh"
       ? "总部位于苏州自贸区，并在香港和英国设有独立子公司。我们专注于动物营养和人类食品原料领域，致力于为全球客户提供全面的一站式解决方案。"
       : "Headquartered in Suzhou Free Trade Zone, the company has established subsidiaries in Hong Kong and the United Kingdom. Dedicated to the fields of animal nutrition and food nutrition, we strive to deliver comprehensive one-stop solutions for global clients.",
