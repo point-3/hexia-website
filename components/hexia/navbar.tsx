@@ -25,6 +25,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
   const headerOpacity = Math.max(0, Math.min(1, (siteSettings.header_background_opacity ?? 100) / 100))
   const quoteEnabled = siteSettings.quote_button_enabled !== false
   const languageSwitchEnabled = siteSettings.language_switch_enabled !== false
+  const siteNameDisplayEnabled = siteSettings.site_name_display_enabled !== false
   const logoSrc = getRawCmsAssetUrl(siteSettings.logo) || "/images/金logo-03.svg"
   const quoteText = quoteButtonText(siteSettings, lang)
   const displayName = siteName(siteSettings, lang)
@@ -100,9 +101,11 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
               alt={`${displayName} Logo`}
               className="h-8 w-auto object-contain"
             />
-            <span className="text-lg font-bold uppercase leading-tight sm:text-xl lg:text-2xl" style={{ color: ctaColor }}>
-              {displayName}
-            </span>
+            {siteNameDisplayEnabled ? (
+              <span className="text-lg font-bold uppercase leading-tight sm:text-xl lg:text-2xl" style={{ color: ctaColor }}>
+                {displayName}
+              </span>
+            ) : null}
           </a>
 
           <nav className="hidden lg:flex lg:items-center lg:gap-6 xl:gap-8">

@@ -117,6 +117,7 @@ export interface SiteSettings {
   site_title?: string;
   logo?: string | DirectusFile | null;
   footer_logo?: string | DirectusFile | null;
+  site_name_display_enabled?: boolean;
   favicon?: string | DirectusFile | null;
   theme_primary?: string;
   theme_primary_dark?: string;

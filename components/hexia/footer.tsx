@@ -144,6 +144,7 @@ export function Footer() {
   const email = contactEmail(siteSettings)
   const whatsapp = contactWhatsapp(siteSettings)
   const displayName = siteName(siteSettings, lang)
+  const siteNameDisplayEnabled = siteSettings.site_name_display_enabled !== false
 
   useEffect(() => {
     let active = true
@@ -178,9 +179,11 @@ export function Footer() {
               {footerLogoSrc ? (
                 <img src={footerLogoSrc} alt={`${displayName} Logo`} className="h-8 w-auto object-contain" />
               ) : null}
-              <span className="text-lg font-bold uppercase text-[var(--site-footer-text-color)]">
-                {displayName}
-              </span>
+              {siteNameDisplayEnabled ? (
+                <span className="text-lg font-bold uppercase text-[var(--site-footer-text-color)]">
+                  {displayName}
+                </span>
+              ) : null}
             </a>
             <p className="mt-3 text-sm leading-relaxed text-[var(--site-footer-text-color)] opacity-80">
               {companyName(siteSettings, lang)} - {companyDescription(siteSettings, lang)}

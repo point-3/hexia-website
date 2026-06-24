@@ -50,6 +50,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   id: 0,
   status: "published",
   site_title: DEFAULT_SITE_NAME,
+  site_name_display_enabled: true,
   theme_primary: "#2D6A4F",
   theme_primary_dark: "#1B4D3E",
   theme_accent: "#E9B35F",

@@ -10,10 +10,104 @@ import { DEFAULT_SITE_SETTINGS, DEFAULT_SITE_TRANSLATIONS } from '../site-defaul
 
 export type SitePageKey = 'home' | 'products' | 'service' | 'about' | 'contact' | 'news';
 
+const SITE_SETTINGS_FIELDS = [
+  'id',
+  'status',
+  'site_title',
+  'site_name_display_enabled',
+  'theme_primary',
+  'theme_primary_dark',
+  'theme_accent',
+  'theme_bg_page',
+  'theme_bg_card',
+  'theme_text_body',
+  'theme_border',
+  'theme_bg_muted',
+  'primary_color',
+  'cta_color',
+  'body_background',
+  'heading_text_color',
+  'body_text_color',
+  'font_family',
+  'header_background_color',
+  'header_background_opacity',
+  'header_text_color',
+  'header_hover_text_color',
+  'quote_button_enabled',
+  'language_switch_enabled',
+  'footer_background_color',
+  'footer_text_color',
+  'footer_link_color',
+  'email',
+  'phone',
+  'whatsapp',
+  'social_links',
+  'quick_links',
+  'analytics_settings',
+  directusFileField('logo'),
+  directusFileField('footer_logo'),
+  directusFileField('favicon'),
+  {
+    translations: [
+      'id',
+      'languages_code',
+      'site_name',
+      'browser_title_prefix',
+      'brand_highlight_name',
+      'why_choose_title_suffix',
+      'company_name',
+      'company_short_description',
+      'company_address',
+      'quote_button_text',
+      'footer_copyright',
+      'default_meta_title',
+      'default_meta_keywords',
+      'default_meta_description',
+    ],
+  },
+] as const;
+
+const LEGACY_SITE_SETTINGS_FIELDS = SITE_SETTINGS_FIELDS.filter((field) => field !== 'site_name_display_enabled');
+
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  if (!error || typeof error !== 'object') return String(error);
+
+  const messages: string[] = [];
+  const record = error as Record<string, unknown>;
+
+  if (typeof record.message === 'string') {
+    messages.push(record.message);
+  }
+
+  if (Array.isArray(record.errors)) {
+    for (const item of record.errors) {
+      if (!item || typeof item !== 'object') continue;
+      const errorItem = item as Record<string, unknown>;
+      if (typeof errorItem.message === 'string') {
+        messages.push(errorItem.message);
+      }
+      const extensions = errorItem.extensions;
+      if (extensions && typeof extensions === 'object') {
+        const reason = (extensions as Record<string, unknown>).reason;
+        if (typeof reason === 'string') {
+          messages.push(reason);
+        }
+      }
+    }
+  }
+
+  return messages.join(' ') || String(error);
+}
+
 function warnCmsFallback(scope: string, error: unknown): void {
   if (process.env.NODE_ENV === 'production') return;
-  const message = error instanceof Error ? error.message : String(error);
-  console.warn(`[site-config] ${scope} fallback: ${message}`);
+  console.warn(`[site-config] ${scope} fallback: ${errorMessage(error)}`);
+}
+
+function isMissingSiteNameDisplayFieldError(error: unknown): boolean {
+  return errorMessage(error).includes('site_name_display_enabled');
 }
 
 function fallbackSeoPage(pageKey: SitePageKey, siteSettings: SiteSettings): SeoPage {
@@ -48,64 +142,10 @@ export function fallbackPageLayout(pageKey: SitePageKey): PageLayout {
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  try {
+  const readSiteSettings = async (fields: typeof SITE_SETTINGS_FIELDS | typeof LEGACY_SITE_SETTINGS_FIELDS) => {
     const response = (await directus.request(
       readItems('site_settings', {
-        fields: [
-          'id',
-          'status',
-          'site_title',
-          'theme_primary',
-          'theme_primary_dark',
-          'theme_accent',
-          'theme_bg_page',
-          'theme_bg_card',
-          'theme_text_body',
-          'theme_border',
-          'theme_bg_muted',
-          'primary_color',
-          'cta_color',
-          'body_background',
-          'heading_text_color',
-          'body_text_color',
-          'font_family',
-          'header_background_color',
-          'header_background_opacity',
-          'header_text_color',
-          'header_hover_text_color',
-          'quote_button_enabled',
-          'language_switch_enabled',
-          'footer_background_color',
-          'footer_text_color',
-          'footer_link_color',
-          'email',
-          'phone',
-          'whatsapp',
-          'social_links',
-          'quick_links',
-          'analytics_settings',
-          directusFileField('logo'),
-          directusFileField('footer_logo'),
-          directusFileField('favicon'),
-          {
-            translations: [
-              'id',
-              'languages_code',
-              'site_name',
-              'browser_title_prefix',
-              'brand_highlight_name',
-              'why_choose_title_suffix',
-              'company_name',
-              'company_short_description',
-              'company_address',
-              'quote_button_text',
-              'footer_copyright',
-              'default_meta_title',
-              'default_meta_keywords',
-              'default_meta_description',
-            ],
-          },
-        ],
+        fields,
         filter: { status: { _eq: 'published' } },
         sort: ['id'],
         limit: 1,
@@ -113,8 +153,25 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     )) as unknown;
     const items = Array.isArray(response) ? response : response ? [response as SiteSettings] : [];
 
-    return items?.[0] ?? DEFAULT_SITE_SETTINGS;
+    const siteSettings = items?.[0] ?? DEFAULT_SITE_SETTINGS;
+    return {
+      ...siteSettings,
+      site_name_display_enabled: siteSettings.site_name_display_enabled ?? true,
+    };
+  };
+
+  try {
+    return await readSiteSettings(SITE_SETTINGS_FIELDS);
   } catch (error) {
+    if (isMissingSiteNameDisplayFieldError(error)) {
+      try {
+        return await readSiteSettings(LEGACY_SITE_SETTINGS_FIELDS);
+      } catch (legacyError) {
+        warnCmsFallback('site_settings', legacyError);
+        return DEFAULT_SITE_SETTINGS;
+      }
+    }
+
     warnCmsFallback('site_settings', error);
     return DEFAULT_SITE_SETTINGS;
   }
