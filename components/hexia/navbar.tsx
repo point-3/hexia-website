@@ -98,9 +98,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
             <img
               src={logoSrc}
               alt={`${displayName} Logo`}
-              width={28}
-              height={28}
-              className="h-auto w-auto sm:w-8"
+              className="h-8 w-auto object-contain"
             />
             <span className="text-lg font-bold uppercase leading-tight sm:text-xl lg:text-2xl" style={{ color: ctaColor }}>
               {displayName}

@@ -176,7 +176,7 @@ export function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label={`${displayName} homepage`}>
               {footerLogoSrc ? (
-                <img src={footerLogoSrc} alt={`${displayName} Logo`} width={32} height={32} className="h-8 w-auto" />
+                <img src={footerLogoSrc} alt={`${displayName} Logo`} className="h-8 w-auto object-contain" />
               ) : null}
               <span className="text-lg font-bold uppercase text-[var(--site-footer-text-color)]">
                 {displayName}
