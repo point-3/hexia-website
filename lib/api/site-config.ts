@@ -10,7 +10,7 @@ import { DEFAULT_SITE_SETTINGS, DEFAULT_SITE_TRANSLATIONS } from '../site-defaul
 
 export type SitePageKey = 'home' | 'products' | 'service' | 'about' | 'contact' | 'news';
 
-const SITE_SETTINGS_FIELDS = [
+const SITE_SETTINGS_TOP_LEVEL_FIELDS = [
   'id',
   'status',
   'site_title',
@@ -47,27 +47,65 @@ const SITE_SETTINGS_FIELDS = [
   directusFileField('logo'),
   directusFileField('footer_logo'),
   directusFileField('favicon'),
+] as const;
+
+const SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_SITE_NAME_DISPLAY =
+  SITE_SETTINGS_TOP_LEVEL_FIELDS.filter((field) => field !== 'site_name_display_enabled');
+
+const SITE_SETTINGS_TRANSLATION_FIELDS = [
+  'id',
+  'languages_code',
+  'site_name',
+  'browser_title_prefix',
+  'brand_highlight_name',
+  'why_choose_title_suffix',
+  'company_name',
+  'company_short_description',
+  'hq_title',
+  'company_address',
+  'quote_button_text',
+  'footer_copyright',
+  'default_meta_title',
+  'default_meta_keywords',
+  'default_meta_description',
+] as const;
+
+const SITE_SETTINGS_TRANSLATION_FIELDS_WITHOUT_HQ_TITLE =
+  SITE_SETTINGS_TRANSLATION_FIELDS.filter((field) => field !== 'hq_title');
+
+const SITE_SETTINGS_FIELDS = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS,
   {
-    translations: [
-      'id',
-      'languages_code',
-      'site_name',
-      'browser_title_prefix',
-      'brand_highlight_name',
-      'why_choose_title_suffix',
-      'company_name',
-      'company_short_description',
-      'company_address',
-      'quote_button_text',
-      'footer_copyright',
-      'default_meta_title',
-      'default_meta_keywords',
-      'default_meta_description',
-    ],
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS,
   },
 ] as const;
 
-const LEGACY_SITE_SETTINGS_FIELDS = SITE_SETTINGS_FIELDS.filter((field) => field !== 'site_name_display_enabled');
+const SITE_SETTINGS_FIELDS_WITHOUT_HQ_TITLE = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS_WITHOUT_HQ_TITLE,
+  },
+] as const;
+
+const SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_SITE_NAME_DISPLAY,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS,
+  },
+] as const;
+
+const LEGACY_SITE_SETTINGS_FIELDS = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_SITE_NAME_DISPLAY,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS_WITHOUT_HQ_TITLE,
+  },
+] as const;
+
+type SiteSettingsFieldSet =
+  | typeof SITE_SETTINGS_FIELDS
+  | typeof SITE_SETTINGS_FIELDS_WITHOUT_HQ_TITLE
+  | typeof SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY
+  | typeof LEGACY_SITE_SETTINGS_FIELDS;
 
 function errorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
@@ -106,8 +144,24 @@ function warnCmsFallback(scope: string, error: unknown): void {
   console.warn(`[site-config] ${scope} fallback: ${errorMessage(error)}`);
 }
 
-function isMissingSiteNameDisplayFieldError(error: unknown): boolean {
-  return errorMessage(error).includes('site_name_display_enabled');
+function isMissingSiteSettingsCompatibilityFieldError(error: unknown): boolean {
+  const message = errorMessage(error);
+  return message.includes('site_name_display_enabled') || message.includes('hq_title');
+}
+
+function siteSettingsFallbackFieldSets(error: unknown): SiteSettingsFieldSet[] {
+  const message = errorMessage(error);
+  const fieldSets: SiteSettingsFieldSet[] = [];
+
+  if (message.includes('hq_title')) {
+    fieldSets.push(SITE_SETTINGS_FIELDS_WITHOUT_HQ_TITLE);
+  }
+  if (message.includes('site_name_display_enabled')) {
+    fieldSets.push(SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY);
+  }
+
+  fieldSets.push(LEGACY_SITE_SETTINGS_FIELDS);
+  return fieldSets;
 }
 
 function fallbackSeoPage(pageKey: SitePageKey, siteSettings: SiteSettings): SeoPage {
@@ -142,7 +196,7 @@ export function fallbackPageLayout(pageKey: SitePageKey): PageLayout {
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  const readSiteSettings = async (fields: typeof SITE_SETTINGS_FIELDS | typeof LEGACY_SITE_SETTINGS_FIELDS) => {
+  const readSiteSettings = async (fields: SiteSettingsFieldSet) => {
     const response = (await directus.request(
       readItems('site_settings', {
         fields,
@@ -163,13 +217,21 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   try {
     return await readSiteSettings(SITE_SETTINGS_FIELDS);
   } catch (error) {
-    if (isMissingSiteNameDisplayFieldError(error)) {
-      try {
-        return await readSiteSettings(LEGACY_SITE_SETTINGS_FIELDS);
-      } catch (legacyError) {
-        warnCmsFallback('site_settings', legacyError);
-        return DEFAULT_SITE_SETTINGS;
+    if (isMissingSiteSettingsCompatibilityFieldError(error)) {
+      let lastError = error;
+      for (const fields of siteSettingsFallbackFieldSets(error)) {
+        try {
+          return await readSiteSettings(fields);
+        } catch (fallbackError) {
+          lastError = fallbackError;
+          if (!isMissingSiteSettingsCompatibilityFieldError(fallbackError)) {
+            break;
+          }
+        }
       }
+
+      warnCmsFallback('site_settings', lastError);
+      return DEFAULT_SITE_SETTINGS;
     }
 
     warnCmsFallback('site_settings', error);

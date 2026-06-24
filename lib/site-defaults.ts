@@ -6,6 +6,8 @@ export const DEFAULT_BROWSER_TITLE_PREFIX = "Company"
 export const DEFAULT_COMPANY_DESCRIPTION =
   "Replace this text with the company introduction and business scope."
 export const DEFAULT_COMPANY_ADDRESS = ""
+export const DEFAULT_HQ_TITLE_EN = "Suzhou HQ"
+export const DEFAULT_HQ_TITLE_ZH = "苏州总部"
 export const DEFAULT_CONTACT_EMAIL = ""
 export const DEFAULT_CONTACT_PHONE = ""
 
@@ -20,6 +22,7 @@ export const DEFAULT_SITE_TRANSLATIONS: SiteSettingsTranslation[] = [
     why_choose_title_suffix: "",
     company_name: DEFAULT_COMPANY_NAME,
     company_short_description: DEFAULT_COMPANY_DESCRIPTION,
+    hq_title: DEFAULT_HQ_TITLE_EN,
     company_address: DEFAULT_COMPANY_ADDRESS,
     quote_button_text: "Get a Quote",
     footer_copyright: `Copyright © 2026 ${DEFAULT_COMPANY_NAME}. All Rights Reserved.`,
@@ -37,6 +40,7 @@ export const DEFAULT_SITE_TRANSLATIONS: SiteSettingsTranslation[] = [
     why_choose_title_suffix: "",
     company_name: DEFAULT_COMPANY_NAME,
     company_short_description: DEFAULT_COMPANY_DESCRIPTION,
+    hq_title: DEFAULT_HQ_TITLE_ZH,
     company_address: DEFAULT_COMPANY_ADDRESS,
     quote_button_text: "获取报价",
     footer_copyright: `Copyright © 2026 ${DEFAULT_COMPANY_NAME}. All Rights Reserved.`,

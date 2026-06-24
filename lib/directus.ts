@@ -103,6 +103,7 @@ export interface SiteSettingsTranslation {
   why_choose_title_suffix?: string;
   company_name: string;
   company_short_description?: string;
+  hq_title?: string;
   company_address?: string;
   quote_button_text?: string;
   footer_copyright?: string;

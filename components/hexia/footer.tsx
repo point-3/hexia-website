@@ -11,6 +11,7 @@ import type { Category } from "@/lib/directus"
 import {
   companyAddress,
   companyDescription,
+  companyHeadquartersTitle,
   companyName,
   contactEmail,
   contactWhatsapp,
@@ -260,7 +261,7 @@ export function Footer() {
               <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" />
                 <span>
-                  <strong className="text-[var(--site-footer-text-color)]">{t("footer.hqTitle", lang)}</strong>
+                  <strong className="text-[var(--site-footer-text-color)]">{companyHeadquartersTitle(siteSettings, lang)}</strong>
                   <br />
                   {companyAddress(siteSettings, lang).split("\n").map((line, index, lines) => (
                     <span key={index}>

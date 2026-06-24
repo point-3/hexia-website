@@ -4,6 +4,8 @@ import {
   DEFAULT_COMPANY_ADDRESS,
   DEFAULT_COMPANY_DESCRIPTION,
   DEFAULT_COMPANY_NAME,
+  DEFAULT_HQ_TITLE_EN,
+  DEFAULT_HQ_TITLE_ZH,
   DEFAULT_CONTACT_EMAIL,
   DEFAULT_CONTACT_PHONE,
   DEFAULT_SITE_NAME,
@@ -59,6 +61,10 @@ export function companyDescription(settings: SiteSettings, locale: LocaleCode): 
     getSiteTranslation(settings, locale)?.company_short_description ||
     DEFAULT_COMPANY_DESCRIPTION
   )
+}
+
+export function companyHeadquartersTitle(settings: SiteSettings, locale: LocaleCode): string {
+  return getSiteTranslation(settings, locale)?.hq_title || (locale === "zh" ? DEFAULT_HQ_TITLE_ZH : DEFAULT_HQ_TITLE_EN)
 }
 
 export function companyAddress(settings: SiteSettings, locale: LocaleCode): string {
