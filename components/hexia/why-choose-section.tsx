@@ -108,6 +108,12 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const config = getSectionConfig(section, lang)
   const configured = configuredFeatures(section, lang)
   const features = configured.hasExplicitCards ? configured.features : fallbackFeatures(lang)
+  const rows = features.reduce<WhyChooseFeature[][]>((acc, feature, index) => {
+    const rowIndex = Math.floor(index / 4)
+    acc[rowIndex] = acc[rowIndex] || []
+    acc[rowIndex].push(feature)
+    return acc
+  }, [])
   const title = translation?.title || localizedText(config.title, lang)
   const legacyConfiguredSuffix = localizedText(config.title_suffix || config.brand_suffix || config.highlight_suffix, lang)
   const titleSuffix = legacyConfiguredSuffix || whyChooseTitleSuffix(siteSettings, lang)
@@ -143,36 +149,118 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="hidden lg:block">
+          {rows.map((row, rowIndex) => {
+            const rowStart = rowIndex * 4
+
+            return (
+              <div key={rowIndex} className={rowIndex === 0 && rows.length > 1 ? "mb-8 flex gap-8" : "flex gap-8"}>
+                {row.map((feature, index) => {
+                  const actualIndex = rowStart + index
+                  const isHovered = hoveredIndex === actualIndex
+                  const isFirstInRow = index === 0
+                  const isLastInRow = index === row.length - 1
+                  const hoverMarginLeft = isFirstInRow ? "0" : isLastInRow ? "-80px" : "-40px"
+                  const hoverMarginRight = isFirstInRow ? "-80px" : isLastInRow ? "0" : "-40px"
+                  const contentTranslateX = isFirstInRow ? "40px" : isLastInRow ? "-40px" : "0"
+
+                  return (
+                    <div
+                      key={actualIndex}
+                      className="relative"
+                      onMouseEnter={() => setHoveredIndex(actualIndex)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                      style={{
+                        flex: "1 1 0",
+                        zIndex: isHovered ? 20 : 1,
+                      }}
+                    >
+                      <div
+                        className="absolute bottom-0 left-0 right-0 top-0 rounded-none shadow-xl"
+                        style={{
+                          backgroundColor: "var(--primary)",
+                          opacity: isHovered ? 1 : 0,
+                          zIndex: 0,
+                          marginLeft: isHovered ? hoverMarginLeft : "0",
+                          marginRight: isHovered ? hoverMarginRight : "0",
+                          transition: "opacity 0.5s ease-out, margin 0.5s ease-out",
+                        }}
+                      />
+
+                      <div
+                        className="relative z-10 flex min-h-[260px] flex-col items-center justify-center p-6 text-center lg:p-8"
+                        style={{
+                          transform: isHovered ? `translateX(${contentTranslateX})` : "translateX(0)",
+                          transition: "transform 0.5s ease-out",
+                        }}
+                      >
+                        <div
+                          className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl transition-colors duration-500"
+                          style={{
+                            backgroundColor: isHovered ? "var(--accent)" : "color-mix(in srgb, var(--primary) 10%, transparent)",
+                            color: isHovered ? "#ffffff" : "var(--primary)",
+                          }}
+                        >
+                          <feature.icon className="h-7 w-7" strokeWidth={1.5} />
+                        </div>
+
+                        <div className="flex w-56 max-w-full flex-col items-center">
+                          <h3
+                            className="mb-3 flex min-h-12 w-full items-center justify-center text-center text-base font-semibold uppercase leading-snug tracking-wide"
+                            style={{
+                              color: isHovered ? "#ffffff" : textColor,
+                              transition: "color 0.5s ease-out",
+                            }}
+                          >
+                            {feature.title}
+                          </h3>
+
+                          <p
+                            className="min-h-[4.5rem] w-full text-center text-sm leading-relaxed"
+                            style={{
+                              color: isHovered ? "rgba(255,255,255,0.9)" : bodyTextColor,
+                              opacity: isHovered ? 1 : 0,
+                              transition: "opacity 0.5s ease-out, color 0.5s ease-out",
+                            }}
+                          >
+                            {feature.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:hidden">
           {features.map((feature, index) => {
             const isHovered = hoveredIndex === index
 
             return (
               <div
                 key={index}
-                className="relative flex min-h-[260px] flex-col items-center justify-center rounded-lg p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl lg:p-8"
+                className="relative flex min-h-[260px] flex-col items-center justify-center rounded-lg bg-[color-mix(in_srgb,var(--primary)_5%,var(--bg-card))] p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                style={{
-                  backgroundColor: isHovered ? "var(--primary)" : "color-mix(in srgb, var(--primary) 5%, var(--bg-card))",
-                }}
               >
                 <div
-                  className="w-14 h-14 flex items-center justify-center rounded-xl mb-5 transition-colors duration-500"
+                  className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl transition-colors duration-500"
                   style={{
                     backgroundColor: isHovered ? "var(--accent)" : "color-mix(in srgb, var(--primary) 10%, transparent)",
                     color: isHovered ? "#ffffff" : "var(--primary)",
                   }}
                 >
-                  <feature.icon className="w-7 h-7" strokeWidth={1.5} />
+                  <feature.icon className="h-7 w-7" strokeWidth={1.5} />
                 </div>
 
                 <div className="flex w-56 max-w-full flex-col items-center">
                   <h3
                     className="mb-3 flex min-h-12 w-full items-center justify-center text-center text-base font-semibold uppercase leading-snug tracking-wide"
                     style={{
-                      color: isHovered ? "#ffffff" : textColor,
-                      transition: "color 0.3s ease-out",
+                      color: textColor,
                     }}
                   >
                     {feature.title}
@@ -181,9 +269,9 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                   <p
                     className="min-h-[4.5rem] w-full text-center text-sm leading-relaxed"
                     style={{
-                      color: isHovered ? "rgba(255,255,255,0.9)" : bodyTextColor,
-                      opacity: isHovered ? 1 : 0.78,
-                      transition: "opacity 0.3s ease-out, color 0.3s ease-out",
+                      color: bodyTextColor,
+                      opacity: isHovered ? 1 : 0,
+                      transition: "opacity 0.5s ease-out",
                     }}
                   >
                     {feature.description}
