@@ -4,7 +4,6 @@ import { useState } from "react"
 import { Building2, Factory, Globe, Package, Shield, Sparkles, Users, Wrench, type LucideIcon } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import type { PageSection } from "@/lib/directus"
-import { getFileUrl } from "@/lib/directus"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { t } from "@/lib/i18n"
 import { whyChooseTitleSuffix } from "@/lib/site-profile"
@@ -118,27 +117,12 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const legacyConfiguredSuffix = localizedText(config.title_suffix || config.brand_suffix || config.highlight_suffix, lang)
   const titleSuffix = legacyConfiguredSuffix || whyChooseTitleSuffix(siteSettings, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("home.whyChooseDesc", lang)
-  const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
+  const backgroundColor = "var(--bg-page)"
   const textColor = themeColor(section?.text_color || localizedText(config.text_color, lang), "var(--primary-dark)")
   const bodyTextColor = themeColor(localizedText(config.body_text_color, lang), textColor)
-  const imageSrc = getFileUrl(section?.image || localizedText(config.image, lang), { width: 1600, quality: 82, format: "webp" })
 
   return (
     <section className="relative overflow-hidden py-16 lg:py-20" style={{ backgroundColor, color: textColor }}>
-      {imageSrc ? (
-        <div className="pointer-events-none absolute inset-0">
-          <img
-            src={imageSrc}
-            alt=""
-            width={1600}
-            height={900}
-            loading="lazy"
-            className="h-full w-full object-cover opacity-15"
-          />
-          <div className="absolute inset-0" style={{ backgroundColor, opacity: 0.72 }} />
-        </div>
-      ) : null}
-
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: textColor }}>
