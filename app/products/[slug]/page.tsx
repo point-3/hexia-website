@@ -16,6 +16,59 @@ import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
 import { useLocale } from "@/hooks/use-locale"
 import { trackInquiryConversion } from "@/lib/marketing-analytics"
 
+function directusAssetUrl(path: string): string {
+  try {
+    const url = new URL(path, "http://cms.local")
+    const assetId = url.pathname.match(/\/assets\/([^/?#]+)/)?.[1]
+    if (!assetId) return path
+
+    const params = new URLSearchParams(url.search)
+    if (!params.has("format")) params.set("format", "webp")
+    if (!params.has("quality")) params.set("quality", "82")
+    const query = params.toString()
+    return `/api/cms-assets/${assetId}${query ? `?${query}` : ""}`
+  } catch {
+    return path
+  }
+}
+
+function sanitizeProductRichText(html: string): string {
+  const normalized = /<\s*[a-z][\s\S]*>/i.test(html)
+    ? html
+    : html
+      .split(/\n{2,}/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean)
+      .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br />")}</p>`)
+      .join("")
+
+  return normalized
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<\s*(script|style|iframe|object|embed|link|meta|form|input|textarea|button)[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi, "")
+    .replace(/<\s*(script|style|iframe|object|embed|link|meta|form|input|textarea|button)[^>]*\/?>/gi, "")
+    .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s(href|src)\s*=\s*(['"]?)\s*(javascript:|data:text\/html)[^'">\s]*\2/gi, ' $1="#"')
+    .replace(/(<img\b[^>]*\ssrc\s*=\s*)(["'])([^"']+)\2/gi, (_match, prefix: string, quote: string, src: string) => {
+      return `${prefix}${quote}${directusAssetUrl(src)}${quote}`
+    })
+}
+
+function plainTextFromRichText(html: string): string {
+  return html
+    .replace(/<\s*br\s*\/?>/gi, " ")
+    .replace(/<\/\s*(p|div|li|h[1-6]|tr)\s*>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, "\"")
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
 function ProductDetailContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: rawSlug } = use(params)
   const slug = decodeURIComponent(rawSlug)
@@ -141,6 +194,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
   const categoryName = typeof product.category_id === "object" ? (lang === "zh" ? product.category_id?.name_cn : product.category_id?.name) : ""
 
   const { product_title: productTitle, product_description: productDesc } = getProductTranslation(product, lang)
+  const productDescriptionHtml = sanitizeProductRichText(productDesc)
 
   return (
     <div className="min-h-screen bg-[var(--bg-page)]">
@@ -202,9 +256,12 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
             <h2 className="mb-4 text-xl font-bold text-[var(--primary-dark)]">
               {lang === "zh" ? "产品描述" : "Product Description"}
             </h2>
-            <div className="prose prose-sm max-w-none text-[var(--text-body)]">
-              <p className="leading-relaxed whitespace-pre-line">{productDesc}</p>
-            </div>
+            {productDescriptionHtml ? (
+              <div
+                className="prose prose-sm max-w-none text-[var(--text-body)] [&_a]:text-[var(--primary)] [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-[var(--accent)] [&_blockquote]:pl-4 [&_img]:my-6 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-[var(--border)] [&_li]:my-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-4 [&_p]:leading-relaxed [&_strong]:text-[var(--primary-dark)] [&_ul]:list-disc [&_ul]:pl-5"
+                dangerouslySetInnerHTML={{ __html: productDescriptionHtml }}
+              />
+            ) : null}
           </div>
 
           {/* Inquiry Form */}
@@ -276,6 +333,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   const itemSubName = typeof item.subcategory_id === "object" ? (lang === "zh" ? item.subcategory_id?.name_cn : item.subcategory_id?.name) : ""
                   const itemCatName = typeof item.category_id === "object" ? (lang === "zh" ? item.category_id?.name_cn : item.category_id?.name) : ""
                   const { product_title: itemTitle, product_description: itemDesc } = getProductTranslation(item, lang)
+                  const itemSummary = plainTextFromRichText(itemDesc)
 
                   return (
                     <Link
@@ -300,7 +358,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                             {itemTitle}
                           </h3>
                           <p className="mt-2 text-sm text-[var(--text-body)] line-clamp-2">
-                            {itemDesc}
+                            {itemSummary}
                           </p>
                         </div>
                       </div>
