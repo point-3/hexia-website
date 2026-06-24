@@ -12,6 +12,34 @@ interface ProductsSectionProps {
   subcategories?: Subcategory[]
 }
 
+type ProductPreviewItem = {
+  id: string | number
+  title: string
+  image?: string
+  items: string[]
+}
+
+function balancedProductRows(products: ProductPreviewItem[]): ProductPreviewItem[][] {
+  if (products.length === 0) return []
+
+  const maxColumns = 5
+  const rowCount = Math.ceil(products.length / maxColumns)
+  if (rowCount <= 1) return [products]
+
+  const baseSize = Math.floor(products.length / rowCount)
+  const remainder = products.length % rowCount
+  const rows: ProductPreviewItem[][] = []
+  let cursor = 0
+
+  for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+    const rowSize = baseSize + (rowIndex < remainder ? 1 : 0)
+    rows.push(products.slice(cursor, cursor + rowSize))
+    cursor += rowSize
+  }
+
+  return rows
+}
+
 function ProductPreviewImage({ src, title }: { src?: string; title: string }) {
   if (src) {
     return (
@@ -67,7 +95,7 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
     },
   ]
 
-  const displayProducts = categories && categories.length > 0 && subcategories
+  const displayProducts: ProductPreviewItem[] = categories && categories.length > 0 && subcategories
     ? categories.map((category) => {
         const matchedSubs = subcategories
           .filter((sub) => {
@@ -85,10 +113,11 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
         }
       })
     : fallbackProducts
+  const productRows = balancedProductRows(displayProducts)
 
   return (
     <section id="products" className="bg-[var(--bg-page)] py-20 lg:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[96rem] px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
             {lang === "zh" ? (
@@ -106,35 +135,39 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {displayProducts.map((product) => (
-            <a
-              key={product.id}
-              href={getHrefWithLang("/products", lang)}
-              className="group relative overflow-hidden p-4 transition-all duration-300 hover:shadow-xl bg-[var(--bg-card)]"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-muted)]">
-                <ProductPreviewImage src={product.image} title={product.title} />
-                {product.image ? <div className="absolute inset-0 bg-gradient-to-t from-[var(--hexia-forest-dark)]/60 to-transparent" /> : null}
-              </div>
-              <div className="mt-4">
-                <h3 className="text-base font-semibold text-[var(--hexia-forest-dark)]">
-                  {product.title}
-                </h3>
-                <div className="mt-3 space-y-2">
-                  {product.items.map((item) => (
-                    <div key={item} className="flex items-center text-sm text-[var(--text-body)]">
-                      <span className="mr-2 w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
-                      {item}
+        <div className="mt-16 space-y-6">
+          {productRows.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex flex-wrap justify-center gap-6 lg:flex-nowrap">
+              {row.map((product) => (
+                <a
+                  key={product.id}
+                  href={getHrefWithLang("/products", lang)}
+                  className="group relative w-full overflow-hidden bg-[var(--bg-card)] p-4 transition-all duration-300 hover:shadow-xl sm:w-[calc((100%_-_1.5rem)/2)] lg:w-[calc((100%_-_6rem)/5)] lg:max-w-[18rem]"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-muted)]">
+                    <ProductPreviewImage src={product.image} title={product.title} />
+                    {product.image ? <div className="absolute inset-0 bg-gradient-to-t from-[var(--hexia-forest-dark)]/60 to-transparent" /> : null}
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-base font-semibold text-[var(--hexia-forest-dark)]">
+                      {product.title}
+                    </h3>
+                    <div className="mt-3 space-y-2">
+                      {product.items.map((item) => (
+                        <div key={item} className="flex items-center text-sm text-[var(--text-body)]">
+                          <span className="mr-2 w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+                          {item}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div className="mt-4 flex items-center text-sm font-medium text-[var(--primary)] group-hover:text-[var(--hexia-forest)] transition-colors">
-                  {t("home.learnMore", lang)}
-                  <ArrowRight className="ml-1 size-4" />
-                </div>
-              </div>
-            </a>
+                    <div className="mt-4 flex items-center text-sm font-medium text-[var(--primary)] transition-colors group-hover:text-[var(--hexia-forest)]">
+                      {t("home.learnMore", lang)}
+                      <ArrowRight className="ml-1 size-4" />
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
           ))}
         </div>
 
