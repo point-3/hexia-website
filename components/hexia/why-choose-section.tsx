@@ -136,17 +136,18 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
         <div className="hidden lg:block">
           {rows.map((row, rowIndex) => {
             const rowStart = rowIndex * 4
+            const rowEnd = rowStart + row.length
 
             return (
               <div key={rowIndex} className={rowIndex === 0 && rows.length > 1 ? "mb-8 flex gap-8" : "flex gap-8"}>
                 {row.map((feature, index) => {
                   const actualIndex = rowStart + index
                   const isHovered = hoveredIndex === actualIndex
-                  const isFirstInRow = index === 0
-                  const isLastInRow = index === row.length - 1
-                  const hoverMarginLeft = isFirstInRow ? "0" : isLastInRow ? "-80px" : "-40px"
-                  const hoverMarginRight = isFirstInRow ? "-80px" : isLastInRow ? "0" : "-40px"
-                  const contentTranslateX = isFirstInRow ? "40px" : isLastInRow ? "-40px" : "0"
+                  const isOtherInRow =
+                    hoveredIndex !== null &&
+                    hoveredIndex >= rowStart &&
+                    hoveredIndex < rowEnd &&
+                    hoveredIndex !== actualIndex
 
                   return (
                     <div
@@ -155,7 +156,8 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                       onMouseEnter={() => setHoveredIndex(actualIndex)}
                       onMouseLeave={() => setHoveredIndex(null)}
                       style={{
-                        flex: "1 1 0",
+                        flex: isHovered ? "0 0 calc(25% + 80px)" : isOtherInRow ? "1" : "1",
+                        transition: "flex 0.5s ease-out",
                         zIndex: isHovered ? 20 : 1,
                       }}
                     >
@@ -165,18 +167,14 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                           backgroundColor: "var(--primary)",
                           opacity: isHovered ? 1 : 0,
                           zIndex: 0,
-                          marginLeft: isHovered ? hoverMarginLeft : "0",
-                          marginRight: isHovered ? hoverMarginRight : "0",
+                          marginLeft: isHovered ? "-40px" : "0",
+                          marginRight: isHovered ? "-40px" : "0",
                           transition: "opacity 0.5s ease-out, margin 0.5s ease-out",
                         }}
                       />
 
                       <div
                         className="relative z-10 flex min-h-[260px] flex-col items-center justify-center p-6 text-center lg:p-8"
-                        style={{
-                          transform: isHovered ? `translateX(${contentTranslateX})` : "translateX(0)",
-                          transition: "transform 0.5s ease-out",
-                        }}
                       >
                         <div
                           className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl transition-colors duration-500"
@@ -188,28 +186,26 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                           <feature.icon className="h-7 w-7" strokeWidth={1.5} />
                         </div>
 
-                        <div className="flex w-56 max-w-full flex-col items-center">
-                          <h3
-                            className="mb-3 flex min-h-12 w-full items-center justify-center text-center text-base font-semibold uppercase leading-snug tracking-wide"
-                            style={{
-                              color: isHovered ? "#ffffff" : textColor,
-                              transition: "color 0.5s ease-out",
-                            }}
-                          >
-                            {feature.title}
-                          </h3>
+                        <h3
+                          className="mb-3 text-center text-base font-semibold uppercase leading-snug tracking-wide"
+                          style={{
+                            color: isHovered ? "#ffffff" : textColor,
+                            transition: "color 0.5s ease-out",
+                          }}
+                        >
+                          {feature.title}
+                        </h3>
 
-                          <p
-                            className="min-h-[4.5rem] w-full text-center text-sm leading-relaxed"
-                            style={{
-                              color: isHovered ? "rgba(255,255,255,0.9)" : bodyTextColor,
-                              opacity: isHovered ? 1 : 0,
-                              transition: "opacity 0.5s ease-out, color 0.5s ease-out",
-                            }}
-                          >
-                            {feature.description}
-                          </p>
-                        </div>
+                        <p
+                          className="text-center text-sm leading-relaxed"
+                          style={{
+                            color: isHovered ? "rgba(255,255,255,0.9)" : bodyTextColor,
+                            opacity: isHovered ? 1 : 0,
+                            transition: "opacity 0.5s ease-out, color 0.5s ease-out",
+                          }}
+                        >
+                          {feature.description}
+                        </p>
                       </div>
                     </div>
                   )
@@ -240,27 +236,25 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
                   <feature.icon className="h-7 w-7" strokeWidth={1.5} />
                 </div>
 
-                <div className="flex w-56 max-w-full flex-col items-center">
-                  <h3
-                    className="mb-3 flex min-h-12 w-full items-center justify-center text-center text-base font-semibold uppercase leading-snug tracking-wide"
-                    style={{
-                      color: textColor,
-                    }}
-                  >
-                    {feature.title}
-                  </h3>
+                <h3
+                  className="mb-3 text-center text-base font-semibold uppercase leading-snug tracking-wide"
+                  style={{
+                    color: textColor,
+                  }}
+                >
+                  {feature.title}
+                </h3>
 
-                  <p
-                    className="min-h-[4.5rem] w-full text-center text-sm leading-relaxed"
-                    style={{
-                      color: bodyTextColor,
-                      opacity: isHovered ? 1 : 0,
-                      transition: "opacity 0.5s ease-out",
-                    }}
-                  >
-                    {feature.description}
-                  </p>
-                </div>
+                <p
+                  className="text-center text-sm leading-relaxed"
+                  style={{
+                    color: bodyTextColor,
+                    opacity: isHovered ? 1 : 0,
+                    transition: "opacity 0.5s ease-out",
+                  }}
+                >
+                  {feature.description}
+                </p>
               </div>
             )
           })}
