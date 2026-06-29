@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 import { CustomContentSection } from "@/components/hexia/custom-content-section"
+import { ImagePlaceholder } from "@/components/hexia/image-placeholder"
 import { cn } from "@/lib/utils"
 import { getFileUrl, Product as DirectusProduct, type PageLayout, type PageSection } from "@/lib/directus"
 import { getCategoriesFromCms, getProductsFromCms, getSubcategoriesFromCms } from "@/lib/api/cms-client"
@@ -49,7 +50,7 @@ function plainTextFromRichText(html: string): string {
 function ProductsContent({ sections }: { sections: PageSection[] }) {
   const searchParams = useSearchParams()
   const lang = useLocale()
-  const categoryFromUrl = searchParams.get("category") // 从首页跳转可能会有 category 参数 (如 "Feed Additives")
+  const categoryFromUrl = searchParams.get("category")
   const showCatalog = hasSection(sections, "product_catalog")
 
   const [products, setProducts] = useState<DirectusProduct[]>([])
@@ -478,12 +479,16 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                       >
                         <div>
                           <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-muted)]">
-                            <Image
-                              src={getFileUrl(product.image) || "/images/feed-additives.jpg"}
-                              alt={productTitle}
-                              fill
-                              className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
+                            {getFileUrl(product.image) ? (
+                              <Image
+                                src={getFileUrl(product.image)}
+                                alt={productTitle}
+                                fill
+                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                              />
+                            ) : (
+                              <ImagePlaceholder label={productTitle} />
+                            )}
                           </div>
                           <div className="p-4">
                             <span className="text-xs font-medium text-[var(--primary)]">

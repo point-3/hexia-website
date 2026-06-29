@@ -9,7 +9,6 @@ import { PartnersSection } from "@/components/hexia/partners-section"
 import { AboutHeroSection } from "@/components/hexia/about-hero-section"
 import { AboutSection } from "@/components/hexia/about-section"
 import { CustomContentSection } from "@/components/hexia/custom-content-section"
-import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import type { PageLayout, PageSection } from "@/lib/directus"
 import { fallbackSection, isCustomSection, sectionsForPage } from "@/lib/page-layout"
 import {
@@ -21,7 +20,6 @@ import {
   localizedText,
   themeColor,
 } from "@/lib/page-section-content"
-import { companyAddress, companyName } from "@/lib/site-profile"
 import { sectionTitleWithSuffix } from "@/lib/section-title"
 
 type Locale = "en" | "zh"
@@ -77,19 +75,14 @@ function sectionTranslationContent(section: PageSection, lang: Locale, fallback 
 }
 
 function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Locale }) {
-  const siteSettings = useSiteSettings()
   const config = getSectionConfig(section, lang)
-  const title = sectionText(section, lang, "title", companyName(siteSettings, lang))
+  const title = sectionText(section, lang, "title")
   const subtitle = sectionText(section, lang, "subtitle")
-  const content = sectionTranslationContent(
-    section,
-    lang,
-    lang === "zh"
-      ? "总部位于苏州自贸区，并在香港和英国设有独立子公司。我们专注于动物营养和人类食品原料领域，致力于为全球客户提供全面的一站式解决方案。"
-      : "Headquartered in Suzhou Free Trade Zone, the company has established subsidiaries in Hong Kong and the United Kingdom. Dedicated to the fields of animal nutrition and food nutrition, we strive to deliver comprehensive one-stop solutions for global clients.",
-  )
+  const content = sectionTranslationContent(section, lang)
   const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang))
   const textColor = themeColor(section.text_color || localizedText(config.text_color, lang), "var(--bg-card)")
+
+  if (!title && !subtitle && !content) return null
 
   return (
     <section
@@ -109,7 +102,9 @@ function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Loc
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
+          <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl" style={{ color: textColor }}>
+            {sectionTitleWithSuffix(section, title, lang)}
+          </h2>
           {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-lg opacity-80">{subtitle}</p> : null}
           {content ? (
             <div
@@ -125,18 +120,13 @@ function CompanyHeroSection({ section, lang }: { section: PageSection; lang: Loc
 
 function MissionSection({ section, lang }: { section: PageSection; lang: Locale }) {
   const config = getSectionConfig(section, lang)
-  const title = sectionText(section, lang, "title", lang === "zh" ? "我们的使命" : "Our Mission")
+  const title = sectionText(section, lang, "title")
   const subtitle = sectionText(section, lang, "subtitle")
-  const content = sectionText(
-    section,
-    lang,
-    "content",
-    lang === "zh"
-      ? "成为您在动物和人类营养领域需求的一站式解决方案，提供可靠的采购、高效的物流和卓越的客户服务。"
-      : "To become a one-stop solution for your demand in animal and human nutrition, providing reliable sourcing, efficient logistics, and outstanding customer service.",
-  )
+  const content = sectionText(section, lang, "content")
   const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang), "var(--bg-muted)")
   const textColor = themeColor(section.text_color || localizedText(config.text_color, lang), "var(--text-body)")
+
+  if (!title && !subtitle && !content) return null
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
@@ -145,7 +135,7 @@ function MissionSection({ section, lang }: { section: PageSection; lang: Locale 
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[var(--primary)]">
             <Target className="size-8 text-white" />
           </div>
-          <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
+          {title ? <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2> : null}
           {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
           {content ? (
             <div
@@ -181,31 +171,13 @@ function configuredInfoCards(section: PageSection, lang: Locale): InfoCard[] {
 }
 
 function GlobalPresenceSection({ section, lang }: { section: PageSection; lang: Locale }) {
-  const siteSettings = useSiteSettings()
   const config = getSectionConfig(section, lang)
-  const title = sectionText(section, lang, "title", lang === "zh" ? "全球化布局" : "Global Presence")
-  const subtitle = sectionText(
-    section,
-    lang,
-    "subtitle",
-    lang === "zh"
-      ? "总部位于苏州，并在香港和英国设有子公司，服务全球市场"
-      : "Headquartered in Suzhou with subsidiaries in Hong Kong and the UK, serving global markets",
-  )
+  const title = sectionText(section, lang, "title")
+  const subtitle = sectionText(section, lang, "subtitle")
   const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
   const cards = configuredInfoCards(section, lang)
-  const displayCards = cards.length > 0 ? cards : [
-    {
-      title: lang === "zh" ? "总部地址" : "Headquarters",
-      body: companyAddress(siteSettings, lang),
-      tags: [],
-    },
-    {
-      title: lang === "zh" ? "服务区域" : "Service Areas",
-      body: "",
-      tags: lang === "zh" ? ["欧洲", "美洲", "东南亚", "全球"] : ["Europe", "Americas", "Southeast Asia", "Global"],
-    },
-  ]
+
+  if (!title && !subtitle && cards.length === 0) return null
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
@@ -214,12 +186,13 @@ function GlobalPresenceSection({ section, lang }: { section: PageSection; lang: 
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[var(--primary)]">
             <MapPin className="size-8 text-white" />
           </div>
-          <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
+          {title ? <h2 className="mt-6 text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2> : null}
           {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
         </div>
 
+        {cards.length > 0 ? (
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {displayCards.map((card) => (
+          {cards.map((card) => (
             <div key={card.title} className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 lg:p-8">
               <h3 className="font-semibold text-[var(--primary-dark)]">{card.title}</h3>
               {card.body ? (
@@ -237,6 +210,7 @@ function GlobalPresenceSection({ section, lang }: { section: PageSection; lang: 
             </div>
           ))}
         </div>
+        ) : null}
       </div>
     </section>
   )

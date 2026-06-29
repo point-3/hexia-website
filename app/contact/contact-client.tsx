@@ -15,13 +15,6 @@ import { t } from "@/lib/i18n"
 import { fallbackSection, findSection, hasSection, isCustomSection, sectionsForPage } from "@/lib/page-layout"
 import { asJsonArray, fieldText, getSectionConfig, localizedText, themeColor } from "@/lib/page-section-content"
 import { trackInquiryConversion } from "@/lib/marketing-analytics"
-import {
-  companyAddress,
-  companyName,
-  contactEmail,
-  contactWhatsapp,
-  whatsappHref,
-} from "@/lib/site-profile"
 
 type ContactInfoCard = {
   icon: LucideIcon
@@ -98,6 +91,11 @@ function isAddressContactIcon(iconName: string): boolean {
   return normalizedIconName === "building" || normalizedIconName === "building2" || normalizedIconName === "office" || normalizedIconName === "address"
 }
 
+function shouldShowContactSubtitle(iconName: string): boolean {
+  const normalizedIconName = iconName.trim().toLowerCase()
+  return !["mail", "email", "message", "chat", "message-circle", "messagecircle", "whatsapp", "wechat"].includes(normalizedIconName)
+}
+
 function configuredContactCards(section: PageSection | null | undefined, lang: "en" | "zh"): ContactInfoCard[] {
   const contactInfo = section
   const config = getSectionConfig(contactInfo, lang)
@@ -125,8 +123,6 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
   const siteSettings = useSiteSettings()
-  const email = contactEmail(siteSettings)
-  const whatsapp = contactWhatsapp(siteSettings)
   const sections = sectionsForPage(pageLayout, [
     fallbackSection("contact_info", "contact_cards", 1),
     fallbackSection("contact_form", "system", 2),
@@ -363,7 +359,9 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                             >
                               {card.title}
                             </h3>
-                            {card.subtitle ? <p className="mt-1 text-sm opacity-75">{card.subtitle}</p> : null}
+                            {card.subtitle && shouldShowContactSubtitle(card.iconName) ? (
+                              <p className="mt-1 text-sm opacity-75">{card.subtitle}</p>
+                            ) : null}
                           </div>
                         </div>
                         {card.body ? (
@@ -386,93 +384,7 @@ function ContactContent({ pageLayout }: { pageLayout: PageLayout }) {
                       <div key={`${card.iconName}-${card.title}-${card.body}`}>{content}</div>
                     )
                   })
-                ) : (
-                <>
-                {/* Company Address */}
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-11 items-center justify-center rounded-full bg-[var(--primary)]">
-                      <Building2 className="size-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-[var(--primary-dark)]">
-                        {companyName(siteSettings, lang)}
-                      </h3>
-                      <p className="text-sm text-[var(--text-body)]">{lang === "zh" ? "公司地址" : "Company Address"}</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-start gap-3">
-                    <MapPin className="mt-0.5 size-5 shrink-0 text-[var(--border)]" />
-                    <p className="text-[var(--text-body)]">
-                      {companyAddress(siteSettings, lang).split("\n").map((line, index, lines) => (
-                        <span key={line}>
-                          {line}
-                          {index < lines.length - 1 ? <br /> : null}
-                        </span>
-                      ))}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-11 items-center justify-center rounded-full bg-[var(--accent)]">
-                      <Mail className="size-5 text-[var(--primary-dark)]" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-[var(--primary-dark)]">{lang === "zh" ? "电子邮箱" : "Email"}</h3>
-                      <div className="mt-1 space-y-1">
-                        <a
-                          href={`mailto:${email}`}
-                          className="block text-xs text-[var(--primary)] hover:text-[var(--accent)] transition-colors sm:text-sm"
-                        >
-                          {email}
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* WeChat/WhatsApp */}
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-11 items-center justify-center rounded-full bg-[#25D366]">
-                      <MessageCircle className="size-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-[var(--primary-dark)]">{lang === "zh" ? "微信 / WhatsApp" : "WeChat/WhatsApp"}</h3>
-                      <a
-                        href={whatsappHref(whatsapp)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[var(--primary)] transition-colors hover:text-[var(--accent)]"
-                      >
-                        {whatsapp}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Support */}
-                <div className="rounded-xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] p-4 sm:p-6 text-white">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-11 items-center justify-center rounded-full bg-white/20">
-                      <Headphones className="size-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">{t("home.onlineSupport", lang)}</h3>
-                      <p className="text-sm text-white/80">{lang === "zh" ? "随时为您提供帮助" : "We are always here to help"}</p>
-                    </div>
-                  </div>
-                  <p className="mt-4 text-sm text-white/70">
-                    {lang === "zh"
-                      ? "我们的团队全天候为您服务，协助您进行任何查询、技术问题或紧急订单处理。"
-                      : "Our team is available around the clock to assist you with any inquiries, technical questions, or urgent orders."}
-                  </p>
-                </div>
-                </>
-                )}
+                ) : null}
               </div>
               ) : null}
             </div>

@@ -31,13 +31,13 @@
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
   
-  /* Hexia Brand Colors - Organic Nature Theme */
-  --hexia-forest: var(--primary);
-  --hexia-forest-dark: var(--primary-dark);
-  --hexia-gold: var(--accent);
-  --hexia-gold-dark: var(--accent);
-  --hexia-sage: var(--border);
-  --hexia-olive: var(--primary);
+  /* Site brand colors */
+  --brand-forest: var(--primary);
+  --brand-forest-dark: var(--primary-dark);
+  --brand-gold: var(--accent);
+  --brand-gold-dark: var(--accent);
+  --brand-sage: var(--border);
+  --brand-olive: var(--primary);
   --bg-page: var(--bg-page);
   --bg-card: var(--bg-card);
   --text-body: var(--text-body);

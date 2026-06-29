@@ -7,6 +7,7 @@ import { ChevronRight, Headphones } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { ImagePlaceholder } from "@/components/hexia/image-placeholder"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
 import { getProductBySlugFromCms, getProductsFromCms } from "@/lib/api/cms-client"
@@ -195,6 +196,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
 
   const { product_title: productTitle, product_description: productDesc } = getProductTranslation(product, lang)
   const productDescriptionHtml = sanitizeProductRichText(productDesc)
+  const productImageSrc = getFileUrl(product.image)
 
   return (
     <div className="min-h-screen bg-[var(--bg-page)]">
@@ -219,12 +221,16 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
             {/* Image */}
             <div>
               <div className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)]">
-                <Image
-                  src={getFileUrl(product.image) || "/images/feed-additives.jpg"}
-                  alt={productTitle}
-                  fill
-                  className="object-cover"
-                />
+                {productImageSrc ? (
+                  <Image
+                    src={productImageSrc}
+                    alt={productTitle}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <ImagePlaceholder label={productTitle} />
+                )}
               </div>
             </div>
 
@@ -334,6 +340,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   const itemCatName = typeof item.category_id === "object" ? (lang === "zh" ? item.category_id?.name_cn : item.category_id?.name) : ""
                   const { product_title: itemTitle, product_description: itemDesc } = getProductTranslation(item, lang)
                   const itemSummary = plainTextFromRichText(itemDesc)
+                  const itemImageSrc = getFileUrl(item.image)
 
                   return (
                     <Link
@@ -343,12 +350,16 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                     >
                       <div>
                         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--bg-muted)]">
-                          <Image
-                            src={getFileUrl(item.image) || "/images/feed-additives.jpg"}
-                            alt={itemTitle}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
+                          {itemImageSrc ? (
+                            <Image
+                              src={itemImageSrc}
+                              alt={itemTitle}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <ImagePlaceholder label={itemTitle} />
+                          )}
                         </div>
                         <div className="flex flex-1 flex-col p-4">
                           <span className="text-xs font-medium text-[var(--primary)]">

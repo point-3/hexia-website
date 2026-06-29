@@ -3,7 +3,6 @@
 import { BarChart3, GraduationCap, Headphones, Package, Shield, TrendingUp, Truck, type LucideIcon } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import type { PageSection } from "@/lib/directus"
-import { t } from "@/lib/i18n"
 import {
   asJsonArray,
   fieldText,
@@ -38,14 +37,6 @@ function iconByName(value: unknown): LucideIcon {
   return iconMap[value.trim().toLowerCase()] ?? Truck
 }
 
-function fallbackServices(lang: "en" | "zh"): HomeService[] {
-  return [
-    { icon: Truck, title: t("home.serviceScmTitle", lang), description: t("home.serviceScmDesc", lang) },
-    { icon: Shield, title: t("home.serviceQaTitle", lang), description: t("home.serviceQaDesc", lang) },
-    { icon: TrendingUp, title: t("home.serviceMarketTitle", lang), description: t("home.serviceMarketDesc", lang) },
-  ]
-}
-
 function configuredServices(section: PageSection | null | undefined, lang: "en" | "zh"): HomeService[] {
   const config = getSectionConfig(section, lang)
   const sectionItems = asJsonArray(lang === "zh" ? section?.home_service_cards_zh : section?.home_service_cards_en)
@@ -59,43 +50,38 @@ function configuredServices(section: PageSection | null | undefined, lang: "en" 
   })
 }
 
-function fallbackTitle(lang: "en" | "zh") {
-  return lang === "zh" ? (
-    <>
-      我们的 <span className="text-[var(--accent)]">专属服务</span>
-    </>
-  ) : (
-    <>
-      Our <span className="text-[var(--accent)]">Services</span>
-    </>
-  )
-}
-
 export function ServicesSection({ section }: { section?: PageSection | null }) {
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
   const translation = getSectionTranslation(section, lang)
   const config = getSectionConfig(section, lang)
   const services = configuredServices(section, lang)
-  const displayServices = services.length > 0 ? services : fallbackServices(lang)
   const title = translation?.title || localizedText(config.title, lang)
-  const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("home.servicesDesc", lang)
+  const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
   const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
+
+  if (services.length === 0) return null
 
   return (
     <section id="service" className="py-20 lg:py-28" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {title || subtitle ? (
         <div className="text-center">
+          {title ? (
           <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
-            {title ? sectionTitleWithSuffix(section, title, lang) : fallbackTitle(lang)}
+            {sectionTitleWithSuffix(section, title, lang)}
           </h2>
+          ) : null}
+          {subtitle ? (
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-[var(--text-body)]">
             {subtitle}
           </p>
+          ) : null}
         </div>
+        ) : null}
 
         <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {displayServices.map((service) => (
+          {services.map((service) => (
             <div
               key={service.title}
               className="group relative rounded-lg border-l-4 border-[var(--border)] bg-[var(--bg-card)] p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[var(--primary)] hover:shadow-lg"

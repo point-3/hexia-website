@@ -6,8 +6,8 @@ export const DEFAULT_BROWSER_TITLE_PREFIX = "Company"
 export const DEFAULT_COMPANY_DESCRIPTION =
   "Replace this text with the company introduction and business scope."
 export const DEFAULT_COMPANY_ADDRESS = ""
-export const DEFAULT_HQ_TITLE_EN = "Suzhou HQ"
-export const DEFAULT_HQ_TITLE_ZH = "苏州总部"
+export const DEFAULT_HQ_TITLE_EN = "Headquarters"
+export const DEFAULT_HQ_TITLE_ZH = "总部"
 export const DEFAULT_CONTACT_EMAIL = ""
 export const DEFAULT_CONTACT_PHONE = ""
 

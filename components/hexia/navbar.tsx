@@ -26,7 +26,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
   const quoteEnabled = siteSettings.quote_button_enabled !== false
   const languageSwitchEnabled = siteSettings.language_switch_enabled !== false
   const siteNameDisplayEnabled = siteSettings.site_name_display_enabled !== false
-  const logoSrc = getRawCmsAssetUrl(siteSettings.logo) || "/images/金logo-03.svg"
+  const logoSrc = getRawCmsAssetUrl(siteSettings.logo)
   const quoteText = quoteButtonText(siteSettings, lang)
   const displayName = siteName(siteSettings, lang)
 
@@ -96,12 +96,14 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
       <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
         <div className={`flex items-center justify-between transition-all duration-300 ${isSticky ? "h-[56px]" : "h-14 lg:h-20"}`}>
           <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label={`${displayName} homepage`}>
-            <img
-              src={logoSrc}
-              alt={`${displayName} Logo`}
-              className="h-8 w-auto object-contain"
-            />
-            {siteNameDisplayEnabled ? (
+            {logoSrc ? (
+              <img
+                src={logoSrc}
+                alt={`${displayName} Logo`}
+                className="h-8 w-auto object-contain"
+              />
+            ) : null}
+            {siteNameDisplayEnabled || !logoSrc ? (
               <span className="text-lg font-bold uppercase leading-tight sm:text-xl lg:text-2xl" style={{ color: ctaColor }}>
                 {displayName}
               </span>

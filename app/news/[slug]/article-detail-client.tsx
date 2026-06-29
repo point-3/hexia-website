@@ -149,15 +149,15 @@ export function ArticleDetailClient({
                 </div>
               ) : null}
 
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--primary)] p-6 text-white">
-                <h3 className="text-lg font-bold">{lang === "zh" ? "需要帮助？" : "Need Help?"}</h3>
-                <p className="mt-2 text-sm text-white/80">
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--primary)] p-6 text-[var(--primary-foreground)]">
+                <h3 className="text-lg font-bold text-[var(--primary-foreground)]">{lang === "zh" ? "需要帮助？" : "Need Help?"}</h3>
+                <p className="mt-2 text-sm text-[var(--primary-foreground)]/80">
                   {lang === "zh"
                     ? "联系我们的销售与技术支持团队，获取文件、样品或报价帮助。"
                     : "Contact our sales and technical support teams for assistance with documentation, samples, or quotes."}
                 </p>
                 <Link href={getHrefWithLang("/contact", lang)} className="mt-4 inline-block">
-                  <Button className="bg-[var(--accent)] text-[var(--primary-dark)] hover:bg-white hover:text-[var(--primary)]">
+                  <Button className="bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)]">
                     {t("nav.contact", lang)}
                   </Button>
                 </Link>

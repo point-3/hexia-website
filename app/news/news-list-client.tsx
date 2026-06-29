@@ -2,9 +2,10 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, ArrowRight, TrendingUp, FileText, Newspaper } from "lucide-react"
+import { Calendar, ArrowRight, Newspaper } from "lucide-react"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { ImagePlaceholder } from "@/components/hexia/image-placeholder"
 import { getFileUrl, Article } from "@/lib/directus"
 import { t, getHrefWithLang, type ArticleCopy, type SupportedLocale } from "@/lib/i18n"
 
@@ -16,23 +17,11 @@ type NewsListClientProps = {
 }
 
 export function NewsListClient({ lang, localizedArticles }: NewsListClientProps) {
-  const marketReports =
-    lang === "zh"
-      ? [
-          { title: "氨基酸月度市场报告", period: "2026年4月" },
-          { title: "维生素价格指数", period: "2026年4月" },
-          { title: "饲料添加剂市场行情概述", period: "2026年第一季度" },
-        ]
-      : [
-          { title: "Amino Acid Monthly Report", period: "April 2026" },
-          { title: "Vitamin Price Index", period: "April 2026" },
-          { title: "Feed Additives Market Overview", period: "Q1 2026" },
-        ]
-
   const featuredEntry =
     localizedArticles.find(({ article }) => article.is_featured) ?? localizedArticles[0]
   const featuredNews = featuredEntry?.article
   const featuredCopy = featuredEntry?.copy
+  const featuredImageSrc = getFileUrl(featuredNews?.image)
   const newsArticles = localizedArticles.filter(({ article }) => article.id !== featuredNews?.id)
 
   const formatDate = (dateString?: string) => {
@@ -70,12 +59,16 @@ export function NewsListClient({ lang, localizedArticles }: NewsListClientProps)
               <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
                 <div className="grid lg:grid-cols-2">
                   <div className="relative aspect-[4/3] lg:aspect-auto">
-                    <Image
-                      src={getFileUrl(featuredNews.image) || "/images/feed-additives.jpg"}
-                      alt={featuredCopy.title}
-                      fill
-                      className="object-cover"
-                    />
+                    {featuredImageSrc ? (
+                      <Image
+                        src={featuredImageSrc}
+                        alt={featuredCopy.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <ImagePlaceholder label={featuredCopy.title} />
+                    )}
                     <div className="absolute left-4 top-4">
                       <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-sm font-medium text-[var(--primary-dark)]">
                         {t("news.featured", lang)}
@@ -112,8 +105,8 @@ export function NewsListClient({ lang, localizedArticles }: NewsListClientProps)
 
         <section className="pb-16 lg:pb-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-12 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+            <div className="grid gap-12">
+              <div>
                 <h2 className="flex items-center gap-2 text-xl font-bold text-[var(--primary-dark)]">
                   <Newspaper className="size-5" />
                   {t("news.latest", lang)}
@@ -152,52 +145,6 @@ export function NewsListClient({ lang, localizedArticles }: NewsListClientProps)
                 </div>
               </div>
 
-              <div className="space-y-6">
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
-                  <h3 className="flex items-center gap-2 font-semibold text-[var(--primary-dark)]">
-                    <TrendingUp className="size-5 text-[var(--accent)]" />
-                    {lang === "zh" ? "市场行情分析" : "Market Reports"}
-                  </h3>
-                  <ul className="mt-4 space-y-3">
-                    {marketReports.map((report) => (
-                      <li key={report.title}>
-                        <Link
-                          href="#"
-                          className="group flex items-center justify-between rounded-lg border border-[var(--border)]/50 p-3 transition-all hover:border-[var(--primary)] hover:bg-[var(--primary)]/5"
-                        >
-                          <div>
-                            <div className="text-sm font-medium text-[var(--primary-dark)]">{report.title}</div>
-                            <div className="text-xs text-[var(--text-body)]">{report.period}</div>
-                          </div>
-                          <FileText className="size-4 text-[var(--border)] transition-colors group-hover:text-[var(--primary)]" />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
-                  <h3 className="font-semibold text-[var(--primary-dark)]">
-                    {lang === "zh" ? "关注我们的 LinkedIn" : "Follow Us on LinkedIn"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--text-body)]">
-                    {lang === "zh"
-                      ? "随时获取最新的市场行情趋势和公司动态。"
-                      : "Stay connected for daily updates on market trends and company news."}
-                  </p>
-                  <a
-                    href="https://linkedin.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#0077B5] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-                  >
-                    <svg className="size-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                    {lang === "zh" ? "关注和夏" : "Follow Hexia"}
-                  </a>
-                </div>
-              </div>
             </div>
           </div>
         </section>

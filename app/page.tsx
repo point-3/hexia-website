@@ -83,7 +83,7 @@ export default async function HomePage() {
             return <WhyChooseSection key={section.id} section={section} />
           }
           if (section.section_key === "products_preview") {
-            return <ProductsSection key={section.id} categories={categories} subcategories={subcategories} />
+            return <ProductsSection key={section.id} section={section} categories={categories} subcategories={subcategories} />
           }
           if (section.section_key === "about" || section.section_type === "about") {
             return <AboutSection key={section.id} section={section} />

@@ -96,48 +96,6 @@ function localizedStringList(value: unknown, lang: Locale): string[] {
   })
 }
 
-function fallbackServices(lang: Locale): ServiceCard[] {
-  return lang === "zh" ? [
-    {
-      icon: Package,
-      title: "供应链管理",
-      description: "一站式解决您的采购和物流需求",
-      details: ["精细的供应链管理", "高效的拼箱配舱装载", "灵活的国际物流服务", "门到门送货服务", "实时货物追踪"],
-    },
-    {
-      icon: BarChart3,
-      title: "实时市场动态",
-      description: "为您提供最新的行业市场行情趋势",
-      details: ["氨基酸月度价格走势报告", "维生素市场动态分析", "LinkedIn 定期动态分享", "行业新闻与深度见解", "可根据需求定制市场报告"],
-    },
-    {
-      icon: GraduationCap,
-      title: "和夏商学院",
-      description: "专业的人才发展与知识共享平台",
-      details: ["行业技能培训计划", "技术研讨与分享会", "优秀实践案例交流", "合规与监管政策指南", "新产品开发技术支持"],
-    },
-  ] : [
-    {
-      icon: Package,
-      title: "Supply Chain Management",
-      description: "One-stop solution for all your sourcing needs",
-      details: ["Refined supply-chain management", "Mixed container loading for cost efficiency", "Flexible logistics options", "Door-to-door delivery service", "Real-time shipment tracking"],
-    },
-    {
-      icon: BarChart3,
-      title: "Market Intelligence",
-      description: "Stay informed with the latest industry trends",
-      details: ["Monthly Amino Acid price trend reports", "Vitamin market analysis", "Regular LinkedIn updates", "Industry news and insights", "Customized market reports on request"],
-    },
-    {
-      icon: GraduationCap,
-      title: "Hexia Business Academy",
-      description: "Professional development and knowledge sharing",
-      details: ["Industry training programs", "Technical workshops", "Best practices sharing", "Regulatory compliance guidance", "New product development support"],
-    },
-  ]
-}
-
 function configuredServices(section: PageSection, lang: Locale): ServiceCard[] {
   const config = getSectionConfig(section, lang)
   const sectionItems = asJsonArray(lang === "zh" ? section.service_overview_cards_zh : section.service_overview_cards_en)
@@ -173,10 +131,11 @@ function ServiceOverviewSection({ section, lang }: { section: PageSection; lang:
   const translation = getSectionTranslation(section, lang)
   const config = getSectionConfig(section, lang)
   const services = configuredServices(section, lang)
-  const displayServices = services.length > 0 ? services : fallbackServices(lang)
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
   const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang))
+
+  if (services.length === 0) return null
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor: backgroundColor || undefined }}>
@@ -189,7 +148,7 @@ function ServiceOverviewSection({ section, lang }: { section: PageSection; lang:
         ) : null}
 
         <div className="grid gap-8 lg:grid-cols-3">
-          {displayServices.map((service) => {
+          {services.map((service) => {
             const ctaLabel = service.ctaLabel || (lang === "zh" ? "联系我们" : "Contact Us")
             const ctaHref = service.ctaHref || "/contact"
             return (
@@ -235,26 +194,23 @@ function ServiceWhyChooseSection({ section, lang }: { section: PageSection; lang
   const translation = getSectionTranslation(section, lang)
   const config = getSectionConfig(section, lang)
   const stats = configuredStats(section, lang)
-  const displayStats = stats.length > 0 ? stats : [
-    { value: "20+", label: lang === "zh" ? "年行业深耕经验" : "Years of Industry Experience" },
-    { value: "99%", label: lang === "zh" ? "客户满意率" : "Customer Satisfaction Rate" },
-    { value: "48h", label: lang === "zh" ? "平均响应时间" : "Average Response Time" },
-    { value: "24/7", label: t("home.statsSupport", lang) },
-  ]
-  const title = translation?.title || localizedText(config.title, lang) || (lang === "zh" ? "为什么选择我们的服务" : "Why Choose Our Services")
-  const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("service.whyChooseDesc", lang)
+  const title = translation?.title || localizedText(config.title, lang)
+  const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
   const backgroundColor = themeColor(section.background_color || localizedText(config.background_color, lang), "var(--bg-muted)")
+
+  if (!title && !subtitle && stats.length === 0) return null
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2>
+          {title ? <h2 className="text-2xl font-bold text-[var(--primary-dark)] sm:text-3xl">{sectionTitleWithSuffix(section, title, lang)}</h2> : null}
           {subtitle ? <p className="mx-auto mt-4 max-w-2xl text-[var(--text-body)]">{subtitle}</p> : null}
         </div>
 
+        {stats.length > 0 ? (
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {displayStats.map((stat) => (
+          {stats.map((stat) => (
             <div
               key={stat.label}
               className="rounded-2xl bg-[var(--bg-card)] p-6 text-center shadow-sm transition-all hover:shadow-lg"
@@ -264,6 +220,7 @@ function ServiceWhyChooseSection({ section, lang }: { section: PageSection; lang
             </div>
           ))}
         </div>
+        ) : null}
       </div>
     </section>
   )

@@ -8,26 +8,16 @@ interface HeroSectionProps {
   banners?: Banner[]
 }
 
-const fallbackBannerImages = [
-  '/feed.png',
-  '/food addi.jpg',
-  '/chinese tea.jpg',
-]
-
 export function HeroSection({ banners }: HeroSectionProps) {
-  const displayBanners = (banners && banners.length > 0) ? banners : null
-  const fallbackMode = !displayBanners
-
-  if (!fallbackMode && displayBanners.length === 0) {
-    throw new Error("HeroSection: 必须传入有效的 banners 列表且不能为空数组！")
-  }
+  const displayBanners = banners ?? []
 
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
-  const totalSlides = fallbackMode ? fallbackBannerImages.length : displayBanners.length
+  const totalSlides = displayBanners.length
 
   const nextSlide = useCallback(() => {
+    if (totalSlides === 0) return
     setCurrentSlide((prev) => (prev + 1) % totalSlides)
   }, [totalSlides])
 
@@ -38,34 +28,17 @@ export function HeroSection({ banners }: HeroSectionProps) {
   }
 
   useEffect(() => {
-    if (!isAutoPlaying) return
+    if (!isAutoPlaying || totalSlides < 2) return
     const interval = setInterval(nextSlide, 5000)
     return () => clearInterval(interval)
-  }, [isAutoPlaying, nextSlide])
+  }, [isAutoPlaying, nextSlide, totalSlides])
+
+  if (totalSlides === 0) return null
 
   return (
     <section className="relative aspect-[1942/809] w-full overflow-hidden">
       {/* Background Images */}
-      {fallbackMode ? (
-        fallbackBannerImages.map((imageUrl, index) => (
-          <div
-            key={imageUrl}
-            className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <Image
-              key={imageUrl}
-              src={imageUrl}
-              alt={`Banner ${index + 1}`}
-              fill
-              className="object-cover"
-              priority={index === 0}
-            />
-          </div>
-        ))
-      ) : (
-        displayBanners.map((slide, index) => {
+      {displayBanners.map((slide, index) => {
           const imageUrl = getBannerImageUrl(slide)
           if (!imageUrl) {
             throw new Error(`HeroSection: 轮播图项目 ID ${slide.id} 的背景图 URL 不能为空！`)
@@ -87,8 +60,7 @@ export function HeroSection({ banners }: HeroSectionProps) {
               />
             </div>
           )
-        })
-      )}
+        })}
 
 
 

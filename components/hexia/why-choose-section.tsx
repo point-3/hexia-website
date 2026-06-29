@@ -5,9 +5,8 @@ import { Building2, Factory, Globe, Package, Shield, Sparkles, Users, Wrench, ty
 import { useSearchParams } from "next/navigation"
 import type { PageSection } from "@/lib/directus"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
-import { t } from "@/lib/i18n"
 import { whyChooseTitleSuffix } from "@/lib/site-profile"
-import { sectionTitleWithSuffix, titleWithHighlightedSuffix } from "@/lib/section-title"
+import { sectionTitleWithSuffix } from "@/lib/section-title"
 import {
   asJsonArray,
   fieldText,
@@ -21,11 +20,6 @@ type WhyChooseFeature = {
   icon: LucideIcon
   title: string
   description: string
-}
-
-type ConfiguredFeatureResult = {
-  features: WhyChooseFeature[]
-  hasExplicitCards: boolean
 }
 
 const iconMap: Record<string, LucideIcon> = {
@@ -46,19 +40,6 @@ function iconByName(value: unknown): LucideIcon {
   return iconMap[value.trim().toLowerCase()] ?? Sparkles
 }
 
-function fallbackFeatures(lang: "en" | "zh"): WhyChooseFeature[] {
-  return [
-    { icon: Users, title: t("home.teamTitle", lang), description: t("home.teamDesc", lang) },
-    { icon: Building2, title: t("home.layoutTitle", lang), description: t("home.layoutDesc", lang) },
-    { icon: Package, title: t("home.rangeTitle", lang), description: t("home.rangeDesc", lang) },
-    { icon: Factory, title: t("home.capacityTitle", lang), description: t("home.capacityDesc", lang) },
-    { icon: Shield, title: t("home.qcTitle", lang), description: t("home.qcDesc", lang) },
-    { icon: Globe, title: t("home.marketTitle", lang), description: t("home.marketDesc", lang) },
-    { icon: Sparkles, title: t("home.solutionTitle", lang), description: t("home.solutionDesc", lang) },
-    { icon: Wrench, title: t("home.customTitle", lang), description: t("home.customDesc", lang) },
-  ]
-}
-
 function hasJsonArray(value: unknown): boolean {
   if (Array.isArray(value)) return true
   if (typeof value !== "string" || !value.trim()) return false
@@ -69,7 +50,7 @@ function hasJsonArray(value: unknown): boolean {
   }
 }
 
-function configuredFeatures(section: PageSection | null | undefined, lang: "en" | "zh"): ConfiguredFeatureResult {
+function configuredFeatures(section: PageSection | null | undefined, lang: "en" | "zh"): WhyChooseFeature[] {
   const translation = getSectionTranslation(section, lang)
   const moduleCardsValue = lang === "zh" ? section?.feature_cards_zh : section?.feature_cards_en
   const moduleCards = asJsonArray(moduleCardsValue)
@@ -88,14 +69,7 @@ function configuredFeatures(section: PageSection | null | undefined, lang: "en" 
     return [{ icon: iconByName(item.icon), title, description }]
   })
 
-  return {
-    features,
-    hasExplicitCards: hasModuleCards || hasTranslatedCards || hasConfiguredCards,
-  }
-}
-
-function fallbackTitle(lang: "en" | "zh", displayName: string) {
-  return titleWithHighlightedSuffix(lang === "zh" ? "为什么选择" : "Why Choose", displayName, lang)
+  return features
 }
 
 export function WhyChooseSection({ section }: { section?: PageSection | null }) {
@@ -105,8 +79,7 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const siteSettings = useSiteSettings()
   const translation = getSectionTranslation(section, lang)
   const config = getSectionConfig(section, lang)
-  const configured = configuredFeatures(section, lang)
-  const features = configured.hasExplicitCards ? configured.features : fallbackFeatures(lang)
+  const features = configuredFeatures(section, lang)
   const rows = features.reduce<WhyChooseFeature[][]>((acc, feature, index) => {
     const rowIndex = Math.floor(index / 4)
     acc[rowIndex] = acc[rowIndex] || []
@@ -116,22 +89,30 @@ export function WhyChooseSection({ section }: { section?: PageSection | null }) 
   const title = translation?.title || localizedText(config.title, lang)
   const legacyConfiguredSuffix = localizedText(config.title_suffix || config.brand_suffix || config.highlight_suffix, lang)
   const titleSuffix = legacyConfiguredSuffix || whyChooseTitleSuffix(siteSettings, lang)
-  const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang) || t("home.whyChooseDesc", lang)
+  const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
   const backgroundColor = "var(--bg-page)"
   const textColor = themeColor(section?.text_color || localizedText(config.text_color, lang), "var(--primary-dark)")
   const bodyTextColor = themeColor(localizedText(config.body_text_color, lang), textColor)
 
+  if (features.length === 0) return null
+
   return (
     <section className="relative overflow-hidden py-16 lg:py-20" style={{ backgroundColor, color: textColor }}>
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {title || subtitle ? (
         <div className="text-center mb-12 lg:mb-16">
+          {title ? (
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: textColor }}>
-            {title ? sectionTitleWithSuffix(section, title, lang, titleSuffix) : fallbackTitle(lang, titleSuffix)}
+            {sectionTitleWithSuffix(section, title, lang, titleSuffix)}
           </h2>
+          ) : null}
+          {subtitle ? (
           <p className="mx-auto mt-4 max-w-2xl text-pretty" style={{ color: bodyTextColor, opacity: 0.78 }}>
             {subtitle}
           </p>
+          ) : null}
         </div>
+        ) : null}
 
         <div className="hidden lg:block">
           {rows.map((row, rowIndex) => {

@@ -3,11 +3,14 @@
 import Image from "next/image"
 import { ArrowRight, PackageOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { getFileUrl, Category, Subcategory } from "@/lib/directus"
+import { getFileUrl, Category, Subcategory, type PageSection } from "@/lib/directus"
 import { useSearchParams } from "next/navigation"
 import { t, getHrefWithLang } from "@/lib/i18n"
+import { getSectionConfig, getSectionTranslation, localizedText } from "@/lib/page-section-content"
+import { sectionTitleWithSuffix } from "@/lib/section-title"
 
 interface ProductsSectionProps {
+  section?: PageSection | null
   categories?: Category[]
   subcategories?: Subcategory[]
 }
@@ -64,36 +67,13 @@ function ProductPreviewImage({ src, title }: { src?: string; title: string }) {
   )
 }
 
-export function ProductsSection({ categories, subcategories }: ProductsSectionProps) {
+export function ProductsSection({ section, categories, subcategories }: ProductsSectionProps) {
   const searchParams = useSearchParams()
-  const lang = searchParams.get("lang") || "en"
-
-  const fallbackProducts = [
-    {
-      id: "1",
-      title: lang === "zh" ? "饲料添加剂" : "Feed Additives",
-      image: undefined,
-      items: lang === "zh" ? ["氨基酸", "维生素", "矿物质"] : ["Amino Acids", "Vitamins", "Minerals"],
-    },
-    {
-      id: "2",
-      title: lang === "zh" ? "食品添加剂" : "Food Additives",
-      image: undefined,
-      items: lang === "zh" ? ["甜味剂", "防腐剂", "着色剂"] : ["Sweeteners", "Preservatives", "Colorants"],
-    },
-    {
-      id: "3",
-      title: lang === "zh" ? "营养产品" : "Nutritional Products",
-      image: undefined,
-      items: lang === "zh" ? ["NMN", "L-EGT", "功能成分"] : ["NMN", "L-EGT", "Functional Ingredients"],
-    },
-    {
-      id: "4",
-      title: lang === "zh" ? "营养成分" : "Nutri. Ingredients",
-      image: undefined,
-      items: lang === "zh" ? ["营养保健品成分"] : ["Nutraceutical Ingredients"],
-    },
-  ]
+  const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
+  const translation = getSectionTranslation(section, lang)
+  const config = getSectionConfig(section, lang)
+  const title = translation?.title || localizedText(config.title, lang) || t("home.coreProducts", lang)
+  const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
 
   const displayProducts: ProductPreviewItem[] = categories && categories.length > 0 && subcategories
     ? categories.map((category) => {
@@ -109,30 +89,26 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
           id: category.id,
           title: lang === "zh" ? category.name_cn : category.name,
           image: category.image ? getFileUrl(category.image) : undefined,
-          items: matchedSubs.length > 0 ? matchedSubs : ["..."],
+          items: matchedSubs,
         }
       })
-    : fallbackProducts
+    : []
   const productRows = balancedProductRows(displayProducts)
+
+  if (displayProducts.length === 0) return null
 
   return (
     <section id="products" className="bg-[var(--bg-page)] py-20 lg:py-28">
       <div className="mx-auto max-w-[96rem] px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-[var(--hexia-forest-dark)] sm:text-4xl">
-            {lang === "zh" ? (
-              <>
-                我们的核心 <span className="text-[var(--hexia-gold)]">产品</span>
-              </>
-            ) : (
-              <>
-                Our Core <span className="text-[var(--hexia-gold)]">Products</span>
-              </>
-            )}
+          <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
+            {sectionTitleWithSuffix(section, title, lang)}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-[var(--text-body)]">
-            {t("home.coreDesc", lang)}
-          </p>
+          {subtitle ? (
+            <p className="mx-auto mt-4 max-w-2xl text-pretty text-[var(--text-body)]">
+              {subtitle}
+            </p>
+          ) : null}
         </div>
 
         <div className="mt-16 space-y-6">
@@ -146,12 +122,13 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-muted)]">
                     <ProductPreviewImage src={product.image} title={product.title} />
-                    {product.image ? <div className="absolute inset-0 bg-gradient-to-t from-[var(--hexia-forest-dark)]/60 to-transparent" /> : null}
+                    {product.image ? <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/60 to-transparent" /> : null}
                   </div>
                   <div className="mt-4">
-                    <h3 className="text-base font-semibold text-[var(--hexia-forest-dark)]">
+                    <h3 className="text-base font-semibold text-[var(--primary-dark)]">
                       {product.title}
                     </h3>
+                    {product.items.length > 0 ? (
                     <div className="mt-3 space-y-2">
                       {product.items.map((item) => (
                         <div key={item} className="flex items-center text-sm text-[var(--text-body)]">
@@ -160,7 +137,8 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
                         </div>
                       ))}
                     </div>
-                    <div className="mt-4 flex items-center text-sm font-medium text-[var(--primary)] transition-colors group-hover:text-[var(--hexia-forest)]">
+                    ) : null}
+                    <div className="mt-4 flex items-center text-sm font-medium text-[var(--primary)] transition-colors group-hover:text-[var(--primary-dark)]">
                       {t("home.learnMore", lang)}
                       <ArrowRight className="ml-1 size-4" />
                     </div>
@@ -176,7 +154,7 @@ export function ProductsSection({ categories, subcategories }: ProductsSectionPr
             asChild
             variant="outline"
             size="lg"
-            className="border-2 border-[var(--hexia-forest)] bg-[var(--bg-card)] text-[var(--hexia-forest)] transition-all duration-300 hover:bg-[var(--hexia-forest)] hover:text-white"
+            className="border-2 border-[var(--primary-dark)] bg-[var(--bg-card)] text-[var(--primary-dark)] transition-all duration-300 hover:bg-[var(--primary-dark)] hover:text-white"
           >
             <a href={getHrefWithLang("/products", lang)}>
               {t("home.viewAll", lang)}
