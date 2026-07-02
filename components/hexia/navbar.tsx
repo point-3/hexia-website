@@ -1,15 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { Menu, X, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { t, getHrefWithLang } from "@/lib/i18n"
+import { getHrefWithLang } from "@/lib/i18n"
 import { useLocale, useToggleLocale } from "@/hooks/use-locale"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { getRawCmsAssetUrl } from "@/lib/cms-assets"
 import { hexToRgba } from "@/lib/site-theme"
 import { quoteButtonText, siteName } from "@/lib/site-profile"
+import { navigationLinksFromConfig } from "@/lib/navigation-links"
 
 interface NavbarProps {
   variant?: "transparent" | "solid"
@@ -30,14 +31,10 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
   const quoteText = quoteButtonText(siteSettings, lang)
   const displayName = siteName(siteSettings, lang)
 
-  const navItems = [
-    { label: t("nav.home", lang), href: getHrefWithLang("/", lang) },
-    { label: t("nav.products", lang), href: getHrefWithLang("/products", lang) },
-    { label: t("nav.service", lang), href: getHrefWithLang("/service", lang) },
-    { label: t("nav.about", lang), href: getHrefWithLang("/about", lang) },
-    { label: t("nav.news", lang), href: getHrefWithLang("/news", lang) },
-    { label: t("nav.contact", lang), href: getHrefWithLang("/contact", lang) },
-  ]
+  const navItems = useMemo(
+    () => navigationLinksFromConfig(siteSettings.header_navigation_links, lang),
+    [lang, siteSettings.header_navigation_links],
+  )
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [headerStyle, setHeaderStyle] = useState({
@@ -113,7 +110,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
           <nav className="hidden lg:flex lg:items-center lg:gap-6 xl:gap-8">
             {navItems.map((item) => (
               <a
-                key={item.label}
+                key={`${item.href}-${item.label}`}
                 href={item.href}
                 className="relative text-sm text-[var(--site-header-text-color)] transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-[var(--site-cta-color)] after:transition-all after:duration-300 hover:text-[var(--site-header-hover-text-color)] hover:after:w-full lg:text-base"
               >
@@ -164,7 +161,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
           <nav className="flex flex-col gap-1 pt-2">
             {navItems.map((item) => (
               <a
-                key={item.label}
+                key={`${item.href}-${item.label}`}
                 href={item.href}
                 className="flex size-12 items-center rounded-lg px-4 text-base text-[var(--site-header-text-color)] transition-colors hover:bg-white/10 hover:text-[var(--site-header-hover-text-color)]"
                 onClick={() => setIsMobileMenuOpen(false)}

@@ -35,6 +35,7 @@ const SITE_SETTINGS_TOP_LEVEL_FIELDS = [
   'header_hover_text_color',
   'quote_button_enabled',
   'language_switch_enabled',
+  'header_navigation_links',
   'footer_background_color',
   'footer_text_color',
   'footer_link_color',
@@ -51,6 +52,12 @@ const SITE_SETTINGS_TOP_LEVEL_FIELDS = [
 
 const SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_SITE_NAME_DISPLAY =
   SITE_SETTINGS_TOP_LEVEL_FIELDS.filter((field) => field !== 'site_name_display_enabled');
+const SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_HEADER_NAVIGATION =
+  SITE_SETTINGS_TOP_LEVEL_FIELDS.filter((field) => field !== 'header_navigation_links');
+const LEGACY_SITE_SETTINGS_TOP_LEVEL_FIELDS =
+  SITE_SETTINGS_TOP_LEVEL_FIELDS.filter(
+    (field) => field !== 'site_name_display_enabled' && field !== 'header_navigation_links',
+  );
 
 const SITE_SETTINGS_TRANSLATION_FIELDS = [
   'id',
@@ -94,8 +101,15 @@ const SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY = [
   },
 ] as const;
 
+const SITE_SETTINGS_FIELDS_WITHOUT_HEADER_NAVIGATION = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_HEADER_NAVIGATION,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS,
+  },
+] as const;
+
 const LEGACY_SITE_SETTINGS_FIELDS = [
-  ...SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_SITE_NAME_DISPLAY,
+  ...LEGACY_SITE_SETTINGS_TOP_LEVEL_FIELDS,
   {
     translations: SITE_SETTINGS_TRANSLATION_FIELDS_WITHOUT_HQ_TITLE,
   },
@@ -105,6 +119,7 @@ type SiteSettingsFieldSet =
   | typeof SITE_SETTINGS_FIELDS
   | typeof SITE_SETTINGS_FIELDS_WITHOUT_HQ_TITLE
   | typeof SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY
+  | typeof SITE_SETTINGS_FIELDS_WITHOUT_HEADER_NAVIGATION
   | typeof LEGACY_SITE_SETTINGS_FIELDS;
 
 function errorMessage(error: unknown): string {
@@ -146,7 +161,11 @@ function warnCmsFallback(scope: string, error: unknown): void {
 
 function isMissingSiteSettingsCompatibilityFieldError(error: unknown): boolean {
   const message = errorMessage(error);
-  return message.includes('site_name_display_enabled') || message.includes('hq_title');
+  return (
+    message.includes('site_name_display_enabled') ||
+    message.includes('header_navigation_links') ||
+    message.includes('hq_title')
+  );
 }
 
 function siteSettingsFallbackFieldSets(error: unknown): SiteSettingsFieldSet[] {
@@ -158,6 +177,9 @@ function siteSettingsFallbackFieldSets(error: unknown): SiteSettingsFieldSet[] {
   }
   if (message.includes('site_name_display_enabled')) {
     fieldSets.push(SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY);
+  }
+  if (message.includes('header_navigation_links')) {
+    fieldSets.push(SITE_SETTINGS_FIELDS_WITHOUT_HEADER_NAVIGATION);
   }
 
   fieldSets.push(LEGACY_SITE_SETTINGS_FIELDS);
@@ -211,6 +233,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     return {
       ...siteSettings,
       site_name_display_enabled: siteSettings.site_name_display_enabled ?? true,
+      header_navigation_links: siteSettings.header_navigation_links ?? DEFAULT_SITE_SETTINGS.header_navigation_links,
     };
   };
 

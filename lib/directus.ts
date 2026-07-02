@@ -140,6 +140,7 @@ export interface SiteSettings {
   header_hover_text_color?: string;
   quote_button_enabled?: boolean;
   language_switch_enabled?: boolean;
+  header_navigation_links?: JsonValue;
   footer_background_color?: string;
   footer_text_color?: string;
   footer_link_color?: string;

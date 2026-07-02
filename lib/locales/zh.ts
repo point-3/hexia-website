@@ -5,7 +5,7 @@ export const zh = {
   nav: {
     home: "首页",
     products: "产品中心",
-    service: "服务报价",
+    service: "服务",
     about: "关于我们",
     news: "新闻动态",
     contact: "联系我们",
