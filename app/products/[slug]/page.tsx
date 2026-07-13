@@ -288,7 +288,8 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  placeholder={t("home.placeholderName", lang)}
                 />
               </div>
               <div>
@@ -302,7 +303,8 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  placeholder={t("home.placeholderEmail", lang)}
                 />
               </div>
               <div>
