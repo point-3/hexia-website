@@ -276,9 +276,11 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
             <h2 className="mb-2 text-xl font-bold text-[var(--primary-dark)]">{t("inquiry.title", lang)}</h2>
             <p className="mb-6 text-sm text-[var(--text-body)]">{t("inquiry.subtitle", lang)}</p>
 
-            <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-3">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.name", lang)}</label>
+                <label htmlFor="name" className="block text-sm font-medium text-[var(--text-body)]">
+                  {t("inquiry.name", lang)} <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -290,7 +292,9 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.email", lang)}</label>
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--text-body)]">
+                  {t("inquiry.email", lang)} <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -301,7 +305,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                 />
               </div>
-              <div className="sm:col-span-2">
+              <div>
                 <label htmlFor="country" className="block text-sm font-medium text-[var(--text-body)]">
                   {t("inquiry.country", lang)} <span className="text-red-500">*</span>
                 </label>
@@ -316,8 +320,10 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   placeholder={t("home.placeholderCountry", lang)}
                 />
               </div>
-              <div className="sm:col-span-2">
-                <label htmlFor="message" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.message", lang)}</label>
+              <div className="sm:col-span-3">
+                <label htmlFor="message" className="block text-sm font-medium text-[var(--text-body)]">
+                  {t("inquiry.message", lang)} <span className="text-red-500">*</span>
+                </label>
                 <textarea
                   id="message"
                   rows={3}
@@ -329,7 +335,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   placeholder={t("home.placeholderMessage", lang)}
                 />
               </div>
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-3">
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}
