@@ -12,15 +12,6 @@ import {
 } from "@/lib/page-section-content"
 import { sectionTitleWithSuffix } from "@/lib/section-title"
 
-const fallbackPartners = [
-  "Dongxiao",
-  "Sinophos",
-  "NHU",
-  "Fufeng",
-  "Meihua",
-  "New Hope Group",
-]
-
 function configuredPartners(section: PageSection | null | undefined, lang: "en" | "zh"): string[] {
   const config = getSectionConfig(section, lang)
   const sectionItems = asJsonArray(lang === "zh" ? section?.partner_items_zh : section?.partner_items_en)
@@ -65,10 +56,11 @@ export function PartnersSection({ section }: { section?: PageSection | null }) {
   const translation = getSectionTranslation(section, lang)
   const config = getSectionConfig(section, lang)
   const partners = configuredPartners(section, lang)
-  const displayPartners = partners.length > 0 ? partners : fallbackPartners
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle || config.description, lang)
   const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)")
+
+  if (partners.length === 0) return null
 
   return (
     <section className="py-16 lg:py-24" style={{ backgroundColor }}>
@@ -85,7 +77,7 @@ export function PartnersSection({ section }: { section?: PageSection | null }) {
         </div>
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-6">
-          {displayPartners.map((partner) => (
+          {partners.map((partner) => (
             <div
               key={partner}
               className="flex h-20 w-36 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-6 py-4 opacity-70 transition-all duration-300 hover:border-[var(--primary)] hover:opacity-100 hover:shadow-md sm:h-24 sm:w-40"

@@ -7,6 +7,7 @@ import { ChevronRight, Headphones } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
+import { ImagePlaceholder } from "@/components/hexia/image-placeholder"
 import { useSiteSettings } from "@/components/hexia/site-config-provider"
 import { getFileUrl, Product as DirectusProduct } from "@/lib/directus"
 import { getProductBySlugFromCms, getProductsFromCms } from "@/lib/api/cms-client"
@@ -15,6 +16,59 @@ import { toast } from "sonner"
 import { t, getHrefWithLang, getProductTranslation } from "@/lib/i18n"
 import { useLocale } from "@/hooks/use-locale"
 import { trackInquiryConversion } from "@/lib/marketing-analytics"
+
+function directusAssetUrl(path: string): string {
+  try {
+    const url = new URL(path, "http://cms.local")
+    const assetId = url.pathname.match(/\/assets\/([^/?#]+)/)?.[1]
+    if (!assetId) return path
+
+    const params = new URLSearchParams(url.search)
+    if (!params.has("format")) params.set("format", "webp")
+    if (!params.has("quality")) params.set("quality", "82")
+    const query = params.toString()
+    return `/api/cms-assets/${assetId}${query ? `?${query}` : ""}`
+  } catch {
+    return path
+  }
+}
+
+function sanitizeProductRichText(html: string): string {
+  const normalized = /<\s*[a-z][\s\S]*>/i.test(html)
+    ? html
+    : html
+      .split(/\n{2,}/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean)
+      .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br />")}</p>`)
+      .join("")
+
+  return normalized
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<\s*(script|style|iframe|object|embed|link|meta|form|input|textarea|button)[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi, "")
+    .replace(/<\s*(script|style|iframe|object|embed|link|meta|form|input|textarea|button)[^>]*\/?>/gi, "")
+    .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s(href|src)\s*=\s*(['"]?)\s*(javascript:|data:text\/html)[^'">\s]*\2/gi, ' $1="#"')
+    .replace(/(<img\b[^>]*\ssrc\s*=\s*)(["'])([^"']+)\2/gi, (_match, prefix: string, quote: string, src: string) => {
+      return `${prefix}${quote}${directusAssetUrl(src)}${quote}`
+    })
+}
+
+function plainTextFromRichText(html: string): string {
+  return html
+    .replace(/<\s*br\s*\/?>/gi, " ")
+    .replace(/<\/\s*(p|div|li|h[1-6]|tr)\s*>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, "\"")
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim()
+}
 
 function ProductDetailContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: rawSlug } = use(params)
@@ -26,7 +80,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
   const [allProducts, setAllProducts] = useState<DirectusProduct[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" })
+  const [formData, setFormData] = useState({ name: "", email: "", country: "", message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // 严格暴露无参数时的逻辑异常
@@ -73,6 +127,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
       await createInquiry({
         name: formData.name,
         email: formData.email,
+        country: formData.country,
         message: formData.message,
         source_page: `Product Detail [${product?.slug}]: ${currentTitle}`,
         source_product_slug: product?.slug,
@@ -84,7 +139,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
         productSlug: product?.slug,
         language: lang,
       })
-      setFormData({ name: "", email: "", message: "" })
+      setFormData({ name: "", email: "", country: "", message: "" })
     } catch (err: any) {
       console.error(err)
       toast.error(t("inquiry.errorToast", lang))
@@ -141,6 +196,8 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
   const categoryName = typeof product.category_id === "object" ? (lang === "zh" ? product.category_id?.name_cn : product.category_id?.name) : ""
 
   const { product_title: productTitle, product_description: productDesc } = getProductTranslation(product, lang)
+  const productDescriptionHtml = sanitizeProductRichText(productDesc)
+  const productImageSrc = getFileUrl(product.image)
 
   return (
     <div className="min-h-screen bg-[var(--bg-page)]">
@@ -165,12 +222,16 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
             {/* Image */}
             <div>
               <div className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)]">
-                <Image
-                  src={getFileUrl(product.image) || "/images/feed-additives.jpg"}
-                  alt={productTitle}
-                  fill
-                  className="object-cover"
-                />
+                {productImageSrc ? (
+                  <Image
+                    src={productImageSrc}
+                    alt={productTitle}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <ImagePlaceholder label={productTitle} />
+                )}
               </div>
             </div>
 
@@ -202,9 +263,12 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
             <h2 className="mb-4 text-xl font-bold text-[var(--primary-dark)]">
               {lang === "zh" ? "产品描述" : "Product Description"}
             </h2>
-            <div className="prose prose-sm max-w-none text-[var(--text-body)]">
-              <p className="leading-relaxed whitespace-pre-line">{productDesc}</p>
-            </div>
+            {productDescriptionHtml ? (
+              <div
+                className="prose prose-sm max-w-none text-[var(--text-body)] [&_a]:text-[var(--primary)] [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-[var(--accent)] [&_blockquote]:pl-4 [&_img]:my-6 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-[var(--border)] [&_li]:my-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-4 [&_p]:leading-relaxed [&_strong]:text-[var(--primary-dark)] [&_ul]:list-disc [&_ul]:pl-5"
+                dangerouslySetInnerHTML={{ __html: productDescriptionHtml }}
+              />
+            ) : null}
           </div>
 
           {/* Inquiry Form */}
@@ -212,9 +276,11 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
             <h2 className="mb-2 text-xl font-bold text-[var(--primary-dark)]">{t("inquiry.title", lang)}</h2>
             <p className="mb-6 text-sm text-[var(--text-body)]">{t("inquiry.subtitle", lang)}</p>
 
-            <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-3">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.name", lang)}</label>
+                <label htmlFor="name" className="block text-sm font-medium text-[var(--text-body)]">
+                  {t("inquiry.name", lang)} <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -222,11 +288,14 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  placeholder={t("home.placeholderName", lang)}
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.email", lang)}</label>
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--text-body)]">
+                  {t("inquiry.email", lang)} <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -234,11 +303,29 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                   disabled={isSubmitting}
-                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  placeholder={t("home.placeholderEmail", lang)}
                 />
               </div>
-              <div className="sm:col-span-2">
-                <label htmlFor="message" className="block text-sm font-medium text-[var(--text-body)]">{t("inquiry.message", lang)}</label>
+              <div>
+                <label htmlFor="country" className="block text-sm font-medium text-[var(--text-body)]">
+                  {t("inquiry.country", lang)} <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="country"
+                  value={formData.country}
+                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                  required
+                  disabled={isSubmitting}
+                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  placeholder={t("home.placeholderCountry", lang)}
+                />
+              </div>
+              <div className="sm:col-span-3">
+                <label htmlFor="message" className="block text-sm font-medium text-[var(--text-body)]">
+                  {t("inquiry.message", lang)} <span className="text-red-500">*</span>
+                </label>
                 <textarea
                   id="message"
                   rows={3}
@@ -250,7 +337,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   placeholder={t("home.placeholderMessage", lang)}
                 />
               </div>
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-3">
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}
@@ -276,6 +363,8 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   const itemSubName = typeof item.subcategory_id === "object" ? (lang === "zh" ? item.subcategory_id?.name_cn : item.subcategory_id?.name) : ""
                   const itemCatName = typeof item.category_id === "object" ? (lang === "zh" ? item.category_id?.name_cn : item.category_id?.name) : ""
                   const { product_title: itemTitle, product_description: itemDesc } = getProductTranslation(item, lang)
+                  const itemSummary = plainTextFromRichText(itemDesc)
+                  const itemImageSrc = getFileUrl(item.image)
 
                   return (
                     <Link
@@ -285,12 +374,16 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                     >
                       <div>
                         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--bg-muted)]">
-                          <Image
-                            src={getFileUrl(item.image) || "/images/feed-additives.jpg"}
-                            alt={itemTitle}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
+                          {itemImageSrc ? (
+                            <Image
+                              src={itemImageSrc}
+                              alt={itemTitle}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <ImagePlaceholder label={itemTitle} />
+                          )}
                         </div>
                         <div className="flex flex-1 flex-col p-4">
                           <span className="text-xs font-medium text-[var(--primary)]">
@@ -300,7 +393,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                             {itemTitle}
                           </h3>
                           <p className="mt-2 text-sm text-[var(--text-body)] line-clamp-2">
-                            {itemDesc}
+                            {itemSummary}
                           </p>
                         </div>
                       </div>

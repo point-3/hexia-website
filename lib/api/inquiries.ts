@@ -1,6 +1,8 @@
 import { Inquiry } from '../directus';
 
-export type SubmitInquiryInput = Omit<Inquiry, 'id' | 'status'>;
+export type SubmitInquiryInput = Omit<Inquiry, 'id' | 'status' | 'country'> & {
+  country: string;
+};
 
 /**
  * 提交客户询盘数据到前端 Next.js 后端路由 /api/inquiries
@@ -14,6 +16,9 @@ export async function createInquiry(data: SubmitInquiryInput) {
   }
   if (!data.email || !data.email.trim()) {
     throw new Error('邮箱 (email) 不能为空！');
+  }
+  if (!data.country || !data.country.trim()) {
+    throw new Error('国家/地区 (country) 不能为空！');
   }
   if (!data.message || !data.message.trim()) {
     throw new Error('留言内容 (message) 不能为空！');

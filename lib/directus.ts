@@ -103,6 +103,7 @@ export interface SiteSettingsTranslation {
   why_choose_title_suffix?: string;
   company_name: string;
   company_short_description?: string;
+  hq_title?: string;
   company_address?: string;
   quote_button_text?: string;
   footer_copyright?: string;
@@ -117,6 +118,7 @@ export interface SiteSettings {
   site_title?: string;
   logo?: string | DirectusFile | null;
   footer_logo?: string | DirectusFile | null;
+  site_name_display_enabled?: boolean;
   favicon?: string | DirectusFile | null;
   theme_primary?: string;
   theme_primary_dark?: string;
@@ -138,6 +140,7 @@ export interface SiteSettings {
   header_hover_text_color?: string;
   quote_button_enabled?: boolean;
   language_switch_enabled?: boolean;
+  header_navigation_links?: JsonValue;
   footer_background_color?: string;
   footer_text_color?: string;
   footer_link_color?: string;

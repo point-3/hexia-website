@@ -5,97 +5,185 @@ import {
   type PageLayout,
   type SeoPage,
   type SiteSettings,
-  type SiteSettingsTranslation,
 } from '../directus';
+import { DEFAULT_SITE_SETTINGS, DEFAULT_SITE_TRANSLATIONS } from '../site-defaults';
 
 export type SitePageKey = 'home' | 'products' | 'service' | 'about' | 'contact' | 'news';
 
-const DEFAULT_SITE_TRANSLATIONS: SiteSettingsTranslation[] = [
-  {
-    id: 0,
-    site_settings_id: 0,
-    languages_code: 'en-US',
-    site_name: 'Hexia',
-    browser_title_prefix: 'HexiaBio',
-    brand_highlight_name: 'Hexia',
-    why_choose_title_suffix: 'Hexia',
-    company_name: 'Hexia (Suzhou) Biotechnology Co., Ltd.',
-    company_short_description:
-      'Professional supplier of feed additives, food additives, vitamins, amino acids and nutritional raw materials.',
-    company_address: 'Suzhou, China',
-    quote_button_text: 'Get a Quote',
-    footer_copyright: 'Copyright © 2026 Hexia (Suzhou) Biotechnology Co., Ltd. All Rights Reserved.',
-    default_meta_title:
-      'HexiaBio | Morehope Group, Feed Additives, Food Additives & Nutritional Raw Materials Supplier',
-    default_meta_keywords: 'feed additives, food additives, vitamins, amino acids, nutritional raw materials',
-    default_meta_description:
-      'Suzhou Hexia Biotechnology is a professional supplier of feed additives, food additives, vitamins, amino acids and health nutrition raw materials. OEM & ODM premix service, global export from China.',
-  },
-  {
-    id: 0,
-    site_settings_id: 0,
-    languages_code: 'zh-CN',
-    site_name: '和夏',
-    browser_title_prefix: '和夏生物',
-    brand_highlight_name: '和夏',
-    why_choose_title_suffix: '和夏',
-    company_name: '和夏（苏州）生物科技有限公司',
-    company_short_description: '饲料添加剂、食品添加剂、维生素、氨基酸和营养原料供应商。',
-    company_address: '中国苏州',
-    quote_button_text: '获取报价',
-    footer_copyright: 'Copyright © 2026 和夏（苏州）生物科技有限公司 版权所有。',
-    default_meta_title: '和夏生物 | 饲料添加剂、食品添加剂与营养原料供应商',
-    default_meta_keywords: '饲料添加剂, 食品添加剂, 维生素, 氨基酸, 营养原料',
-    default_meta_description: '和夏（苏州）生物科技有限公司专注饲料添加剂、食品添加剂、维生素、氨基酸和营养原料供应。',
-  },
-];
+const SITE_SETTINGS_TOP_LEVEL_FIELDS = [
+  'id',
+  'status',
+  'site_title',
+  'site_name_display_enabled',
+  'theme_primary',
+  'theme_primary_dark',
+  'theme_accent',
+  'theme_bg_page',
+  'theme_bg_card',
+  'theme_text_body',
+  'theme_border',
+  'theme_bg_muted',
+  'primary_color',
+  'cta_color',
+  'body_background',
+  'heading_text_color',
+  'body_text_color',
+  'font_family',
+  'header_background_color',
+  'header_background_opacity',
+  'header_text_color',
+  'header_hover_text_color',
+  'quote_button_enabled',
+  'language_switch_enabled',
+  'header_navigation_links',
+  'footer_background_color',
+  'footer_text_color',
+  'footer_link_color',
+  'email',
+  'phone',
+  'whatsapp',
+  'social_links',
+  'quick_links',
+  'analytics_settings',
+  directusFileField('logo'),
+  directusFileField('footer_logo'),
+  directusFileField('favicon'),
+] as const;
 
-export const DEFAULT_SITE_SETTINGS: SiteSettings = {
-  id: 0,
-  status: 'published',
-  site_title: 'Hexia',
-  theme_primary: '#2D6A4F',
-  theme_primary_dark: '#1B4D3E',
-  theme_accent: '#E9B35F',
-  theme_bg_page: '#FDFBF7',
-  theme_bg_card: '#FFFFFF',
-  theme_text_body: '#636E72',
-  theme_border: '#A3B18A',
-  theme_bg_muted: '#F5F3EF',
-  primary_color: '#1B4D3E',
-  cta_color: '#E9B35F',
-  body_background: '#FDFBF7',
-  heading_text_color: '#1B4D3E',
-  body_text_color: '#636E72',
-  font_family: 'Inter',
-  header_background_color: '#2D6A4F',
-  header_background_opacity: 100,
-  header_text_color: '#1B4D3E',
-  header_hover_text_color: '#E9B35F',
-  quote_button_enabled: true,
-  language_switch_enabled: true,
-  footer_background_color: '#1B4D3E',
-  footer_text_color: '#FFFFFF',
-  footer_link_color: '#E9B35F',
-  email: 'justin@hexiabio.com',
-  phone: '',
-  whatsapp: '',
-  social_links: {},
-  quick_links: [
-    { label: 'Home', href: '/', enabled: true },
-    { label: 'Products', href: '/products', enabled: true },
-    { label: 'Service', href: '/service', enabled: true },
-    { label: 'About Us', href: '/about', enabled: true },
-    { label: 'Contact Us', href: '/contact', enabled: true },
-  ],
-  analytics_settings: {},
-  translations: DEFAULT_SITE_TRANSLATIONS,
-};
+const SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_SITE_NAME_DISPLAY =
+  SITE_SETTINGS_TOP_LEVEL_FIELDS.filter((field) => field !== 'site_name_display_enabled');
+const SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_HEADER_NAVIGATION =
+  SITE_SETTINGS_TOP_LEVEL_FIELDS.filter((field) => field !== 'header_navigation_links');
+const LEGACY_SITE_SETTINGS_TOP_LEVEL_FIELDS =
+  SITE_SETTINGS_TOP_LEVEL_FIELDS.filter(
+    (field) => field !== 'site_name_display_enabled' && field !== 'header_navigation_links',
+  );
+
+const SITE_SETTINGS_TRANSLATION_FIELDS = [
+  'id',
+  'languages_code',
+  'site_name',
+  'browser_title_prefix',
+  'brand_highlight_name',
+  'why_choose_title_suffix',
+  'company_name',
+  'company_short_description',
+  'hq_title',
+  'company_address',
+  'quote_button_text',
+  'footer_copyright',
+  'default_meta_title',
+  'default_meta_keywords',
+  'default_meta_description',
+] as const;
+
+const SITE_SETTINGS_TRANSLATION_FIELDS_WITHOUT_HQ_TITLE =
+  SITE_SETTINGS_TRANSLATION_FIELDS.filter((field) => field !== 'hq_title');
+
+const SITE_SETTINGS_FIELDS = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS,
+  },
+] as const;
+
+const SITE_SETTINGS_FIELDS_WITHOUT_HQ_TITLE = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS_WITHOUT_HQ_TITLE,
+  },
+] as const;
+
+const SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_SITE_NAME_DISPLAY,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS,
+  },
+] as const;
+
+const SITE_SETTINGS_FIELDS_WITHOUT_HEADER_NAVIGATION = [
+  ...SITE_SETTINGS_TOP_LEVEL_FIELDS_WITHOUT_HEADER_NAVIGATION,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS,
+  },
+] as const;
+
+const LEGACY_SITE_SETTINGS_FIELDS = [
+  ...LEGACY_SITE_SETTINGS_TOP_LEVEL_FIELDS,
+  {
+    translations: SITE_SETTINGS_TRANSLATION_FIELDS_WITHOUT_HQ_TITLE,
+  },
+] as const;
+
+type SiteSettingsFieldSet =
+  | typeof SITE_SETTINGS_FIELDS
+  | typeof SITE_SETTINGS_FIELDS_WITHOUT_HQ_TITLE
+  | typeof SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY
+  | typeof SITE_SETTINGS_FIELDS_WITHOUT_HEADER_NAVIGATION
+  | typeof LEGACY_SITE_SETTINGS_FIELDS;
+
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  if (!error || typeof error !== 'object') return String(error);
+
+  const messages: string[] = [];
+  const record = error as Record<string, unknown>;
+
+  if (typeof record.message === 'string') {
+    messages.push(record.message);
+  }
+
+  if (Array.isArray(record.errors)) {
+    for (const item of record.errors) {
+      if (!item || typeof item !== 'object') continue;
+      const errorItem = item as Record<string, unknown>;
+      if (typeof errorItem.message === 'string') {
+        messages.push(errorItem.message);
+      }
+      const extensions = errorItem.extensions;
+      if (extensions && typeof extensions === 'object') {
+        const reason = (extensions as Record<string, unknown>).reason;
+        if (typeof reason === 'string') {
+          messages.push(reason);
+        }
+      }
+    }
+  }
+
+  return messages.join(' ') || String(error);
+}
 
 function warnCmsFallback(scope: string, error: unknown): void {
   if (process.env.NODE_ENV === 'production') return;
-  const message = error instanceof Error ? error.message : String(error);
-  console.warn(`[site-config] ${scope} fallback: ${message}`);
+  console.warn(`[site-config] ${scope} fallback: ${errorMessage(error)}`);
+}
+
+function isMissingSiteSettingsCompatibilityFieldError(error: unknown): boolean {
+  const message = errorMessage(error);
+  return (
+    message.includes('site_name_display_enabled') ||
+    message.includes('header_navigation_links') ||
+    message.includes('hq_title')
+  );
+}
+
+function siteSettingsFallbackFieldSets(error: unknown): SiteSettingsFieldSet[] {
+  const message = errorMessage(error);
+  const fieldSets: SiteSettingsFieldSet[] = [];
+
+  if (message.includes('hq_title')) {
+    fieldSets.push(SITE_SETTINGS_FIELDS_WITHOUT_HQ_TITLE);
+  }
+  if (message.includes('site_name_display_enabled')) {
+    fieldSets.push(SITE_SETTINGS_FIELDS_WITHOUT_SITE_NAME_DISPLAY);
+  }
+  if (message.includes('header_navigation_links')) {
+    fieldSets.push(SITE_SETTINGS_FIELDS_WITHOUT_HEADER_NAVIGATION);
+  }
+
+  fieldSets.push(LEGACY_SITE_SETTINGS_FIELDS);
+  return fieldSets;
 }
 
 function fallbackSeoPage(pageKey: SitePageKey, siteSettings: SiteSettings): SeoPage {
@@ -130,64 +218,10 @@ export function fallbackPageLayout(pageKey: SitePageKey): PageLayout {
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  try {
+  const readSiteSettings = async (fields: SiteSettingsFieldSet) => {
     const response = (await directus.request(
       readItems('site_settings', {
-        fields: [
-          'id',
-          'status',
-          'site_title',
-          'theme_primary',
-          'theme_primary_dark',
-          'theme_accent',
-          'theme_bg_page',
-          'theme_bg_card',
-          'theme_text_body',
-          'theme_border',
-          'theme_bg_muted',
-          'primary_color',
-          'cta_color',
-          'body_background',
-          'heading_text_color',
-          'body_text_color',
-          'font_family',
-          'header_background_color',
-          'header_background_opacity',
-          'header_text_color',
-          'header_hover_text_color',
-          'quote_button_enabled',
-          'language_switch_enabled',
-          'footer_background_color',
-          'footer_text_color',
-          'footer_link_color',
-          'email',
-          'phone',
-          'whatsapp',
-          'social_links',
-          'quick_links',
-          'analytics_settings',
-          directusFileField('logo'),
-          directusFileField('footer_logo'),
-          directusFileField('favicon'),
-          {
-            translations: [
-              'id',
-              'languages_code',
-              'site_name',
-              'browser_title_prefix',
-              'brand_highlight_name',
-              'why_choose_title_suffix',
-              'company_name',
-              'company_short_description',
-              'company_address',
-              'quote_button_text',
-              'footer_copyright',
-              'default_meta_title',
-              'default_meta_keywords',
-              'default_meta_description',
-            ],
-          },
-        ],
+        fields,
         filter: { status: { _eq: 'published' } },
         sort: ['id'],
         limit: 1,
@@ -195,8 +229,34 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     )) as unknown;
     const items = Array.isArray(response) ? response : response ? [response as SiteSettings] : [];
 
-    return items?.[0] ?? DEFAULT_SITE_SETTINGS;
+    const siteSettings = items?.[0] ?? DEFAULT_SITE_SETTINGS;
+    return {
+      ...siteSettings,
+      site_name_display_enabled: siteSettings.site_name_display_enabled ?? true,
+      header_navigation_links: siteSettings.header_navigation_links ?? DEFAULT_SITE_SETTINGS.header_navigation_links,
+    };
+  };
+
+  try {
+    return await readSiteSettings(SITE_SETTINGS_FIELDS);
   } catch (error) {
+    if (isMissingSiteSettingsCompatibilityFieldError(error)) {
+      let lastError = error;
+      for (const fields of siteSettingsFallbackFieldSets(error)) {
+        try {
+          return await readSiteSettings(fields);
+        } catch (fallbackError) {
+          lastError = fallbackError;
+          if (!isMissingSiteSettingsCompatibilityFieldError(fallbackError)) {
+            break;
+          }
+        }
+      }
+
+      warnCmsFallback('site_settings', lastError);
+      return DEFAULT_SITE_SETTINGS;
+    }
+
     warnCmsFallback('site_settings', error);
     return DEFAULT_SITE_SETTINGS;
   }

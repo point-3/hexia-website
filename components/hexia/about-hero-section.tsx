@@ -25,7 +25,7 @@ export function AboutHeroSection({ section }: { section?: PageSection | null }) 
     quality: 85,
     format: "webp",
   });
-  const displayImageSrc = imageSrc || (title || subtitle ? "" : "/about us banner.png");
+  const displayImageSrc = imageSrc;
   const backgroundColor = themeColor(section?.background_color || localizedText(config.background_color, lang), "var(--bg-page)");
   const textColor = themeColor(section?.text_color || localizedText(config.text_color, lang), "var(--primary-dark)");
   const imageAlt = title || localizedText(config.alt, lang) || "About Us";

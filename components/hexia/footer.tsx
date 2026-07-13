@@ -11,6 +11,7 @@ import type { Category } from "@/lib/directus"
 import {
   companyAddress,
   companyDescription,
+  companyHeadquartersTitle,
   companyName,
   contactEmail,
   contactWhatsapp,
@@ -110,15 +111,6 @@ function quickLinksFromConfig(value: unknown, lang: string): FooterLink[] {
   })
 }
 
-function fallbackProductLinks(lang: string): FooterLink[] {
-  return [
-    { label: t("footer.feedAdditives", lang), href: applyLocaleToHref("/products?category=Feed+Additives", lang) },
-    { label: t("footer.foodAdditives", lang), href: applyLocaleToHref("/products?category=Food+Additives", lang) },
-    { label: t("footer.nutrition", lang), href: applyLocaleToHref("/products?category=Nutrition", lang) },
-    { label: t("footer.chineseSpecialty", lang), href: applyLocaleToHref("/products?category=Chinese+Specialty", lang) },
-  ]
-}
-
 function productLinksFromCategories(categories: Category[], lang: string): FooterLink[] {
   return categories.flatMap((category) => {
     const label = lang === "zh"
@@ -144,6 +136,11 @@ export function Footer() {
   const email = contactEmail(siteSettings)
   const whatsapp = contactWhatsapp(siteSettings)
   const displayName = siteName(siteSettings, lang)
+  const siteNameDisplayEnabled = siteSettings.site_name_display_enabled !== false
+  const company = companyName(siteSettings, lang)
+  const description = companyDescription(siteSettings, lang)
+  const headquartersTitle = companyHeadquartersTitle(siteSettings, lang)
+  const address = companyAddress(siteSettings, lang)
 
   useEffect(() => {
     let active = true
@@ -165,8 +162,7 @@ export function Footer() {
 
   const quickLinks = useMemo(() => quickLinksFromConfig(siteSettings.quick_links, lang), [lang, siteSettings.quick_links])
   const productLinks = useMemo(() => {
-    if (cmsCategories === null) return fallbackProductLinks(lang)
-    return productLinksFromCategories(cmsCategories, lang)
+    return cmsCategories ? productLinksFromCategories(cmsCategories, lang) : []
   }, [cmsCategories, lang])
 
   return (
@@ -176,15 +172,19 @@ export function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <a href={getHrefWithLang("/", lang)} className="flex items-center gap-2" aria-label={`${displayName} homepage`}>
               {footerLogoSrc ? (
-                <img src={footerLogoSrc} alt={`${displayName} Logo`} width={32} height={32} className="h-8 w-auto" />
+                <img src={footerLogoSrc} alt={`${displayName} Logo`} className="h-8 w-auto object-contain" />
               ) : null}
-              <span className="text-lg font-bold uppercase text-[var(--site-footer-text-color)]">
-                {displayName}
-              </span>
+              {siteNameDisplayEnabled ? (
+                <span className="text-lg font-bold uppercase text-[var(--site-footer-text-color)]">
+                  {displayName}
+                </span>
+              ) : null}
             </a>
-            <p className="mt-3 text-sm leading-relaxed text-[var(--site-footer-text-color)] opacity-80">
-              {companyName(siteSettings, lang)} - {companyDescription(siteSettings, lang)}
-            </p>
+            {company || description ? (
+              <p className="mt-3 text-sm leading-relaxed text-[var(--site-footer-text-color)] opacity-80">
+                {[company, description].filter(Boolean).join(" - ")}
+              </p>
+            ) : null}
             
             {socialLinks.length > 0 ? (
               <div className="mt-4 flex gap-2">
@@ -254,12 +254,17 @@ export function Footer() {
               {t("footer.contact", lang)}
             </h4>
             <ul className="mt-3 space-y-3">
+              {address ? (
               <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" />
                 <span>
-                  <strong className="text-[var(--site-footer-text-color)]">{t("footer.hqTitle", lang)}</strong>
-                  <br />
-                  {companyAddress(siteSettings, lang).split("\n").map((line, index, lines) => (
+                  {headquartersTitle ? (
+                    <>
+                      <strong className="text-[var(--site-footer-text-color)]">{headquartersTitle}</strong>
+                      <br />
+                    </>
+                  ) : null}
+                  {address.split("\n").map((line, index, lines) => (
                     <span key={index}>
                       {line}
                       {index < lines.length - 1 ? <br /> : null}
@@ -267,6 +272,8 @@ export function Footer() {
                   ))}
                 </span>
               </li>
+              ) : null}
+              {email ? (
               <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
                 <Mail className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" aria-hidden="true" />
                 <span>
@@ -275,12 +282,15 @@ export function Footer() {
                   </a>
                 </span>
               </li>
+              ) : null}
+              {whatsapp ? (
               <li className="flex items-start gap-2 text-sm text-[var(--site-footer-text-color)] opacity-80">
                 <MessageCircle className="mt-0.5 size-4 shrink-0 text-[var(--site-footer-link-color)]" aria-hidden="true" />
                 <a href={whatsappHref(whatsapp)} target="_blank" rel="noopener noreferrer" className="text-[var(--site-footer-text-color)] transition-colors hover:text-[var(--site-footer-link-color)]">
                   {whatsapp}
                 </a>
               </li>
+              ) : null}
             </ul>
           </div>
         </div>

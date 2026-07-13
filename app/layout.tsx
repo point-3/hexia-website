@@ -15,16 +15,20 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteSettings = await getSiteSettings()
-  const favicon = getRawFileUrl(siteSettings.favicon) || '/images/网站标签 (1).png'
-
-  return {
+  const favicon = getRawFileUrl(siteSettings.favicon)
+  const metadata: Metadata = {
     ...resolveDefaultMetadata(siteSettings, 'en'),
     generator: 'v0.app',
-    icons: {
-      icon: [{ url: favicon }],
-      apple: favicon || '/apple-icon.png',
-    },
   }
+
+  if (favicon) {
+    metadata.icons = {
+      icon: [{ url: favicon }],
+      apple: favicon,
+    }
+  }
+
+  return metadata
 }
 
 export default async function RootLayout({

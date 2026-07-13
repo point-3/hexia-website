@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/hexia/navbar"
 import { Footer } from "@/components/hexia/footer"
 import { CustomContentSection } from "@/components/hexia/custom-content-section"
+import { ImagePlaceholder } from "@/components/hexia/image-placeholder"
 import { cn } from "@/lib/utils"
 import { getFileUrl, Product as DirectusProduct, type PageLayout, type PageSection } from "@/lib/directus"
 import { getCategoriesFromCms, getProductsFromCms, getSubcategoriesFromCms } from "@/lib/api/cms-client"
@@ -31,10 +32,25 @@ type SelectedCategoryType = {
   name: string
 } | null
 
+function plainTextFromRichText(html: string): string {
+  return html
+    .replace(/<\s*br\s*\/?>/gi, " ")
+    .replace(/<\/\s*(p|div|li|h[1-6]|tr)\s*>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, "\"")
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
 function ProductsContent({ sections }: { sections: PageSection[] }) {
   const searchParams = useSearchParams()
   const lang = useLocale()
-  const categoryFromUrl = searchParams.get("category") // 从首页跳转可能会有 category 参数 (如 "Feed Additives")
+  const categoryFromUrl = searchParams.get("category")
   const showCatalog = hasSection(sections, "product_catalog")
 
   const [products, setProducts] = useState<DirectusProduct[]>([])
@@ -174,10 +190,11 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
   // 过滤产品
   const filteredProducts = products.filter((product) => {
     const { product_title, product_description } = getProductTranslation(product, lang)
+    const productDescription = plainTextFromRichText(product_description)
     const searchLower = searchQuery.toLowerCase()
     const matchesSearch =
       product_title.toLowerCase().includes(searchLower) ||
-      product_description.toLowerCase().includes(searchLower)
+      productDescription.toLowerCase().includes(searchLower)
 
     if (!selectedCategory) {
       return matchesSearch
@@ -452,6 +469,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                     const subName = typeof product.subcategory_id === "object" ? (lang === "zh" ? product.subcategory_id?.name_cn : product.subcategory_id?.name) : ""
                     const catName = typeof product.category_id === "object" ? (lang === "zh" ? product.category_id?.name_cn : product.category_id?.name) : ""
                     const { product_title: productTitle, product_description: productDesc } = getProductTranslation(product, lang)
+                    const productSummary = plainTextFromRichText(productDesc)
 
                     return (
                       <Link
@@ -461,12 +479,16 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                       >
                         <div>
                           <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-muted)]">
-                            <Image
-                              src={getFileUrl(product.image) || "/images/feed-additives.jpg"}
-                              alt={productTitle}
-                              fill
-                              className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
+                            {getFileUrl(product.image) ? (
+                              <Image
+                                src={getFileUrl(product.image)}
+                                alt={productTitle}
+                                fill
+                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                              />
+                            ) : (
+                              <ImagePlaceholder label={productTitle} />
+                            )}
                           </div>
                           <div className="p-4">
                             <span className="text-xs font-medium text-[var(--primary)]">
@@ -476,7 +498,7 @@ function ProductsContent({ sections }: { sections: PageSection[] }) {
                               {productTitle}
                             </h3>
                             <p className="mt-1 text-sm text-[var(--text-body)] line-clamp-2">
-                              {productDesc}
+                              {productSummary}
                             </p>
                           </div>
                         </div>

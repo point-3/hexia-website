@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import type { PageSection } from "@/lib/directus"
-import { t } from "@/lib/i18n"
 import {
   asJsonArray,
   fieldText,
@@ -13,12 +12,10 @@ import {
   localizedText,
   themeColor,
 } from "@/lib/page-section-content"
-import { useSiteSettings } from "@/components/hexia/site-config-provider"
-import { brandHighlightName } from "@/lib/site-profile"
-import { sectionTitleWithSuffix, titleWithHighlightedSuffix } from "@/lib/section-title"
+import { sectionTitleWithSuffix } from "@/lib/section-title"
 
 type HomeStat = {
-  value: number
+  value: number | string
   suffix: string
   label: string
 }
@@ -67,19 +64,18 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
   )
 }
 
+function StatValue({ value, suffix }: { value: number | string; suffix: string }) {
+  if (typeof value === "number") {
+    return <AnimatedNumber value={value} suffix={suffix} />
+  }
+
+  return <span>{value}{suffix}</span>
+}
+
 function numberValue(value: unknown, fallback = 0): number {
   if (typeof value === "number" && Number.isFinite(value)) return value
   if (typeof value === "string" && value.trim() && Number.isFinite(Number(value))) return Number(value)
   return fallback
-}
-
-function fallbackStats(lang: "en" | "zh"): HomeStat[] {
-  return [
-    { value: 20, suffix: "+", label: t("home.statsExp", lang) },
-    { value: 642, suffix: "+", label: t("home.statsPartners", lang) },
-    { value: 175, suffix: "+", label: t("home.statsCountries", lang) },
-    { value: 24, suffix: "/7", label: t("home.statsSupport", lang) },
-  ]
 }
 
 function configuredStats(section: PageSection | null | undefined, lang: "en" | "zh"): HomeStat[] {
@@ -100,11 +96,21 @@ function configuredStats(section: PageSection | null | undefined, lang: "en" | "
       const label = fieldText(item, "label", lang) || fieldText(item, "title", lang)
       if (!label) return []
       return [{
-        value: numberValue(item.value ?? item.number),
+        value: resolveStatValue(item.value ?? item.number),
         suffix: localizedText(item.suffix, lang),
         label,
       }]
     })
+}
+
+function resolveStatValue(value: unknown): number | string {
+  if (typeof value === "number" && Number.isFinite(value)) return value
+  if (typeof value === "string") {
+    const trimmed = value.trim()
+    if (!trimmed) return 0
+    return Number.isFinite(Number(trimmed)) ? Number(trimmed) : trimmed
+  }
+  return 0
 }
 
 function configuredParagraphs(value: unknown, lang: "en" | "zh"): string[] {
@@ -117,11 +123,9 @@ function configuredParagraphs(value: unknown, lang: "en" | "zh"): string[] {
 export function AboutSection({ section }: { section?: PageSection | null }) {
   const searchParams = useSearchParams()
   const lang = searchParams.get("lang") === "zh" ? "zh" : "en"
-  const siteSettings = useSiteSettings()
   const translation = getSectionTranslation(section, lang)
   const config = getSectionConfig(section, lang)
   const stats = configuredStats(section, lang)
-  const displayStats = stats.length > 0 ? stats : fallbackStats(lang)
   const title = translation?.title || localizedText(config.title, lang)
   const subtitle = translation?.subtitle || localizedText(config.subtitle, lang)
   const content = localizedSectionContent(section, lang, config)
@@ -131,19 +135,20 @@ export function AboutSection({ section }: { section?: PageSection | null }) {
     section?.stat_card_background_color || localizedText(config.stat_card_background_color || config.stat_background_color, lang),
     "var(--primary-dark)",
   )
+  const hasTextContent = Boolean(title || subtitle || content || paragraphs.length > 0)
+  if (!hasTextContent && stats.length === 0) return null
 
   return (
     <section id="about" className="py-20 lg:py-28" style={{ backgroundColor }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)] lg:gap-12">
+        <div className={`grid items-start gap-10 lg:gap-12 ${stats.length > 0 ? "lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)]" : ""}`}>
+          {hasTextContent ? (
           <div className="max-w-3xl">
+            {title ? (
             <h2 className="text-3xl font-bold tracking-tight text-[var(--primary-dark)] sm:text-4xl">
-              {title ? sectionTitleWithSuffix(section, title, lang) : (
-                <>
-                  {titleWithHighlightedSuffix(lang === "zh" ? "关于" : "About", brandHighlightName(siteSettings, lang), lang)}
-                </>
-              )}
+              {sectionTitleWithSuffix(section, title, lang)}
             </h2>
+            ) : null}
             {subtitle ? (
               <p className="mt-4 text-lg font-medium text-[var(--primary)]">{subtitle}</p>
             ) : null}
@@ -153,31 +158,29 @@ export function AboutSection({ section }: { section?: PageSection | null }) {
                 <div className="space-y-4" dangerouslySetInnerHTML={{ __html: content }} />
               ) : paragraphs.length > 0 ? (
                 paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-              ) : (
-                <>
-                  <p>{t("home.aboutP1", lang)}</p>
-                  <p>{t("home.aboutP2", lang)}</p>
-                </>
-              )}
+              ) : null}
             </div>
           </div>
+          ) : null}
 
+          {stats.length > 0 ? (
           <div>
             <div className="grid grid-cols-2 gap-4">
-              {displayStats.map((stat) => (
+              {stats.map((stat) => (
                 <div
                   key={stat.label}
                   className="flex min-h-[128px] flex-col items-center justify-center rounded-lg p-6 text-center transition-all duration-300"
                   style={{ backgroundColor: statBackgroundColor }}
                 >
                   <span className="text-3xl font-bold text-white sm:text-4xl">
-                    <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+                    <StatValue value={stat.value} suffix={stat.suffix} />
                   </span>
                   <span className="mt-2 text-sm text-white/70">{stat.label}</span>
                 </div>
               ))}
             </div>
           </div>
+          ) : null}
         </div>
       </div>
     </section>
