@@ -254,7 +254,7 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
       await createInquiry({
         name: formData.name,
         email: formData.email,
-        country: formData.country || undefined,
+        country: formData.country,
         product_interest: formData.productInterest || undefined,
         quantity: formData.quantity || undefined,
         message: formData.message,
@@ -331,13 +331,14 @@ function ServiceContent({ pageLayout }: { pageLayout: PageLayout }) {
 
               <div>
                 <label htmlFor="country" className="block text-sm font-medium text-[var(--text-body)]">
-                  {t("inquiry.country", lang)}
+                  {t("inquiry.country", lang)} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   id="country"
                   value={formData.country}
                   onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                  required
                   disabled={isSubmitting}
                   className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-page)] px-4 py-3 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
                   placeholder={t("home.placeholderCountry", lang)}

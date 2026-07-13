@@ -80,7 +80,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
   const [allProducts, setAllProducts] = useState<DirectusProduct[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" })
+  const [formData, setFormData] = useState({ name: "", email: "", country: "", message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // 严格暴露无参数时的逻辑异常
@@ -127,6 +127,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
       await createInquiry({
         name: formData.name,
         email: formData.email,
+        country: formData.country,
         message: formData.message,
         source_page: `Product Detail [${product?.slug}]: ${currentTitle}`,
         source_product_slug: product?.slug,
@@ -138,7 +139,7 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
         productSlug: product?.slug,
         language: lang,
       })
-      setFormData({ name: "", email: "", message: "" })
+      setFormData({ name: "", email: "", country: "", message: "" })
     } catch (err: any) {
       console.error(err)
       toast.error(t("inquiry.errorToast", lang))
@@ -298,6 +299,21 @@ function ProductDetailContent({ params }: { params: Promise<{ slug: string }> })
                   required
                   disabled={isSubmitting}
                   className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="country" className="block text-sm font-medium text-[var(--text-body)]">
+                  {t("inquiry.country", lang)} <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="country"
+                  value={formData.country}
+                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                  required
+                  disabled={isSubmitting}
+                  className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2.5 text-[var(--text-body)] placeholder:text-[var(--text-body)]/60 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
+                  placeholder={t("home.placeholderCountry", lang)}
                 />
               </div>
               <div className="sm:col-span-2">
